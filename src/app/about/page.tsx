@@ -12,32 +12,32 @@ export default function AboutPage() {
       icon: History,
       title: 'about.history',
       content: {
-        en: "Founded in 2009 by a group of passionate conservationists, our NGO started with a small mission to protect hawksbill turtle nests in northern Madagascar. Over the years, we have expanded our reach to cover both the eastern and western coasts, becoming a key player in Madagascar's marine biodiversity preservation.",
-        fr: "Fondée en 2009 par un groupe de défenseurs passionnés de la nature, notre ONG a débuté par une petite mission de protection des nids de tortues imbriquées dans le nord de Madagascar. Au fil des ans, nous avons étendu notre action aux côtes est et ouest, devenant un acteur clé de la préservation de la biodiversité marine à Madagascar."
+        en: "Founded in 2009 by a group of passionate conservationists, our NGO started with a mission to protect the Radiated and Spider tortoises in southern Madagascar. Over the years, we have expanded our reach to cover the entire southern spiny forest region, becoming a key player in Madagascar's terrestrial biodiversity preservation.",
+        fr: "Fondée en 2009 par un groupe de défenseurs passionnés de la nature, notre ONG a débuté par une mission de protection des tortues radiées et des tortues araignées dans le sud de Madagascar. Au fil des ans, nous avons étendu notre action à l'ensemble de la région de la forêt épineuse du sud, devenant un acteur clé de la préservation de la biodiversité terrestre à Madagascar."
       }
     },
     {
       icon: Target,
       title: 'about.mission',
       content: {
-        en: "Our mission is to ensure the long-term survival of Madagascar's sea turtles and their habitats through scientific research, community-led protection, and educational outreach.",
-        fr: "Notre mission est d'assurer la survie à long terme des tortues marines de Madagascar et de leurs habitats grâce à la recherche scientifique, la protection menée par les communautés et la sensibilisation éducative."
+        en: "Our mission is to ensure the long-term survival of Madagascar's land turtles and their habitats through scientific research, community-led protection, and educational outreach in the arid regions of the south.",
+        fr: "Notre mission est d'assurer la survie à long terme des tortues terrestres de Madagascar et de leurs habitats grâce à la recherche scientifique, la protection menée par les communautés et la sensibilisation éducative dans les régions arides du sud."
       }
     },
     {
       icon: Eye,
       title: 'about.vision',
       content: {
-        en: "We envision a future where Madagascar's coastal ecosystems thrive, with healthy turtle populations coexisting peacefully with prosperous local communities.",
-        fr: "Nous envisageons un avenir où les écosystèmes côtiers de Madagascar prospèrent, avec des populations de tortues en bonne santé coexistant pacifiquement avec des communautés locales prospères."
+        en: "We envision a future where Madagascar's unique spiny forest ecosystems thrive, with healthy tortoise populations coexisting peacefully with prosperous local communities.",
+        fr: "Nous envisageons un avenir où les écosystèmes uniques de la forêt épineuse de Madagascar prospèrent, avec des populations de tortues en bonne santé coexistant paisiblement avec des communautés locales prospères."
       }
     },
     {
       icon: ShieldCheck,
       title: 'about.values',
       content: {
-        en: "Integrity, Community Empowerment, Scientific Rigor, and Sustainable Innovation guide everything we do in the field and in the office.",
-        fr: "L'intégrité, l'autonomisation des communautés, la rigueur scientifique et l'innovation durable guident tout ce que nous faisons sur le terrain et au bureau."
+        en: "Integrity, Community Empowerment, Scientific Rigor, and Sustainable Innovation guide everything we do in the dry forests and in the office.",
+        fr: "L'intégrité, l'autonomisation des communautés, la rigueur scientifique et l'innovation durable guident tout ce que nous faisons dans les forêts sèches et au bureau."
       }
     }
   ];

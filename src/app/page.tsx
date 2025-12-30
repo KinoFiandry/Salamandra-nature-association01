@@ -157,33 +157,33 @@ export default function Home() {
             </Link>
           </div>
           
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Placeholder News Cards */}
-            <div className="group bg-white rounded-[2rem] overflow-hidden border border-emerald-100 shadow-sm hover:shadow-xl transition-all">
-              <div className="h-64 overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1534067783941-51c9c23ecefd?q=80&w=1000" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="News" />
+            <div className="grid md:grid-cols-2 gap-8">
+              {/* Placeholder News Cards */}
+              <div className="group bg-white rounded-[2rem] overflow-hidden border border-emerald-100 shadow-sm hover:shadow-xl transition-all">
+                <div className="h-64 overflow-hidden">
+                  <img src="https://images.unsplash.com/photo-1534067783941-51c9c23ecefd?q=80&w=1000" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="News" />
+                </div>
+                <div className="p-8">
+                  <h3 className="text-xl font-bold text-emerald-900 mb-4">Protecting Radiated Tortoise Habitats</h3>
+                  <p className="text-emerald-800/60 mb-6 line-clamp-2">We have launched a new initiative to protect critical dry forest habitats in the Androy region, ensuring safe zones for endangered tortoise species.</p>
+                  <Link href="/news" className="inline-flex items-center gap-2 text-emerald-600 font-bold group/link">
+                    Read More <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
+                  </Link>
+                </div>
               </div>
-              <div className="p-8">
-                <h3 className="text-xl font-bold text-emerald-900 mb-4">Record Nesting Season in Menabe</h3>
-                <p className="text-emerald-800/60 mb-6 line-clamp-2">We have recorded a 30% increase in turtle nests this season in the Menabe region thanks to our new patrolling systems.</p>
-                <Link href="/news" className="inline-flex items-center gap-2 text-emerald-600 font-bold group/link">
-                  Read More <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
-                </Link>
+              <div className="group bg-white rounded-[2rem] overflow-hidden border border-emerald-100 shadow-sm hover:shadow-xl transition-all">
+                <div className="h-64 overflow-hidden">
+                  <img src="https://images.unsplash.com/photo-1518467166778-b88f373ffec7?q=80&w=1000" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="News" />
+                </div>
+                <div className="p-8">
+                  <h3 className="text-xl font-bold text-emerald-900 mb-4">Community Workshop in Toliara</h3>
+                  <p className="text-emerald-800/60 mb-6 line-clamp-2">Local leaders gathered in Toliara to discuss sustainable conservation practices and land management for turtle protection.</p>
+                  <Link href="/news" className="inline-flex items-center gap-2 text-emerald-600 font-bold group/link">
+                    Read More <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
+                  </Link>
+                </div>
               </div>
             </div>
-            <div className="group bg-white rounded-[2rem] overflow-hidden border border-emerald-100 shadow-sm hover:shadow-xl transition-all">
-              <div className="h-64 overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1518467166778-b88f373ffec7?q=80&w=1000" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="News" />
-              </div>
-              <div className="p-8">
-                <h3 className="text-xl font-bold text-emerald-900 mb-4">New Partnership with Marine Institute</h3>
-                <p className="text-emerald-800/60 mb-6 line-clamp-2">A strategic partnership has been signed to enhance scientific research on turtle migration patterns.</p>
-                <Link href="/news" className="inline-flex items-center gap-2 text-emerald-600 font-bold group/link">
-                  Read More <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
-                </Link>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 

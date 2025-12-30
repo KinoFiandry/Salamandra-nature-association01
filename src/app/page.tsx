@@ -229,7 +229,7 @@ export default function Home() {
             <div>
               <h4 className="text-white font-bold text-lg mb-8 uppercase tracking-widest">{t('footer.links')}</h4>
               <ul className="space-y-4">
-                {['home', 'about', 'projects', 'news', 'contact'].map((link) => (
+                {['home', 'about', 'projects', 'news', 'contact', 'admin'].map((link) => (
                   <li key={link}>
                     <Link href={link === 'home' ? '/' : `/${link}`} className="text-emerald-200/60 hover:text-emerald-400 transition-colors">
                       {t(`nav.${link}`)}

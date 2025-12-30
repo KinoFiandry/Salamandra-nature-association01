@@ -25,18 +25,18 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Hero Section */}
-      <section className="relative h-[90vh] flex items-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <img
-            src="https://images.unsplash.com/photo-1437622368342-7a3d73a34c8f?q=80&w=2000"
-            alt="Turtle in the ocean"
-            className="w-full h-full object-cover brightness-[0.4]"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-emerald-900/40 to-transparent" />
-        </div>
+        {/* Hero Section */}
+        <section className="relative h-[90vh] flex items-center overflow-hidden">
+          <div className="absolute inset-0 z-0">
+            <img
+              src="https://images.unsplash.com/photo-1548546738-8509cb246ed3?q=80&w=2000"
+              alt="Land turtle in southern Madagascar"
+              className="w-full h-full object-cover brightness-[0.4]"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-emerald-900/40 to-transparent" />
+          </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-white">
+          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-white">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}

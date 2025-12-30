@@ -10,14 +10,16 @@ export function Navbar() {
   const { t } = useI18n();
   const [isOpen, setIsOpen] = useState(false);
 
-  const navLinks = [
-    { href: "/", label: 'nav.home' },
-    { href: "/about", label: 'nav.about' },
-    { href: "/projects", label: 'nav.projects' },
-    { href: "/news", label: 'nav.news' },
-    { href: "/media", label: 'nav.media' },
-    { href: "/contact", label: 'nav.contact' },
-  ];
+    const navLinks = [
+      { href: "/", label: 'nav.home' },
+      { href: "/about", label: 'nav.about' },
+      { href: "/projects", label: 'nav.projects' },
+      { href: "/news", label: 'nav.news' },
+      { href: "/events", label: 'nav.events' },
+      { href: "/media", label: 'nav.media' },
+      { href: "/partners", label: 'nav.partners' },
+      { href: "/contact", label: 'nav.contact' },
+    ];
 
   return (
     <nav className="bg-white/80 backdrop-blur-md border-b border-emerald-100 sticky top-0 z-50">

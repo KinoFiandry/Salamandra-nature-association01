@@ -233,6 +233,57 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Team Members Section */}
+      <section className="py-32 bg-amber-50/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-20">
+            <div className="inline-flex items-center gap-3 bg-amber-100 px-6 py-2 rounded-full mb-6">
+              <Users className="w-5 h-5 text-amber-700" />
+              <span className="text-amber-800 font-bold text-sm uppercase tracking-widest">
+                {language === 'fr' ? 'Notre Équipe' : 'Our Team'}
+              </span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-black text-emerald-900 mb-6">
+              {language === 'fr' ? 'Les Membres de l\'Association' : 'Meet the Team'}
+            </h2>
+            <p className="text-xl text-emerald-800/60 max-w-2xl mx-auto">
+              {language === 'fr' 
+                ? 'Des passionnés dédiés à la protection des tortues terrestres de Madagascar.'
+                : 'Passionate individuals dedicated to protecting Madagascar\'s land tortoises.'}
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {teamMembers.map((member, i) => (
+              <motion.div
+                key={member.name}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="bg-white rounded-[2rem] overflow-hidden border border-amber-100 shadow-sm hover:shadow-xl transition-all group"
+              >
+                <div className="h-64 overflow-hidden relative">
+                  <img 
+                    src={member.image} 
+                    alt={member.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-emerald-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                </div>
+                <div className="p-6">
+                  <h3 className="text-lg font-black text-emerald-900 mb-1">{member.name}</h3>
+                  <p className="text-amber-600 font-bold text-sm mb-4">{member.role[language as 'en' | 'fr']}</p>
+                  <p className="text-emerald-800/60 text-sm leading-relaxed line-clamp-4">
+                    {member.bio[language as 'en' | 'fr']}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Donation CTA */}
       <section className="py-32 px-4">
         <div className="max-w-5xl mx-auto">
@@ -263,10 +314,10 @@ export default function Home() {
           <div className="grid md:grid-cols-4 gap-16">
             <div className="md:col-span-2">
               <div className="flex items-center gap-3 mb-8">
-                <div className="w-12 h-12 bg-emerald-600 rounded-xl flex items-center justify-center">
-                  <Heart className="w-7 h-7 text-white" />
+                <div className="w-12 h-12 bg-amber-500 rounded-xl flex items-center justify-center">
+                  <span className="text-2xl">🦎</span>
                 </div>
-                <span className="text-2xl font-black tracking-tight">Turtle NGO Madagascar</span>
+                <span className="text-2xl font-black tracking-tight">Salamandra Association</span>
               </div>
               <p className="text-emerald-200/60 text-lg max-w-md leading-relaxed">
                 {t('footer.desc')}
@@ -287,14 +338,14 @@ export default function Home() {
             <div>
               <h4 className="text-white font-bold text-lg mb-8 uppercase tracking-widest">{t('footer.contact')}</h4>
               <div className="text-emerald-200/60 space-y-4 leading-relaxed">
-                <p>Antananarivo, Madagascar</p>
-                <p>info@turtleconservation.mg</p>
+                <p>Toliara, Madagascar</p>
+                <p>contact@salamandra.mg</p>
                 <p>+261 20 22 123 45</p>
               </div>
             </div>
           </div>
           <div className="border-t border-emerald-900 mt-20 pt-10 text-center text-emerald-200/40 text-sm">
-            &copy; {new Date().getFullYear()} Madagascar Turtle Conservation Organization.
+            &copy; {new Date().getFullYear()} Salamandra Association - Madagascar.
           </div>
         </div>
       </footer>

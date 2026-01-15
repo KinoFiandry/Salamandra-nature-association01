@@ -42,7 +42,7 @@ const translations: Record<Language, Record<string, string>> = {
       'cta.title': 'Every Donation Makes a Difference',
       'cta.desc': 'Your support helps us protect endangered land turtles, preserve their habitats, and educate communities. Join us in making a lasting impact.',
       'cta.button': 'Make a Donation Today',
-      'footer.desc': 'Dedicated to protecting Madagascar\'s endangered land turtles since 2009.',
+      'footer.desc': 'Salamandra Association - Dedicated to protecting Madagascar\'s endangered land tortoises since 2009.',
       'footer.links': 'Quick Links',
       'footer.contact': 'Contact',
       'footer.follow': 'Follow Us',

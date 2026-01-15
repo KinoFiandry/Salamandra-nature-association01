@@ -3,10 +3,49 @@
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n";
 import { motion } from "framer-motion";
-import { Shield, BookOpen, Search, ArrowRight, Heart } from "lucide-react";
+import { Shield, BookOpen, Search, ArrowRight, Heart, Users } from "lucide-react";
+
+const teamMembers = [
+  {
+    name: "Dr. Riana Andriamanalina",
+    role: { en: "Founder & Executive Director", fr: "Fondatrice & Directrice Exécutive" },
+    bio: { 
+      en: "A passionate herpetologist with 20+ years dedicated to Madagascar's endemic tortoises. Dr. Riana founded Salamandra Association to combat the alarming decline of radiated and spider tortoises.",
+      fr: "Herpétologue passionnée avec plus de 20 ans dédiés aux tortues endémiques de Madagascar. Dr. Riana a fondé l'Association Salamandra pour lutter contre le déclin alarmant des tortues radiées et araignées."
+    },
+    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400"
+  },
+  {
+    name: "Jean-Baptiste Rakoto",
+    role: { en: "Field Operations Manager", fr: "Responsable des Opérations Terrain" },
+    bio: {
+      en: "Born in Toliara, Jean-Baptiste leads our ranger teams across the spiny forests. His deep knowledge of local ecosystems and community ties makes him invaluable to our conservation efforts.",
+      fr: "Né à Toliara, Jean-Baptiste dirige nos équipes de rangers dans les forêts épineuses. Sa connaissance approfondie des écosystèmes locaux et ses liens communautaires sont inestimables."
+    },
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400"
+  },
+  {
+    name: "Dr. Fanja Razafindrakoto",
+    role: { en: "Head of Research", fr: "Responsable de la Recherche" },
+    bio: {
+      en: "Leading our scientific programs, Dr. Fanja specializes in tortoise population dynamics and habitat mapping using cutting-edge satellite technology.",
+      fr: "Dirigeant nos programmes scientifiques, Dr. Fanja se spécialise dans la dynamique des populations de tortues et la cartographie des habitats par satellite."
+    },
+    image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=400"
+  },
+  {
+    name: "Hery Andrianarisoa",
+    role: { en: "Community Outreach Coordinator", fr: "Coordinateur Communautaire" },
+    bio: {
+      en: "Hery bridges the gap between conservation science and local communities. He develops education programs that empower villages to become guardians of their natural heritage.",
+      fr: "Hery fait le lien entre la science de la conservation et les communautés locales. Il développe des programmes éducatifs qui permettent aux villages de devenir gardiens de leur patrimoine naturel."
+    },
+    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=400"
+  }
+];
 
 export default function Home() {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
 
   const container = {
     hidden: { opacity: 0 },
@@ -29,11 +68,18 @@ export default function Home() {
         <section className="relative h-[90vh] flex items-center overflow-hidden">
           <div className="absolute inset-0 z-0">
             <img
-              src="https://images.unsplash.com/photo-1548546738-8509cb246ed3?q=80&w=2000"
-              alt="Land turtle in southern Madagascar"
-              className="w-full h-full object-cover brightness-[0.4]"
+              src="https://images.unsplash.com/photo-1509316785289-025f5b846b35?q=80&w=2000"
+              alt="Baobab trees Avenue of the Baobabs Madagascar"
+              className="w-full h-full object-cover brightness-[0.35]"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-emerald-900/40 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-amber-950/60 via-emerald-900/30 to-transparent" />
+            <div className="absolute bottom-0 right-0 w-1/2 h-1/2 opacity-30">
+              <img
+                src="https://images.unsplash.com/photo-1597165826543-be016fe99b9e?q=80&w=1000"
+                alt="Radiated tortoise Madagascar"
+                className="w-full h-full object-contain object-right-bottom mix-blend-luminosity"
+              />
+            </div>
           </div>
 
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-white">

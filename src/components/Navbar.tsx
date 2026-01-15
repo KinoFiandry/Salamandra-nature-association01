@@ -25,17 +25,17 @@ export function Navbar() {
     <nav className="bg-white/80 backdrop-blur-md border-b border-emerald-100 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-20">
-          <div className="flex items-center">
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-11 h-11 bg-emerald-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-200 group-hover:scale-105 transition-transform">
-                <Globe className="w-6 h-6 text-white" />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-bold text-lg text-emerald-900 leading-tight">Turtle Conservation</span>
-                <span className="text-xs text-emerald-600 font-medium tracking-wider uppercase">Madagascar</span>
-              </div>
-            </Link>
-          </div>
+            <div className="flex items-center">
+              <Link href="/" className="flex items-center gap-3 group">
+                <div className="w-11 h-11 bg-amber-500 rounded-xl flex items-center justify-center shadow-lg shadow-amber-200 group-hover:scale-105 transition-transform">
+                  <span className="text-xl">🦎</span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-bold text-lg text-emerald-900 leading-tight">Salamandra</span>
+                  <span className="text-xs text-amber-600 font-medium tracking-wider uppercase">Association</span>
+                </div>
+              </Link>
+            </div>
 
           {/* Desktop Links */}
           <div className="hidden md:flex items-center gap-8">

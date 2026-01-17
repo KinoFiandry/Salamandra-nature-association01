@@ -74,13 +74,13 @@ export default function Home() {
               className="w-full h-full object-cover brightness-[0.35]"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-amber-950/60 via-emerald-900/30 to-transparent" />
-            /* <div className="absolute bottom-0 right-0 w-1/2 h-1/2 opacity-30">
+            <div className="absolute bottom-0 right-0 w-1/2 h-1/2 opacity-30">
               <img
                 src=""
                 alt=""
                 className="w-full h-full object-contain object-right-bottom mix-blend-luminosity"
               />
-            </div> */
+            </div> 
           </div>
 
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-white">

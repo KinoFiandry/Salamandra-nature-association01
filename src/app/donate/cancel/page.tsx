@@ -19,28 +19,28 @@ export default function DonationCancelPage() {
             />
           </svg>
         </div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">
-          Donation Cancelled
-        </h1>
-        <p className="text-gray-600 mb-6">
-          Your donation was not processed. No charges have been made to your
-          account. If you encountered any issues, please feel free to try again
-          or contact us for assistance.
-        </p>
-        <div className="space-y-3">
-          <Link
-            href="/donate"
-            className="block w-full bg-terracotta-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-sage-600 transition-colors"
-          >
-            Try Again
-          </Link>
-          <Link
-            href="/"
-            className="block w-full border border-gray-200 text-gray-700 px-8 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
-          >
-            Return Home
-          </Link>
-        </div>
+          <h1 className="text-3xl font-bold text-sage-800 mb-4">
+            Donation Cancelled
+          </h1>
+          <p className="text-sage-600 mb-6">
+            Your donation was not processed. No charges have been made to your
+            account. If you encountered any issues, please feel free to try again
+            or contact us for assistance.
+          </p>
+          <div className="space-y-3">
+            <Link
+              href="/donate"
+              className="block w-full bg-terracotta-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-terracotta-600 transition-colors"
+            >
+              Try Again
+            </Link>
+            <Link
+              href="/"
+              className="block w-full border border-sage-200 text-sage-700 px-8 py-3 rounded-lg font-semibold hover:bg-sage-50 transition-colors"
+            >
+              Return Home
+            </Link>
+          </div>
       </div>
     </div>
   );

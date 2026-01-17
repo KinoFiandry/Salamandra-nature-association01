@@ -45,7 +45,7 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-950 via-emerald-900 to-emerald-800 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-sage-950 via-sage-800 to-sage-700 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1509316785289-025f5b846b35?q=80&w=2000')] bg-cover bg-center opacity-10" />
       
       <motion.div
@@ -54,13 +54,11 @@ export default function AdminLogin() {
         className="w-full max-w-md relative z-10"
       >
         <div className="bg-white rounded-[2.5rem] shadow-2xl overflow-hidden">
-          <div className="bg-emerald-900 p-10 text-center">
-            <div className="w-20 h-20 bg-amber-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
-              <span className="text-4xl">🦎</span>
+            <div className="bg-sage-800 p-10 text-center">
+              <img src="/images/logo.png" alt="Salamandra Nature" className="h-20 w-auto mx-auto mb-6" />
+              <h1 className="text-2xl font-black text-white">Salamandra Admin</h1>
+              <p className="text-sage-300 mt-2">Sign in to manage the website</p>
             </div>
-            <h1 className="text-2xl font-black text-white">Salamandra Admin</h1>
-            <p className="text-emerald-300 mt-2">Sign in to manage the website</p>
-          </div>
 
           <form onSubmit={handleLogin} className="p-10 space-y-6">
             {error && (
@@ -75,30 +73,30 @@ export default function AdminLogin() {
             )}
 
             <div className="space-y-2">
-              <label className="text-sm font-bold text-emerald-900">Username</label>
+              <label className="text-sm font-bold text-sage-800">Username</label>
               <div className="relative">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-400" />
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-terracotta-400" />
                 <Input
                   type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="Enter username"
-                  className="pl-12 h-14 rounded-xl border-emerald-200 focus:border-emerald-500 focus:ring-emerald-500"
+                  className="pl-12 h-14 rounded-xl border-sage-200 focus:border-terracotta-400 focus:ring-terracotta-400"
                   required
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-bold text-emerald-900">Password</label>
+              <label className="text-sm font-bold text-sage-800">Password</label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-400" />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-terracotta-400" />
                 <Input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter password"
-                  className="pl-12 h-14 rounded-xl border-emerald-200 focus:border-emerald-500 focus:ring-emerald-500"
+                  className="pl-12 h-14 rounded-xl border-sage-200 focus:border-terracotta-400 focus:ring-terracotta-400"
                   required
                 />
               </div>
@@ -107,7 +105,7 @@ export default function AdminLogin() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full h-14 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-lg rounded-xl transition-all disabled:opacity-50"
+              className="w-full h-14 bg-terracotta-500 hover:bg-sage-600 text-white font-bold text-lg rounded-xl transition-all disabled:opacity-50"
             >
               {loading ? (
                 <span className="flex items-center gap-2">
@@ -127,7 +125,7 @@ export default function AdminLogin() {
           </form>
         </div>
 
-        <p className="text-center text-emerald-300/60 text-sm mt-8">
+        <p className="text-center text-sage-300/60 text-sm mt-8">
           Salamandra Nature - Admin Portal
         </p>
       </motion.div>

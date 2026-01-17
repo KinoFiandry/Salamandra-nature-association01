@@ -13,7 +13,7 @@ const teamMembers = [
       en: "A passionate herpetologist with 20+ years dedicated to Madagascar's endemic tortoises. Dr. Riana founded Salamandra Association to combat the alarming decline of radiated and spider tortoises.",
       fr: "Herpétologue passionnée avec plus de 20 ans dédiés aux tortues endémiques de Madagascar. Dr. Riana a fondé l'Association Salamandra pour lutter contre le déclin alarmant des tortues radiées et araignées."
     },
-    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400"
+    image: "public/images/leon.jpg"
   },
   {
     name: "Jean-Baptiste Rakoto",

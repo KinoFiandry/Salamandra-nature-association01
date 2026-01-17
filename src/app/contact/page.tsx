@@ -38,7 +38,7 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-white pb-20">
-      <div className="relative py-24 bg-emerald-900 text-white overflow-hidden">
+      <div className="relative py-24 bg-sage-900 text-white overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-[url('https://images.unsplash.com/photo-1544928147-79a2dbc1f389?q=80&w=2000')] bg-cover bg-center" />
         <div className="max-w-7xl mx-auto px-4 relative z-10">
           <motion.h1
@@ -48,14 +48,14 @@ export default function ContactPage() {
           >
             {t('contact.title')}
           </motion.h1>
-          <div className="w-24 h-2 bg-emerald-400 rounded-full" />
+          <div className="w-24 h-2 bg-terracotta-400 rounded-full" />
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 mt-20">
         <div className="grid lg:grid-cols-2 gap-20">
           <div>
-            <h2 className="text-3xl font-bold text-emerald-900 mb-8">{t('contact.subtitle')}</h2>
+            <h2 className="text-3xl font-bold text-sage-800 mb-8">{t('contact.subtitle')}</h2>
             
             <div className="space-y-10 mt-12">
               {[
@@ -64,19 +64,19 @@ export default function ContactPage() {
                 { icon: Phone, title: 'Phone', val: '+261 20 22 123 45' }
               ].map((info, i) => (
                 <div key={i} className="flex gap-6 items-start">
-                  <div className="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 flex-shrink-0 border border-emerald-100 shadow-sm">
+                  <div className="w-14 h-14 bg-sage-50 rounded-2xl flex items-center justify-center text-sage-600 flex-shrink-0 border border-sage-100 shadow-sm">
                     <info.icon className="w-6 h-6" />
                   </div>
                   <div>
-                    <h4 className="text-emerald-900 font-bold text-lg mb-1">{info.title}</h4>
-                    <p className="text-emerald-800/60 text-lg">{info.val}</p>
+                    <h4 className="text-sage-800 font-bold text-lg mb-1">{info.title}</h4>
+                    <p className="text-sage-700/60 text-lg">{info.val}</p>
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="bg-emerald-50/50 p-10 md:p-16 rounded-[4rem] border border-emerald-100">
+          <div className="bg-sage-50/50 p-10 md:p-16 rounded-[4rem] border border-sage-100">
             {success ? (
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -84,12 +84,12 @@ export default function ContactPage() {
                 className="text-center py-10"
               >
                 <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-8 shadow-sm">
-                  <CheckCircle className="w-10 h-10 text-emerald-600" />
+                  <CheckCircle className="w-10 h-10 text-terracotta-500" />
                 </div>
-                <h3 className="text-3xl font-bold text-emerald-900 mb-6">{t('contact.success')}</h3>
+                <h3 className="text-3xl font-bold text-sage-800 mb-6">{t('contact.success')}</h3>
                 <button
                   onClick={() => setSuccess(false)}
-                  className="bg-emerald-600 text-white px-8 py-4 rounded-2xl font-bold hover:bg-emerald-700 transition-all"
+                  className="bg-terracotta-500 text-white px-8 py-4 rounded-2xl font-bold hover:bg-terracotta-600 transition-all"
                 >
                   {language === 'en' ? 'Send Another Message' : 'Envoyer un autre message'}
                 </button>
@@ -98,42 +98,42 @@ export default function ContactPage() {
               <form onSubmit={handleSubmit} className="space-y-8">
                 <div className="grid md:grid-cols-2 gap-8">
                   <div className="space-y-3">
-                    <label className="text-sm font-black text-emerald-900 uppercase tracking-widest">{t('contact.name')}</label>
+                    <label className="text-sm font-black text-sage-800 uppercase tracking-widest">{t('contact.name')}</label>
                     <input
                       required
                       type="text"
-                      className="w-full bg-white border border-emerald-200 rounded-2xl px-6 py-4 focus:ring-4 focus:ring-emerald-200 focus:border-emerald-500 outline-none transition-all text-emerald-900"
+                      className="w-full bg-white border border-sage-200 rounded-2xl px-6 py-4 focus:ring-4 focus:ring-terracotta-200 focus:border-terracotta-500 outline-none transition-all text-sage-800"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     />
                   </div>
                   <div className="space-y-3">
-                    <label className="text-sm font-black text-emerald-900 uppercase tracking-widest">{t('contact.email')}</label>
+                    <label className="text-sm font-black text-sage-800 uppercase tracking-widest">{t('contact.email')}</label>
                     <input
                       required
                       type="email"
-                      className="w-full bg-white border border-emerald-200 rounded-2xl px-6 py-4 focus:ring-4 focus:ring-emerald-200 focus:border-emerald-500 outline-none transition-all text-emerald-900"
+                      className="w-full bg-white border border-sage-200 rounded-2xl px-6 py-4 focus:ring-4 focus:ring-terracotta-200 focus:border-terracotta-500 outline-none transition-all text-sage-800"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     />
                   </div>
                 </div>
                 <div className="space-y-3">
-                  <label className="text-sm font-black text-emerald-900 uppercase tracking-widest">{t('contact.subject')}</label>
+                  <label className="text-sm font-black text-sage-800 uppercase tracking-widest">{t('contact.subject')}</label>
                   <input
                     required
                     type="text"
-                    className="w-full bg-white border border-emerald-200 rounded-2xl px-6 py-4 focus:ring-4 focus:ring-emerald-200 focus:border-emerald-500 outline-none transition-all text-emerald-900"
+                    className="w-full bg-white border border-sage-200 rounded-2xl px-6 py-4 focus:ring-4 focus:ring-terracotta-200 focus:border-terracotta-500 outline-none transition-all text-sage-800"
                     value={formData.subject}
                     onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                   />
                 </div>
                 <div className="space-y-3">
-                  <label className="text-sm font-black text-emerald-900 uppercase tracking-widest">{t('contact.message')}</label>
+                  <label className="text-sm font-black text-sage-800 uppercase tracking-widest">{t('contact.message')}</label>
                   <textarea
                     required
                     rows={5}
-                    className="w-full bg-white border border-emerald-200 rounded-[2rem] px-6 py-4 focus:ring-4 focus:ring-emerald-200 focus:border-emerald-500 outline-none transition-all text-emerald-900 resize-none"
+                    className="w-full bg-white border border-sage-200 rounded-[2rem] px-6 py-4 focus:ring-4 focus:ring-terracotta-200 focus:border-terracotta-500 outline-none transition-all text-sage-800 resize-none"
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   />
@@ -144,7 +144,7 @@ export default function ContactPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-emerald-600 text-white px-10 py-5 rounded-[2rem] font-bold text-xl hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-900/10 flex items-center justify-center gap-3 active:scale-95 disabled:opacity-50"
+                  className="w-full bg-terracotta-500 text-white px-10 py-5 rounded-[2rem] font-bold text-xl hover:bg-terracotta-600 transition-all shadow-xl shadow-terracotta-900/10 flex items-center justify-center gap-3 active:scale-95 disabled:opacity-50"
                 >
                   {loading ? (
                     <>

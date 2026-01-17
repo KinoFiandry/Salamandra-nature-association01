@@ -271,6 +271,9 @@ export default function AdminDashboard() {
             <TabsTrigger value="videos" className="rounded-xl px-8 h-full data-[state=active]:bg-emerald-600 data-[state=active]:text-white font-bold transition-all">
               <Video className="w-4 h-4 mr-2" /> Videos
             </TabsTrigger>
+            <TabsTrigger value="photos" className="rounded-xl px-8 h-full data-[state=active]:bg-emerald-600 data-[state=active]:text-white font-bold transition-all">
+              <ImageIcon className="w-4 h-4 mr-2" /> Photos
+            </TabsTrigger>
             <TabsTrigger value="partners" className="rounded-xl px-8 h-full data-[state=active]:bg-emerald-600 data-[state=active]:text-white font-bold transition-all">
               <Handshake className="w-4 h-4 mr-2" /> Partners
             </TabsTrigger>

@@ -77,15 +77,17 @@ export default function AdminDashboard() {
 
   const fetchData = async () => {
     setLoading(true);
-    const [eventsRes, videosRes, partnersRes] = await Promise.all([
+    const [eventsRes, videosRes, partnersRes, photosRes] = await Promise.all([
       supabase.from("events").select("*").order("date", { ascending: true }),
       supabase.from("videos").select("*").order("created_at", { ascending: false }),
-      supabase.from("partners").select("*").order("name", { ascending: true })
+      supabase.from("partners").select("*").order("name", { ascending: true }),
+      supabase.from("media").select("*").eq("type", "photo").order("created_at", { ascending: false })
     ]);
 
     if (eventsRes.data) setEvents(eventsRes.data);
     if (videosRes.data) setVideos(videosRes.data);
     if (partnersRes.data) setPartners(partnersRes.data);
+    if (photosRes.data) setPhotos(photosRes.data);
     setLoading(false);
   };
 

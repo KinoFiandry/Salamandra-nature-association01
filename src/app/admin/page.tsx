@@ -63,6 +63,20 @@ export default function AdminDashboard() {
     type: "international"
   });
 
+  const fetchData = async () => {
+    setLoading(true);
+    const [eventsRes, videosRes, partnersRes] = await Promise.all([
+      supabase.from("events").select("*").order("date", { ascending: true }),
+      supabase.from("videos").select("*").order("created_at", { ascending: false }),
+      supabase.from("partners").select("*").order("name", { ascending: true })
+    ]);
+
+    if (eventsRes.data) setEvents(eventsRes.data);
+    if (videosRes.data) setVideos(videosRes.data);
+    if (partnersRes.data) setPartners(partnersRes.data);
+    setLoading(false);
+  };
+
   useEffect(() => {
     const authenticated = localStorage.getItem("admin_authenticated");
     if (!authenticated) {
@@ -86,20 +100,6 @@ export default function AdminDashboard() {
       </div>
     );
   }
-
-  const fetchData = async () => {
-    setLoading(true);
-    const [eventsRes, videosRes, partnersRes] = await Promise.all([
-      supabase.from("events").select("*").order("date", { ascending: true }),
-      supabase.from("videos").select("*").order("created_at", { ascending: false }),
-      supabase.from("partners").select("*").order("name", { ascending: true })
-    ]);
-
-    if (eventsRes.data) setEvents(eventsRes.data);
-    if (videosRes.data) setVideos(videosRes.data);
-    if (partnersRes.data) setPartners(partnersRes.data);
-    setLoading(false);
-  };
 
   const handleAddEvent = async () => {
     const { error } = await supabase.from("events").insert([newEvent]);

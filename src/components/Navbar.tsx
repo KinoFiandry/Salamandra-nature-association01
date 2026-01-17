@@ -27,14 +27,12 @@ export function Navbar() {
         <div className="flex justify-between h-24">
             <div className="flex items-center">
               <Link href="/" className="flex items-center gap-3 group">
-                <div className="w-11 h-11 bg-amber-500 rounded-xl flex items-center justify-center shadow-lg shadow-amber-200 group-hover:scale-105 transition-transform">
-                  <span className="text-xl">🦎</span>
-                </div>
-                <div className="flex flex-col">
-                  <span className="font-bold text-xl text-emerald-900 leading-tight">Salamandra</span>
-                  <span className="text-sm text-amber-600 font-medium tracking-wider uppercase">Nature</span>
-                </div>
-              </Link>
+                  <img 
+                    src="/images/logo.png" 
+                    alt="Salamandra Nature" 
+                    className="h-16 w-auto group-hover:scale-105 transition-transform"
+                  />
+                </Link>
             </div>
 
           {/* Desktop Links */}

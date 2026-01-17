@@ -46,7 +46,7 @@ export default function AboutPage() {
 
   return (
     <div className="min-h-screen bg-white pb-20">
-      <div className="relative py-24 bg-emerald-900 text-white overflow-hidden">
+      <div className="relative py-24 bg-sage-900 text-white overflow-hidden">
         <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1516733725897-1aa73b87c8e8?q=80&w=2000')] bg-cover bg-center" />
         <div className="max-w-7xl mx-auto px-4 relative z-10">
           <motion.h1
@@ -56,7 +56,7 @@ export default function AboutPage() {
           >
             {t('nav.about')}
           </motion.h1>
-          <div className="w-24 h-2 bg-emerald-400 rounded-full" />
+          <div className="w-24 h-2 bg-terracotta-400 rounded-full" />
         </div>
       </div>
 
@@ -71,13 +71,13 @@ export default function AboutPage() {
               className="flex gap-8"
             >
               <div className="flex-shrink-0">
-                <div className="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 shadow-sm border border-emerald-100">
+                <div className="w-16 h-16 bg-sage-50 rounded-2xl flex items-center justify-center text-sage-600 shadow-sm border border-sage-100">
                   <section.icon className="w-8 h-8" />
                 </div>
               </div>
               <div>
-                <h2 className="text-3xl font-bold text-emerald-900 mb-6">{t(section.title)}</h2>
-                <p className="text-emerald-800/70 text-lg leading-relaxed">
+                <h2 className="text-3xl font-bold text-sage-800 mb-6">{t(section.title)}</h2>
+                <p className="text-sage-700/70 text-lg leading-relaxed">
                   {section.content[language]}
                 </p>
               </div>
@@ -88,16 +88,16 @@ export default function AboutPage() {
 
       {/* Team / Call to Action */}
       <div className="max-w-4xl mx-auto px-4 mt-32 text-center">
-        <div className="bg-emerald-50 p-16 rounded-[4rem] border border-emerald-100">
-          <h2 className="text-4xl font-black text-emerald-900 mb-8">Want to Join Us?</h2>
-          <p className="text-xl text-emerald-800/70 mb-12 leading-relaxed">
+        <div className="bg-sage-50 p-16 rounded-[4rem] border border-sage-100">
+          <h2 className="text-4xl font-black text-sage-800 mb-8">Want to Join Us?</h2>
+          <p className="text-xl text-sage-700/70 mb-12 leading-relaxed">
             We are always looking for passionate volunteers and partners to help us scale our impact across Madagascar's coasts.
           </p>
           <div className="flex flex-wrap justify-center gap-6">
-            <a href="/contact" className="bg-emerald-600 text-white px-10 py-4 rounded-2xl font-bold text-lg hover:bg-emerald-700 transition-all shadow-lg">
+            <a href="/contact" className="bg-terracotta-500 text-white px-10 py-4 rounded-2xl font-bold text-lg hover:bg-terracotta-600 transition-all shadow-lg">
               Partner With Us
             </a>
-            <a href="/contact" className="border-2 border-emerald-600 text-emerald-600 px-10 py-4 rounded-2xl font-bold text-lg hover:bg-emerald-100 transition-all">
+            <a href="/contact" className="border-2 border-terracotta-500 text-terracotta-600 px-10 py-4 rounded-2xl font-bold text-lg hover:bg-terracotta-50 transition-all">
               Volunteer
             </a>
           </div>

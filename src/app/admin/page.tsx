@@ -496,49 +496,117 @@ export default function AdminDashboard() {
         )}
 
         {showPartnerForm && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-emerald-950/60 backdrop-blur-sm" onClick={() => setShowPartnerForm(false)} />
-            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden">
-              <div className="bg-emerald-900 p-8 text-white flex justify-between items-center">
-                <h2 className="text-2xl font-black">Add New Partner</h2>
-                <Button variant="ghost" size="icon" onClick={() => setShowPartnerForm(false)} className="text-white/60 hover:text-white">
-                  <X className="w-6 h-6" />
-                </Button>
-              </div>
-              <div className="p-8 space-y-6">
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-emerald-900">Partner Name</label>
-                  <Input value={newPartner.name} onChange={e => setNewPartner({...newPartner, name: e.target.value})} placeholder="Organization Name" className="rounded-xl" />
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-emerald-950/60 backdrop-blur-sm" onClick={() => setShowPartnerForm(false)} />
+              <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden">
+                <div className="bg-emerald-900 p-8 text-white flex justify-between items-center">
+                  <h2 className="text-2xl font-black">Add New Partner</h2>
+                  <Button variant="ghost" size="icon" onClick={() => setShowPartnerForm(false)} className="text-white/60 hover:text-white">
+                    <X className="w-6 h-6" />
+                  </Button>
                 </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-emerald-900">Website URL</label>
-                  <Input value={newPartner.website_url} onChange={e => setNewPartner({...newPartner, website_url: e.target.value})} placeholder="https://..." className="rounded-xl" />
+                <div className="p-8 space-y-6">
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-emerald-900">Partner Name</label>
+                    <Input value={newPartner.name} onChange={e => setNewPartner({...newPartner, name: e.target.value})} placeholder="Organization Name" className="rounded-xl" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-emerald-900">Website URL</label>
+                    <Input value={newPartner.website_url} onChange={e => setNewPartner({...newPartner, website_url: e.target.value})} placeholder="https://..." className="rounded-xl" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-emerald-900">Logo URL</label>
+                    <Input value={newPartner.logo_url} onChange={e => setNewPartner({...newPartner, logo_url: e.target.value})} placeholder="Image URL for logo" className="rounded-xl" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-emerald-900">Type</label>
+                    <select 
+                      value={newPartner.type} 
+                      onChange={e => setNewPartner({...newPartner, type: e.target.value})}
+                      className="w-full h-11 rounded-xl border border-emerald-100 bg-white px-3 text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
+                    >
+                      <option value="international">International</option>
+                      <option value="local">Local</option>
+                      <option value="governmental">Governmental</option>
+                    </select>
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-emerald-900">Logo URL</label>
-                  <Input value={newPartner.logo_url} onChange={e => setNewPartner({...newPartner, logo_url: e.target.value})} placeholder="Image URL for logo" className="rounded-xl" />
+                <div className="p-8 bg-slate-50 flex justify-end gap-4 border-t border-emerald-100">
+                  <Button variant="ghost" onClick={() => setShowPartnerForm(false)} className="rounded-xl font-bold">Cancel</Button>
+                  <Button onClick={handleAddPartner} className="bg-emerald-600 hover:bg-emerald-700 rounded-xl font-bold px-8">Save Partner</Button>
                 </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-emerald-900">Type</label>
-                  <select 
-                    value={newPartner.type} 
-                    onChange={e => setNewPartner({...newPartner, type: e.target.value})}
-                    className="w-full h-11 rounded-xl border border-emerald-100 bg-white px-3 text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
-                  >
-                    <option value="international">International</option>
-                    <option value="local">Local</option>
-                    <option value="governmental">Governmental</option>
-                  </select>
+              </motion.div>
+            </div>
+          )}
+
+          {showPhotoForm && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-emerald-950/60 backdrop-blur-sm" onClick={() => setShowPhotoForm(false)} />
+              <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden">
+                <div className="bg-emerald-900 p-8 text-white flex justify-between items-center">
+                  <h2 className="text-2xl font-black">Add New Photo</h2>
+                  <Button variant="ghost" size="icon" onClick={() => setShowPhotoForm(false)} className="text-white/60 hover:text-white">
+                    <X className="w-6 h-6" />
+                  </Button>
                 </div>
-              </div>
-              <div className="p-8 bg-slate-50 flex justify-end gap-4 border-t border-emerald-100">
-                <Button variant="ghost" onClick={() => setShowPartnerForm(false)} className="rounded-xl font-bold">Cancel</Button>
-                <Button onClick={handleAddPartner} className="bg-emerald-600 hover:bg-emerald-700 rounded-xl font-bold px-8">Save Partner</Button>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+                <div className="p-8 space-y-6">
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-emerald-900">Photo File</label>
+                    <div className="relative">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileChange}
+                        className="hidden"
+                        id="photo-upload"
+                      />
+                      <label
+                        htmlFor="photo-upload"
+                        className="flex items-center justify-center gap-3 w-full h-32 border-2 border-dashed border-emerald-200 rounded-xl cursor-pointer hover:border-emerald-400 hover:bg-emerald-50 transition-colors"
+                      >
+                        {selectedFile ? (
+                          <div className="text-center">
+                            <ImageIcon className="w-8 h-8 mx-auto text-emerald-600 mb-2" />
+                            <p className="text-sm text-emerald-900 font-medium">{selectedFile.name}</p>
+                            <p className="text-xs text-emerald-500">{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
+                          </div>
+                        ) : (
+                          <div className="text-center">
+                            <Upload className="w-8 h-8 mx-auto text-emerald-400 mb-2" />
+                            <p className="text-sm text-emerald-600 font-medium">Click to upload photo</p>
+                            <p className="text-xs text-emerald-400">JPG, PNG, GIF up to 10MB</p>
+                          </div>
+                        )}
+                      </label>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-emerald-900">Caption (EN)</label>
+                    <Input value={newPhoto.caption_en} onChange={e => setNewPhoto({...newPhoto, caption_en: e.target.value})} placeholder="Photo description in English" className="rounded-xl" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-emerald-900">Caption (FR)</label>
+                    <Input value={newPhoto.caption_fr} onChange={e => setNewPhoto({...newPhoto, caption_fr: e.target.value})} placeholder="Description en Français" className="rounded-xl" />
+                  </div>
+                </div>
+                <div className="p-8 bg-slate-50 flex justify-end gap-4 border-t border-emerald-100">
+                  <Button variant="ghost" onClick={() => { setShowPhotoForm(false); setSelectedFile(null); }} className="rounded-xl font-bold">Cancel</Button>
+                  <Button onClick={handleAddPhoto} disabled={uploading || !selectedFile} className="bg-emerald-600 hover:bg-emerald-700 rounded-xl font-bold px-8 disabled:opacity-50">
+                    {uploading ? (
+                      <span className="flex items-center gap-2">
+                        <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                        </svg>
+                        Uploading...
+                      </span>
+                    ) : "Upload Photo"}
+                  </Button>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
     </div>
   );
 }

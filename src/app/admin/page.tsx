@@ -241,16 +241,14 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-slate-50">
       <div className="bg-sage-800 text-white py-12 px-4 shadow-xl">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 bg-terracotta-500 rounded-2xl flex items-center justify-center shadow-lg">
-              <LayoutDashboard className="w-8 h-8" />
+          <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <img src="/images/logo.png" alt="Salamandra Nature" className="h-14 w-auto" />
+              <div>
+                <h1 className="text-3xl font-black">{t('admin.dashboard')}</h1>
+                <p className="text-sage-300 font-medium">Manage NGO Website Content</p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-3xl font-black">{t('admin.dashboard')}</h1>
-              <p className="text-sage-300 font-medium">Manage NGO Website Content</p>
-            </div>
-          </div>
           <div className="flex gap-3">
             <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20" onClick={handleLogout}>
               <LogOut className="w-4 h-4 mr-2" /> Logout

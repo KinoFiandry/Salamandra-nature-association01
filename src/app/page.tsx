@@ -22,7 +22,7 @@ const teamMembers = [
       en: "Born in Toliara, Jean-Baptiste leads our ranger teams across the spiny forests. His deep knowledge of local ecosystems and community ties makes him invaluable to our conservation efforts.",
       fr: "Né à Toliara, Jean-Baptiste dirige nos équipes de rangers dans les forêts épineuses. Sa connaissance approfondie des écosystèmes locaux et ses liens communautaires sont inestimables."
     },
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400"
+    image: "/images/pr-roland.jpg"
   },
   {
     name: "Dr. Fanja Razafindrakoto",
@@ -31,7 +31,7 @@ const teamMembers = [
       en: "Leading our scientific programs, Dr. Fanja specializes in tortoise population dynamics and habitat mapping using cutting-edge satellite technology.",
       fr: "Dirigeant nos programmes scientifiques, Dr. Fanja se spécialise dans la dynamique des populations de tortues et la cartographie des habitats par satellite."
     },
-    image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=400"
+    image: "/images/franck-gauthier.jpg"
   },
   {
     name: "Hery Andrianarisoa",
@@ -40,7 +40,7 @@ const teamMembers = [
       en: "Hery bridges the gap between conservation science and local communities. He develops education programs that empower villages to become guardians of their natural heritage.",
       fr: "Hery fait le lien entre la science de la conservation et les communautés locales. Il développe des programmes éducatifs qui permettent aux villages de devenir gardiens de leur patrimoine naturel."
     },
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=400"
+    image: "/images/maud-gauthier.jpg"
   }
 ];
 

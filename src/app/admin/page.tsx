@@ -33,6 +33,7 @@ export default function AdminDashboard() {
   const [events, setEvents] = useState<any[]>([]);
   const [videos, setVideos] = useState<any[]>([]);
   const [partners, setPartners] = useState<any[]>([]);
+  const [photos, setPhotos] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 

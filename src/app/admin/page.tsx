@@ -64,8 +64,28 @@ export default function AdminDashboard() {
   });
 
   useEffect(() => {
+    const authenticated = localStorage.getItem("admin_authenticated");
+    if (!authenticated) {
+      router.push("/admin/login");
+      return;
+    }
+    setIsAuthenticated(true);
     fetchData();
-  }, []);
+  }, [router]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("admin_authenticated");
+    localStorage.removeItem("admin_user");
+    router.push("/admin/login");
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="animate-spin h-8 w-8 border-4 border-emerald-600 border-t-transparent rounded-full" />
+      </div>
+    );
+  }
 
   const fetchData = async () => {
     setLoading(true);

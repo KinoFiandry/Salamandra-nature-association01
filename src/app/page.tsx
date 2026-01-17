@@ -309,10 +309,11 @@ export default function Home() {
           <div className="grid md:grid-cols-4 gap-16">
             <div className="md:col-span-2">
               <div className="flex items-center gap-3 mb-8">
-                <div className="w-12 h-12 bg-amber-500 rounded-xl flex items-center justify-center">
-                  <span className="text-2xl">🦎</span>
-                </div>
-                <span className="text-3xl font-black tracking-tight">Salamandra Nature</span>
+                <img 
+                  src="/images/logo.png" 
+                  alt="Salamandra Nature" 
+                  className="h-20 w-auto"
+                />
               </div>
               <p className="text-emerald-200/60 text-lg max-w-md leading-relaxed">
                 {t('footer.desc')}

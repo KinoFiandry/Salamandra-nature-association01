@@ -66,6 +66,15 @@ export default function AdminDashboard() {
     type: "international"
   });
 
+  const [showPhotoForm, setShowPhotoForm] = useState(false);
+  const [newPhoto, setNewPhoto] = useState({
+    caption_en: "",
+    caption_fr: "",
+    url: ""
+  });
+  const [uploading, setUploading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
   const fetchData = async () => {
     setLoading(true);
     const [eventsRes, videosRes, partnersRes] = await Promise.all([

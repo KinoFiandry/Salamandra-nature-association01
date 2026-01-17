@@ -36,7 +36,7 @@ export default function MediaPage() {
 
   return (
     <div className="min-h-screen bg-white pb-20">
-      <div className="relative py-24 bg-emerald-900 text-white overflow-hidden">
+      <div className="relative py-24 bg-sage-800 text-white overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-[url('https://images.unsplash.com/photo-1516733725897-1aa73b87c8e8?q=80&w=2000')] bg-cover bg-center" />
         <div className="max-w-7xl mx-auto px-4 relative z-10">
           <motion.h1
@@ -46,13 +46,13 @@ export default function MediaPage() {
           >
             {t('media.title')}
           </motion.h1>
-          <div className="w-24 h-2 bg-emerald-400 rounded-full" />
+          <div className="w-24 h-2 bg-terracotta-400 rounded-full" />
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 mt-20">
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-32 text-emerald-600">
+          <div className="flex flex-col items-center justify-center py-32 text-terracotta-500">
             <Loader2 className="w-12 h-12 animate-spin mb-4" />
             <p className="font-bold text-lg">Loading Gallery...</p>
           </div>
@@ -66,19 +66,19 @@ export default function MediaPage() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
                 onClick={() => setSelectedMedia(item)}
-                className="group relative cursor-pointer overflow-hidden rounded-[2rem] aspect-square bg-emerald-50 border border-emerald-100 shadow-sm hover:shadow-xl transition-all"
+                className="group relative cursor-pointer overflow-hidden rounded-[2rem] aspect-square bg-sage-50 border border-sage-100 shadow-sm hover:shadow-xl transition-all"
               >
                 <img
                   src={item.thumbnail_url || item.url}
                   alt={language === 'en' ? item.caption_en : item.caption_fr}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 />
-                <div className="absolute inset-0 bg-emerald-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center text-emerald-600 shadow-xl scale-75 group-hover:scale-100 transition-transform">
+                <div className="absolute inset-0 bg-sage-800/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center text-terracotta-500 shadow-xl scale-75 group-hover:scale-100 transition-transform">
                     {item.type === 'video' ? <Play className="w-8 h-8 fill-current" /> : <ImageIcon className="w-8 h-8" />}
                   </div>
                 </div>
-                <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-emerald-950/80 to-transparent translate-y-2 group-hover:translate-y-0 transition-transform">
+                <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-sage-950/80 to-transparent translate-y-2 group-hover:translate-y-0 transition-transform">
                   <p className="text-white font-bold line-clamp-2">
                     {language === 'en' ? item.caption_en : item.caption_fr}
                   </p>

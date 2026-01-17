@@ -37,7 +37,7 @@ export default function ProjectsPage() {
 
   return (
     <div className="min-h-screen bg-white pb-20">
-      <div className="relative py-24 bg-emerald-900 text-white overflow-hidden">
+      <div className="relative py-24 bg-sage-800 text-white overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-[url('https://images.unsplash.com/photo-1544928147-79a2dbc1f389?q=80&w=2000')] bg-cover bg-center" />
         <div className="max-w-7xl mx-auto px-4 relative z-10">
           <motion.h1
@@ -47,13 +47,13 @@ export default function ProjectsPage() {
           >
             {t('projects.title')}
           </motion.h1>
-          <div className="w-24 h-2 bg-emerald-400 rounded-full" />
+          <div className="w-24 h-2 bg-terracotta-400 rounded-full" />
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 mt-20">
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-32 text-emerald-600">
+          <div className="flex flex-col items-center justify-center py-32 text-terracotta-500">
             <Loader2 className="w-12 h-12 animate-spin mb-4" />
             <p className="font-bold text-lg">Loading Projects...</p>
           </div>
@@ -66,7 +66,7 @@ export default function ProjectsPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="group bg-white rounded-[3rem] overflow-hidden border border-emerald-100 shadow-sm hover:shadow-2xl hover:shadow-emerald-900/5 transition-all flex flex-col"
+                className="group bg-white rounded-[3rem] overflow-hidden border border-sage-100 shadow-sm hover:shadow-2xl hover:shadow-sage-800/5 transition-all flex flex-col"
               >
                 <div className="h-80 overflow-hidden relative">
                   <img
@@ -75,17 +75,17 @@ export default function ProjectsPage() {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                   <div className="absolute top-6 right-6 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full flex items-center gap-2 shadow-sm">
-                    <Tag className="w-4 h-4 text-emerald-600" />
-                    <span className="text-xs font-black text-emerald-900 uppercase tracking-widest">
+                    <Tag className="w-4 h-4 text-terracotta-500" />
+                    <span className="text-xs font-black text-sage-800 uppercase tracking-widest">
                       {language === 'en' ? project.category_en : project.category_fr}
                     </span>
                   </div>
                 </div>
                 <div className="p-10 flex-grow flex flex-col">
-                  <h2 className="text-3xl font-bold text-emerald-900 mb-6 group-hover:text-emerald-600 transition-colors">
+                  <h2 className="text-3xl font-bold text-sage-800 mb-6 group-hover:text-terracotta-500 transition-colors">
                     {language === 'en' ? project.title_en : project.title_fr}
                   </h2>
-                  <p className="text-emerald-800/70 text-lg leading-relaxed mb-8">
+                  <p className="text-sage-700/70 text-lg leading-relaxed mb-8">
                     {language === 'en' ? project.description_en : project.description_fr}
                   </p>
                 </div>

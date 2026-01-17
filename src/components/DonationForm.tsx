@@ -85,7 +85,7 @@ export function DonationForm({ onSuccess, onCancel }: DonationFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <label className="block text-sm font-medium text-emerald-800 mb-3">
+        <label className="block text-sm font-medium text-sage-700 mb-3">
           Select Amount
         </label>
         <div className="grid grid-cols-4 gap-2 mb-3">
@@ -99,8 +99,8 @@ export function DonationForm({ onSuccess, onCancel }: DonationFormProps) {
               }}
               className={`py-3 px-4 rounded-lg font-semibold transition-all ${
                 amount === preset && !customAmount
-                  ? "bg-emerald-600 text-white shadow-md"
-                  : "bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200"
+                  ? "bg-terracotta-500 text-white shadow-md"
+                  : "bg-sage-50 text-sage-600 hover:bg-sage-100 border border-sage-200"
               }`}
             >
               {currency === "usd" ? "$" : "€"}{preset}
@@ -108,7 +108,7 @@ export function DonationForm({ onSuccess, onCancel }: DonationFormProps) {
           ))}
         </div>
         <div className="relative">
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-600 font-medium">
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-terracotta-500 font-medium">
             {currency === "usd" ? "$" : "€"}
           </span>
           <input
@@ -118,13 +118,13 @@ export function DonationForm({ onSuccess, onCancel }: DonationFormProps) {
             onChange={(e) => setCustomAmount(e.target.value)}
             min="1"
             step="0.01"
-            className="w-full pl-10 pr-4 py-3 border border-emerald-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white text-emerald-900 placeholder:text-emerald-400"
+            className="w-full pl-10 pr-4 py-3 border border-sage-200 rounded-lg focus:ring-2 focus:ring-terracotta-400 focus:border-terracotta-400 bg-white text-sage-800 placeholder:text-terracotta-400"
           />
         </div>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-emerald-800 mb-3">
+        <label className="block text-sm font-medium text-sage-700 mb-3">
           Currency
         </label>
         <div className="flex gap-3">
@@ -133,8 +133,8 @@ export function DonationForm({ onSuccess, onCancel }: DonationFormProps) {
             onClick={() => setCurrency("usd")}
             className={`flex-1 py-3 rounded-lg font-semibold transition-all ${
               currency === "usd"
-                ? "bg-emerald-600 text-white shadow-md"
-                : "bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200"
+                ? "bg-terracotta-500 text-white shadow-md"
+                : "bg-sage-50 text-sage-600 hover:bg-sage-100 border border-sage-200"
             }`}
           >
             USD ($)
@@ -144,8 +144,8 @@ export function DonationForm({ onSuccess, onCancel }: DonationFormProps) {
             onClick={() => setCurrency("eur")}
             className={`flex-1 py-3 rounded-lg font-semibold transition-all ${
               currency === "eur"
-                ? "bg-emerald-600 text-white shadow-md"
-                : "bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200"
+                ? "bg-terracotta-500 text-white shadow-md"
+                : "bg-sage-50 text-sage-600 hover:bg-sage-100 border border-sage-200"
             }`}
           >
             EUR (€)
@@ -153,8 +153,8 @@ export function DonationForm({ onSuccess, onCancel }: DonationFormProps) {
         </div>
       </div>
 
-      <div className="bg-emerald-50 p-4 rounded-lg">
-        <div className="flex justify-between items-center text-lg font-semibold text-emerald-900">
+      <div className="bg-sage-50 p-4 rounded-lg">
+        <div className="flex justify-between items-center text-lg font-semibold text-sage-800">
           <span>Your Donation</span>
           <span>
             {currency === "usd" ? "$" : "€"}
@@ -182,14 +182,14 @@ export function DonationForm({ onSuccess, onCancel }: DonationFormProps) {
         <button
           type="button"
           onClick={onCancel}
-          className="flex-1 py-3 px-6 border border-emerald-200 text-emerald-700 rounded-lg font-semibold hover:bg-emerald-50 transition-colors"
+          className="flex-1 py-3 px-6 border border-sage-200 text-sage-600 rounded-lg font-semibold hover:bg-sage-50 transition-colors"
         >
           Cancel
         </button>
         <button
           type="submit"
           disabled={!stripe || !paymentReady || isProcessing || displayAmount < 1}
-          className="flex-1 py-3 px-6 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex-1 py-3 px-6 bg-terracotta-500 text-white rounded-lg font-semibold hover:bg-sage-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isProcessing ? (
             <span className="flex items-center justify-center gap-2">

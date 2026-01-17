@@ -40,7 +40,7 @@ export default function PartnersPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 pb-20">
-      <div className="relative py-24 bg-emerald-900 text-white overflow-hidden">
+      <div className="relative py-24 bg-sage-800 text-white overflow-hidden">
         <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1550005816-09246d3c945c?q=80&w=2000')] bg-cover bg-center" />
         <div className="max-w-7xl mx-auto px-4 relative z-10">
           <motion.h1
@@ -50,18 +50,18 @@ export default function PartnersPage() {
           >
             {t('partners.title')}
           </motion.h1>
-          <div className="w-24 h-2 bg-emerald-400 rounded-full" />
+          <div className="w-24 h-2 bg-terracotta-400 rounded-full" />
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 mt-20">
         <div className="text-center mb-16 max-w-3xl mx-auto">
-          <h2 className="text-3xl font-bold text-emerald-900 mb-6">
+          <h2 className="text-3xl font-bold text-sage-800 mb-6">
             {language === 'fr' 
               ? 'Ensemble pour la conservation des tortues' 
               : 'Together for Tortoise Conservation'}
           </h2>
-          <p className="text-lg text-emerald-800/60 leading-relaxed">
+          <p className="text-lg text-sage-700/60 leading-relaxed">
             {language === 'fr'
               ? 'Nous sommes fiers de collaborer avec des organisations nationales et internationales pour protéger la biodiversité unique de Madagascar.'
               : 'We are proud to collaborate with national and international organizations to protect Madagascar\'s unique biodiversity.'}
@@ -70,13 +70,13 @@ export default function PartnersPage() {
 
         {loading ? (
           <div className="flex justify-center py-20">
-            <div className="w-12 h-12 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin" />
+            <div className="w-12 h-12 border-4 border-sage-200 border-t-terracotta-500 rounded-full animate-spin" />
           </div>
         ) : partners.length > 0 ? (
           <div className="space-y-16">
             {partnerTypes.map((type) => (
               <div key={type} className="space-y-8">
-                <h3 className="text-xl font-black text-emerald-600 uppercase tracking-widest border-b border-emerald-100 pb-4">
+                <h3 className="text-xl font-black text-terracotta-500 uppercase tracking-widest border-b border-sage-100 pb-4">
                   {type === 'international' 
                     ? (language === 'fr' ? 'Partenaires Internationaux' : 'International Partners')
                     : (language === 'fr' ? 'Partenaires Locaux' : 'Local Partners')}
@@ -91,7 +91,7 @@ export default function PartnersPage() {
                       initial={{ opacity: 0, scale: 0.9 }}
                       whileInView={{ opacity: 1, scale: 1 }}
                       whileHover={{ y: -5 }}
-                      className="bg-white p-8 rounded-[2rem] border border-emerald-100 shadow-sm flex flex-col items-center justify-center gap-4 group transition-all hover:shadow-xl hover:border-emerald-200"
+                      className="bg-white p-8 rounded-[2rem] border border-sage-100 shadow-sm flex flex-col items-center justify-center gap-4 group transition-all hover:shadow-xl hover:border-sage-200"
                     >
                       <div className="w-24 h-24 relative grayscale group-hover:grayscale-0 transition-all duration-500">
                         {partner.logo_url ? (
@@ -101,16 +101,16 @@ export default function PartnersPage() {
                             className="w-full h-full object-contain"
                           />
                         ) : (
-                          <div className="w-full h-full bg-emerald-50 rounded-full flex items-center justify-center text-emerald-300">
+                          <div className="w-full h-full bg-sage-50 rounded-full flex items-center justify-center text-sage-300">
                             <Handshake className="w-10 h-10" />
                           </div>
                         )}
                       </div>
                       <div className="text-center">
-                        <span className="block font-bold text-emerald-900 group-hover:text-emerald-600 transition-colors">
+                        <span className="block font-bold text-sage-800 group-hover:text-terracotta-500 transition-colors">
                           {partner.name}
                         </span>
-                        <span className="inline-flex items-center gap-1 text-xs text-emerald-400 font-medium mt-1">
+                        <span className="inline-flex items-center gap-1 text-xs text-terracotta-400 font-medium mt-1">
                           Visit Website <ExternalLink className="w-3 h-3" />
                         </span>
                       </div>
@@ -121,12 +121,12 @@ export default function PartnersPage() {
             ))}
           </div>
         ) : (
-          <div className="bg-white p-20 rounded-[2rem] border border-emerald-100 text-center">
-            <Handshake className="w-16 h-16 text-emerald-100 mx-auto mb-6" />
-            <h3 className="text-xl font-bold text-emerald-900 mb-2">
+          <div className="bg-white p-20 rounded-[2rem] border border-sage-100 text-center">
+            <Handshake className="w-16 h-16 text-sage-100 mx-auto mb-6" />
+            <h3 className="text-xl font-bold text-sage-800 mb-2">
               {language === 'fr' ? 'Aucun partenaire trouvé' : 'No partners found'}
             </h3>
-            <p className="text-emerald-800/60">
+            <p className="text-sage-700/60">
               {language === 'fr' 
                 ? 'De nouveaux partenaires nous rejoignent bientôt.' 
                 : 'New partners are joining us soon.'}
@@ -134,19 +134,19 @@ export default function PartnersPage() {
           </div>
         )}
 
-        <div className="mt-32 bg-emerald-900 rounded-[3rem] p-12 md:p-20 text-center text-white relative overflow-hidden shadow-2xl">
+        <div className="mt-32 bg-sage-800 rounded-[3rem] p-12 md:p-20 text-center text-white relative overflow-hidden shadow-2xl">
           <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]" />
           <h2 className="text-4xl font-black mb-8 relative z-10">
             {language === 'fr' ? 'Devenir Partenaire' : 'Become a Partner'}
           </h2>
-          <p className="text-xl text-emerald-100 mb-12 max-w-2xl mx-auto relative z-10 font-light">
+          <p className="text-xl text-sage-100 mb-12 max-w-2xl mx-auto relative z-10 font-light">
             {language === 'fr'
               ? 'Rejoignez notre réseau mondial pour renforcer l\'impact de la conservation à Madagascar.'
               : 'Join our global network to strengthen the impact of conservation in Madagascar.'}
           </p>
           <a
             href="/contact"
-            className="inline-block bg-white text-emerald-900 px-12 py-5 rounded-2xl font-bold text-xl hover:bg-emerald-50 transition-all shadow-xl relative z-10"
+            className="inline-block bg-white text-sage-800 px-12 py-5 rounded-2xl font-bold text-xl hover:bg-sage-50 transition-all shadow-xl relative z-10"
           >
             {language === 'fr' ? 'Contactez-nous' : 'Get in Touch'}
           </a>

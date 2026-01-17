@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function DonationCancelPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-sage-50 via-terracotta-50 to-sage-100 flex items-center justify-center p-4">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center">
         <div className="w-20 h-20 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">
           <svg
@@ -30,7 +30,7 @@ export default function DonationCancelPage() {
         <div className="space-y-3">
           <Link
             href="/donate"
-            className="block w-full bg-emerald-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-colors"
+            className="block w-full bg-terracotta-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-sage-600 transition-colors"
           >
             Try Again
           </Link>

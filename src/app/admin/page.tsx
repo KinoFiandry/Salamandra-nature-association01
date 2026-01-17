@@ -110,7 +110,7 @@ export default function AdminDashboard() {
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <div className="animate-spin h-8 w-8 border-4 border-emerald-600 border-t-transparent rounded-full" />
+        <div className="animate-spin h-8 w-8 border-4 border-terracotta-500 border-t-transparent rounded-full" />
       </div>
     );
   }
@@ -240,15 +240,15 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <div className="bg-emerald-900 text-white py-12 px-4 shadow-xl">
+      <div className="bg-sage-800 text-white py-12 px-4 shadow-xl">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 bg-emerald-600 rounded-2xl flex items-center justify-center shadow-lg">
+            <div className="w-14 h-14 bg-terracotta-500 rounded-2xl flex items-center justify-center shadow-lg">
               <LayoutDashboard className="w-8 h-8" />
             </div>
             <div>
               <h1 className="text-3xl font-black">{t('admin.dashboard')}</h1>
-              <p className="text-emerald-300 font-medium">Manage NGO Website Content</p>
+              <p className="text-sage-300 font-medium">Manage NGO Website Content</p>
             </div>
           </div>
           <div className="flex gap-3">
@@ -264,41 +264,41 @@ export default function AdminDashboard() {
 
       <div className="max-w-7xl mx-auto px-4 py-12">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-          <TabsList className="bg-white p-1 rounded-2xl border border-emerald-100 shadow-sm h-16 w-full md:w-auto">
-            <TabsTrigger value="events" className="rounded-xl px-8 h-full data-[state=active]:bg-emerald-600 data-[state=active]:text-white font-bold transition-all">
+          <TabsList className="bg-white p-1 rounded-2xl border border-sage-100 shadow-sm h-16 w-full md:w-auto">
+            <TabsTrigger value="events" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all">
               <CalendarIcon className="w-4 h-4 mr-2" /> Events
             </TabsTrigger>
-            <TabsTrigger value="videos" className="rounded-xl px-8 h-full data-[state=active]:bg-emerald-600 data-[state=active]:text-white font-bold transition-all">
+            <TabsTrigger value="videos" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all">
               <Video className="w-4 h-4 mr-2" /> Videos
             </TabsTrigger>
-            <TabsTrigger value="photos" className="rounded-xl px-8 h-full data-[state=active]:bg-emerald-600 data-[state=active]:text-white font-bold transition-all">
+            <TabsTrigger value="photos" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all">
               <ImageIcon className="w-4 h-4 mr-2" /> Photos
             </TabsTrigger>
-            <TabsTrigger value="partners" className="rounded-xl px-8 h-full data-[state=active]:bg-emerald-600 data-[state=active]:text-white font-bold transition-all">
+            <TabsTrigger value="partners" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all">
               <Handshake className="w-4 h-4 mr-2" /> Partners
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="events" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-emerald-900">Manage Events</h2>
-              <Button onClick={() => setShowEventForm(true)} className="bg-emerald-600 hover:bg-emerald-700 rounded-xl font-bold">
+              <h2 className="text-2xl font-bold text-sage-800">Manage Events</h2>
+              <Button onClick={() => setShowEventForm(true)} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold">
                 <Plus className="w-4 h-4 mr-2" /> Add Event
               </Button>
             </div>
 
             <div className="grid gap-4">
               {events.map(event => (
-                <div key={event.id} className="bg-white p-6 rounded-2xl border border-emerald-100 shadow-sm flex justify-between items-center hover:shadow-md transition-shadow">
+                <div key={event.id} className="bg-white p-6 rounded-2xl border border-sage-100 shadow-sm flex justify-between items-center hover:shadow-md transition-shadow">
                   <div>
-                    <h3 className="font-bold text-lg text-emerald-900">{event.title_en} / {event.title_fr}</h3>
-                    <div className="text-emerald-600 text-sm font-medium flex items-center gap-4 mt-1">
+                    <h3 className="font-bold text-lg text-sage-800">{event.title_en} / {event.title_fr}</h3>
+                    <div className="text-terracotta-500 text-sm font-medium flex items-center gap-4 mt-1">
                       <span>{event.date}</span>
                       <span>{event.location_en}</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="icon" className="text-emerald-400 hover:text-emerald-600">
+                    <Button variant="ghost" size="icon" className="text-terracotta-400 hover:text-terracotta-500">
                       <Edit3 className="w-5 h-5" />
                     </Button>
                     <Button onClick={() => handleDeleteEvent(event.id)} variant="ghost" size="icon" className="text-red-400 hover:text-red-600">
@@ -312,15 +312,15 @@ export default function AdminDashboard() {
 
           <TabsContent value="videos" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-emerald-900">Manage Videos</h2>
-              <Button onClick={() => setShowVideoForm(true)} className="bg-emerald-600 hover:bg-emerald-700 rounded-xl font-bold">
+              <h2 className="text-2xl font-bold text-sage-800">Manage Videos</h2>
+              <Button onClick={() => setShowVideoForm(true)} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold">
                 <Plus className="w-4 h-4 mr-2" /> Add Video
               </Button>
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {videos.map(video => (
-                <div key={video.id} className="bg-white rounded-[2rem] border border-emerald-100 shadow-sm overflow-hidden group">
+                <div key={video.id} className="bg-white rounded-[2rem] border border-sage-100 shadow-sm overflow-hidden group">
                   <div className="aspect-video bg-slate-200 relative">
                     {video.thumbnail_url && <img src={video.thumbnail_url} alt={video.title_en} className="w-full h-full object-cover" />}
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -330,8 +330,8 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                   <div className="p-6">
-                    <h3 className="font-bold text-emerald-900 line-clamp-1">{video.title_en}</h3>
-                    <p className="text-xs text-emerald-600 font-bold uppercase tracking-wider mt-2">{video.category}</p>
+                    <h3 className="font-bold text-sage-800 line-clamp-1">{video.title_en}</h3>
+                    <p className="text-xs text-terracotta-500 font-bold uppercase tracking-wider mt-2">{video.category}</p>
                   </div>
                 </div>
               ))}
@@ -340,15 +340,15 @@ export default function AdminDashboard() {
 
           <TabsContent value="photos" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-emerald-900">Manage Photos</h2>
-              <Button onClick={() => setShowPhotoForm(true)} className="bg-emerald-600 hover:bg-emerald-700 rounded-xl font-bold">
+              <h2 className="text-2xl font-bold text-sage-800">Manage Photos</h2>
+              <Button onClick={() => setShowPhotoForm(true)} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold">
                 <Plus className="w-4 h-4 mr-2" /> Add Photo
               </Button>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {photos.map(photo => (
-                <div key={photo.id} className="bg-white rounded-[2rem] border border-emerald-100 shadow-sm overflow-hidden group">
+                <div key={photo.id} className="bg-white rounded-[2rem] border border-sage-100 shadow-sm overflow-hidden group">
                   <div className="aspect-square bg-slate-200 relative">
                     <img src={photo.url} alt={photo.caption_en || "Photo"} className="w-full h-full object-cover" />
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -359,13 +359,13 @@ export default function AdminDashboard() {
                   </div>
                   {(photo.caption_en || photo.caption_fr) && (
                     <div className="p-4">
-                      <p className="text-sm text-emerald-900 line-clamp-2">{photo.caption_en || photo.caption_fr}</p>
+                      <p className="text-sm text-sage-800 line-clamp-2">{photo.caption_en || photo.caption_fr}</p>
                     </div>
                   )}
                 </div>
               ))}
               {photos.length === 0 && (
-                <div className="col-span-full text-center py-12 text-emerald-400">
+                <div className="col-span-full text-center py-12 text-terracotta-400">
                   <ImageIcon className="w-12 h-12 mx-auto mb-4 opacity-50" />
                   <p>No photos yet. Add your first photo!</p>
                 </div>
@@ -375,25 +375,25 @@ export default function AdminDashboard() {
 
             <TabsContent value="partners" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-emerald-900">Manage Partners</h2>
-              <Button onClick={() => setShowPartnerForm(true)} className="bg-emerald-600 hover:bg-emerald-700 rounded-xl font-bold">
+              <h2 className="text-2xl font-bold text-sage-800">Manage Partners</h2>
+              <Button onClick={() => setShowPartnerForm(true)} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold">
                 <Plus className="w-4 h-4 mr-2" /> Add Partner
               </Button>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
               {partners.map(partner => (
-                <div key={partner.id} className="bg-white p-6 rounded-[2rem] border border-emerald-100 shadow-sm relative group text-center">
+                <div key={partner.id} className="bg-white p-6 rounded-[2rem] border border-sage-100 shadow-sm relative group text-center">
                   <button 
                     onClick={() => handleDeletePartner(partner.id)}
                     className="absolute top-4 right-4 text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
-                  <div className="w-16 h-16 mx-auto mb-4 bg-emerald-50 rounded-xl flex items-center justify-center">
-                    {partner.logo_url ? <img src={partner.logo_url} alt={partner.name} className="w-full h-full object-contain" /> : <Handshake className="w-8 h-8 text-emerald-200" />}
+                  <div className="w-16 h-16 mx-auto mb-4 bg-sage-50 rounded-xl flex items-center justify-center">
+                    {partner.logo_url ? <img src={partner.logo_url} alt={partner.name} className="w-full h-full object-contain" /> : <Handshake className="w-8 h-8 text-sage-200" />}
                   </div>
-                  <h3 className="font-bold text-emerald-900 text-sm">{partner.name}</h3>
+                  <h3 className="font-bold text-sage-800 text-sm">{partner.name}</h3>
                 </div>
               ))}
             </div>
@@ -405,9 +405,9 @@ export default function AdminDashboard() {
       <AnimatePresence>
         {showEventForm && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-emerald-950/60 backdrop-blur-sm" onClick={() => setShowEventForm(false)} />
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-sage-950/60 backdrop-blur-sm" onClick={() => setShowEventForm(false)} />
             <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden">
-              <div className="bg-emerald-900 p-8 text-white flex justify-between items-center">
+              <div className="bg-sage-800 p-8 text-white flex justify-between items-center">
                 <h2 className="text-2xl font-black">Add New Event</h2>
                 <Button variant="ghost" size="icon" onClick={() => setShowEventForm(false)} className="text-white/60 hover:text-white">
                   <X className="w-6 h-6" />
@@ -416,36 +416,36 @@ export default function AdminDashboard() {
               <div className="p-8 space-y-6 max-h-[70vh] overflow-y-auto">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-emerald-900">Title (EN)</label>
+                    <label className="text-sm font-bold text-sage-800">Title (EN)</label>
                     <Input value={newEvent.title_en} onChange={e => setNewEvent({...newEvent, title_en: e.target.value})} placeholder="Event title in English" className="rounded-xl" />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-emerald-900">Title (FR)</label>
+                    <label className="text-sm font-bold text-sage-800">Title (FR)</label>
                     <Input value={newEvent.title_fr} onChange={e => setNewEvent({...newEvent, title_fr: e.target.value})} placeholder="Titre de l'événement en Français" className="rounded-xl" />
                   </div>
                 </div>
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-emerald-900">Date</label>
+                    <label className="text-sm font-bold text-sage-800">Date</label>
                     <Input type="date" value={newEvent.date} onChange={e => setNewEvent({...newEvent, date: e.target.value})} className="rounded-xl" />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-emerald-900">Location (EN)</label>
+                    <label className="text-sm font-bold text-sage-800">Location (EN)</label>
                     <Input value={newEvent.location_en} onChange={e => setNewEvent({...newEvent, location_en: e.target.value})} placeholder="Location in English" className="rounded-xl" />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-emerald-900">Description (EN)</label>
+                  <label className="text-sm font-bold text-sage-800">Description (EN)</label>
                   <Textarea value={newEvent.description_en} onChange={e => setNewEvent({...newEvent, description_en: e.target.value})} placeholder="Detailed description in English" className="rounded-xl min-h-[100px]" />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-emerald-900">Description (FR)</label>
+                  <label className="text-sm font-bold text-sage-800">Description (FR)</label>
                   <Textarea value={newEvent.description_fr} onChange={e => setNewEvent({...newEvent, description_fr: e.target.value})} placeholder="Description détaillée en Français" className="rounded-xl min-h-[100px]" />
                 </div>
               </div>
-              <div className="p-8 bg-slate-50 flex justify-end gap-4 border-t border-emerald-100">
+              <div className="p-8 bg-slate-50 flex justify-end gap-4 border-t border-sage-100">
                 <Button variant="ghost" onClick={() => setShowEventForm(false)} className="rounded-xl font-bold">Cancel</Button>
-                <Button onClick={handleAddEvent} className="bg-emerald-600 hover:bg-emerald-700 rounded-xl font-bold px-8">Save Event</Button>
+                <Button onClick={handleAddEvent} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold px-8">Save Event</Button>
               </div>
             </motion.div>
           </div>
@@ -453,9 +453,9 @@ export default function AdminDashboard() {
 
         {showVideoForm && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-emerald-950/60 backdrop-blur-sm" onClick={() => setShowVideoForm(false)} />
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-sage-950/60 backdrop-blur-sm" onClick={() => setShowVideoForm(false)} />
             <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden">
-              <div className="bg-emerald-900 p-8 text-white flex justify-between items-center">
+              <div className="bg-sage-800 p-8 text-white flex justify-between items-center">
                 <h2 className="text-2xl font-black">Add New Video</h2>
                 <Button variant="ghost" size="icon" onClick={() => setShowVideoForm(false)} className="text-white/60 hover:text-white">
                   <X className="w-6 h-6" />
@@ -463,23 +463,23 @@ export default function AdminDashboard() {
               </div>
               <div className="p-8 space-y-6">
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-emerald-900">Title (EN)</label>
+                  <label className="text-sm font-bold text-sage-800">Title (EN)</label>
                   <Input value={newVideo.title_en} onChange={e => setNewVideo({...newVideo, title_en: e.target.value})} placeholder="Video title" className="rounded-xl" />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-emerald-900">Video URL (YouTube/Vimeo)</label>
+                  <label className="text-sm font-bold text-sage-800">Video URL (YouTube/Vimeo)</label>
                   <Input value={newVideo.url} onChange={e => setNewVideo({...newVideo, url: e.target.value})} placeholder="https://youtube.com/watch?v=..." className="rounded-xl" />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-emerald-900">Thumbnail URL</label>
+                  <label className="text-sm font-bold text-sage-800">Thumbnail URL</label>
                   <Input value={newVideo.thumbnail_url} onChange={e => setNewVideo({...newVideo, thumbnail_url: e.target.value})} placeholder="Image URL for preview" className="rounded-xl" />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-emerald-900">Category</label>
+                  <label className="text-sm font-bold text-sage-800">Category</label>
                   <select 
                     value={newVideo.category} 
                     onChange={e => setNewVideo({...newVideo, category: e.target.value})}
-                    className="w-full h-11 rounded-xl border border-emerald-100 bg-white px-3 text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
+                    className="w-full h-11 rounded-xl border border-sage-100 bg-white px-3 text-sm focus:ring-2 focus:ring-terracotta-400 outline-none"
                   >
                     <option value="conservation">Conservation</option>
                     <option value="educational">Educational</option>
@@ -487,9 +487,9 @@ export default function AdminDashboard() {
                   </select>
                 </div>
               </div>
-              <div className="p-8 bg-slate-50 flex justify-end gap-4 border-t border-emerald-100">
+              <div className="p-8 bg-slate-50 flex justify-end gap-4 border-t border-sage-100">
                 <Button variant="ghost" onClick={() => setShowVideoForm(false)} className="rounded-xl font-bold">Cancel</Button>
-                <Button onClick={handleAddVideo} className="bg-emerald-600 hover:bg-emerald-700 rounded-xl font-bold px-8">Save Video</Button>
+                <Button onClick={handleAddVideo} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold px-8">Save Video</Button>
               </div>
             </motion.div>
           </div>
@@ -497,9 +497,9 @@ export default function AdminDashboard() {
 
         {showPartnerForm && (
             <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-emerald-950/60 backdrop-blur-sm" onClick={() => setShowPartnerForm(false)} />
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-sage-950/60 backdrop-blur-sm" onClick={() => setShowPartnerForm(false)} />
               <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden">
-                <div className="bg-emerald-900 p-8 text-white flex justify-between items-center">
+                <div className="bg-sage-800 p-8 text-white flex justify-between items-center">
                   <h2 className="text-2xl font-black">Add New Partner</h2>
                   <Button variant="ghost" size="icon" onClick={() => setShowPartnerForm(false)} className="text-white/60 hover:text-white">
                     <X className="w-6 h-6" />
@@ -507,23 +507,23 @@ export default function AdminDashboard() {
                 </div>
                 <div className="p-8 space-y-6">
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-emerald-900">Partner Name</label>
+                    <label className="text-sm font-bold text-sage-800">Partner Name</label>
                     <Input value={newPartner.name} onChange={e => setNewPartner({...newPartner, name: e.target.value})} placeholder="Organization Name" className="rounded-xl" />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-emerald-900">Website URL</label>
+                    <label className="text-sm font-bold text-sage-800">Website URL</label>
                     <Input value={newPartner.website_url} onChange={e => setNewPartner({...newPartner, website_url: e.target.value})} placeholder="https://..." className="rounded-xl" />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-emerald-900">Logo URL</label>
+                    <label className="text-sm font-bold text-sage-800">Logo URL</label>
                     <Input value={newPartner.logo_url} onChange={e => setNewPartner({...newPartner, logo_url: e.target.value})} placeholder="Image URL for logo" className="rounded-xl" />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-emerald-900">Type</label>
+                    <label className="text-sm font-bold text-sage-800">Type</label>
                     <select 
                       value={newPartner.type} 
                       onChange={e => setNewPartner({...newPartner, type: e.target.value})}
-                      className="w-full h-11 rounded-xl border border-emerald-100 bg-white px-3 text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
+                      className="w-full h-11 rounded-xl border border-sage-100 bg-white px-3 text-sm focus:ring-2 focus:ring-terracotta-400 outline-none"
                     >
                       <option value="international">International</option>
                       <option value="local">Local</option>
@@ -531,9 +531,9 @@ export default function AdminDashboard() {
                     </select>
                   </div>
                 </div>
-                <div className="p-8 bg-slate-50 flex justify-end gap-4 border-t border-emerald-100">
+                <div className="p-8 bg-slate-50 flex justify-end gap-4 border-t border-sage-100">
                   <Button variant="ghost" onClick={() => setShowPartnerForm(false)} className="rounded-xl font-bold">Cancel</Button>
-                  <Button onClick={handleAddPartner} className="bg-emerald-600 hover:bg-emerald-700 rounded-xl font-bold px-8">Save Partner</Button>
+                  <Button onClick={handleAddPartner} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold px-8">Save Partner</Button>
                 </div>
               </motion.div>
             </div>
@@ -541,9 +541,9 @@ export default function AdminDashboard() {
 
           {showPhotoForm && (
             <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-emerald-950/60 backdrop-blur-sm" onClick={() => setShowPhotoForm(false)} />
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-sage-950/60 backdrop-blur-sm" onClick={() => setShowPhotoForm(false)} />
               <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden">
-                <div className="bg-emerald-900 p-8 text-white flex justify-between items-center">
+                <div className="bg-sage-800 p-8 text-white flex justify-between items-center">
                   <h2 className="text-2xl font-black">Add New Photo</h2>
                   <Button variant="ghost" size="icon" onClick={() => setShowPhotoForm(false)} className="text-white/60 hover:text-white">
                     <X className="w-6 h-6" />
@@ -551,7 +551,7 @@ export default function AdminDashboard() {
                 </div>
                 <div className="p-8 space-y-6">
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-emerald-900">Photo File</label>
+                    <label className="text-sm font-bold text-sage-800">Photo File</label>
                     <div className="relative">
                       <input
                         type="file"
@@ -562,36 +562,36 @@ export default function AdminDashboard() {
                       />
                       <label
                         htmlFor="photo-upload"
-                        className="flex items-center justify-center gap-3 w-full h-32 border-2 border-dashed border-emerald-200 rounded-xl cursor-pointer hover:border-emerald-400 hover:bg-emerald-50 transition-colors"
+                        className="flex items-center justify-center gap-3 w-full h-32 border-2 border-dashed border-sage-200 rounded-xl cursor-pointer hover:border-terracotta-400 hover:bg-sage-50 transition-colors"
                       >
                         {selectedFile ? (
                           <div className="text-center">
-                            <ImageIcon className="w-8 h-8 mx-auto text-emerald-600 mb-2" />
-                            <p className="text-sm text-emerald-900 font-medium">{selectedFile.name}</p>
-                            <p className="text-xs text-emerald-500">{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
+                            <ImageIcon className="w-8 h-8 mx-auto text-terracotta-500 mb-2" />
+                            <p className="text-sm text-sage-800 font-medium">{selectedFile.name}</p>
+                            <p className="text-xs text-terracotta-400">{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
                           </div>
                         ) : (
                           <div className="text-center">
-                            <Upload className="w-8 h-8 mx-auto text-emerald-400 mb-2" />
-                            <p className="text-sm text-emerald-600 font-medium">Click to upload photo</p>
-                            <p className="text-xs text-emerald-400">JPG, PNG, GIF up to 10MB</p>
+                            <Upload className="w-8 h-8 mx-auto text-terracotta-400 mb-2" />
+                            <p className="text-sm text-terracotta-500 font-medium">Click to upload photo</p>
+                            <p className="text-xs text-terracotta-400">JPG, PNG, GIF up to 10MB</p>
                           </div>
                         )}
                       </label>
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-emerald-900">Caption (EN)</label>
+                    <label className="text-sm font-bold text-sage-800">Caption (EN)</label>
                     <Input value={newPhoto.caption_en} onChange={e => setNewPhoto({...newPhoto, caption_en: e.target.value})} placeholder="Photo description in English" className="rounded-xl" />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-emerald-900">Caption (FR)</label>
+                    <label className="text-sm font-bold text-sage-800">Caption (FR)</label>
                     <Input value={newPhoto.caption_fr} onChange={e => setNewPhoto({...newPhoto, caption_fr: e.target.value})} placeholder="Description en Français" className="rounded-xl" />
                   </div>
                 </div>
-                <div className="p-8 bg-slate-50 flex justify-end gap-4 border-t border-emerald-100">
+                <div className="p-8 bg-slate-50 flex justify-end gap-4 border-t border-sage-100">
                   <Button variant="ghost" onClick={() => { setShowPhotoForm(false); setSelectedFile(null); }} className="rounded-xl font-bold">Cancel</Button>
-                  <Button onClick={handleAddPhoto} disabled={uploading || !selectedFile} className="bg-emerald-600 hover:bg-emerald-700 rounded-xl font-bold px-8 disabled:opacity-50">
+                  <Button onClick={handleAddPhoto} disabled={uploading || !selectedFile} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold px-8 disabled:opacity-50">
                     {uploading ? (
                       <span className="flex items-center gap-2">
                         <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">

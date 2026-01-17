@@ -312,7 +312,7 @@ export default function Home() {
                 <div className="w-12 h-12 bg-amber-500 rounded-xl flex items-center justify-center">
                   <span className="text-2xl">🦎</span>
                 </div>
-                <span className="text-2xl font-black tracking-tight">Salamandra Association</span>
+                <span className="text-3xl font-black tracking-tight">Salamandra Nature</span>
               </div>
               <p className="text-emerald-200/60 text-lg max-w-md leading-relaxed">
                 {t('footer.desc')}
@@ -340,7 +340,7 @@ export default function Home() {
             </div>
           </div>
           <div className="border-t border-emerald-900 mt-20 pt-10 text-center text-emerald-200/40 text-sm">
-            &copy; {new Date().getFullYear()} Salamandra Association - Madagascar.
+            &copy; {new Date().getFullYear()} Salamandra Nature - Madagascar.
           </div>
         </div>
       </footer>

@@ -75,7 +75,7 @@ export default function Home() {
             <div className="absolute inset-0 bg-gradient-to-t from-amber-950/60 via-emerald-900/30 to-transparent" />
             <div className="absolute bottom-0 right-0 w-1/2 h-1/2 opacity-30">
               <img
-                src="https://images.unsplash.com/photo-1597165826543-be016fe99b9e?q=80&w=1000"
+                src="/images/baobab.jpg"
                 alt="Radiated tortoise Madagascar"
                 className="w-full h-full object-contain object-right-bottom mix-blend-luminosity"
               />

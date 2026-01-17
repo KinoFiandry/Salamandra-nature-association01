@@ -173,6 +173,71 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setSelectedFile(e.target.files[0]);
+    }
+  };
+
+  const handleAddPhoto = async () => {
+    if (!selectedFile) {
+      toast.error("Please select a photo to upload");
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const fileExt = selectedFile.name.split('.').pop();
+      const fileName = `${Date.now()}.${fileExt}`;
+      const filePath = `gallery/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('photos')
+        .upload(filePath, selectedFile);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('photos')
+        .getPublicUrl(filePath);
+
+      const { error: dbError } = await supabase.from("media").insert([{
+        type: "photo",
+        url: publicUrl,
+        caption_en: newPhoto.caption_en,
+        caption_fr: newPhoto.caption_fr
+      }]);
+
+      if (dbError) throw dbError;
+
+      toast.success("Photo uploaded successfully");
+      setShowPhotoForm(false);
+      setNewPhoto({ caption_en: "", caption_fr: "", url: "" });
+      setSelectedFile(null);
+      fetchData();
+    } catch (error: any) {
+      toast.error(error.message || "Error uploading photo");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleDeletePhoto = async (id: string, url: string) => {
+    if (confirm("Are you sure?")) {
+      try {
+        const pathMatch = url.match(/photos\/(.+)$/);
+        if (pathMatch) {
+          await supabase.storage.from('photos').remove([pathMatch[1]]);
+        }
+        const { error } = await supabase.from("media").delete().eq("id", id);
+        if (error) throw error;
+        fetchData();
+      } catch {
+        toast.error("Error deleting photo");
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-50">
       <div className="bg-emerald-900 text-white py-12 px-4 shadow-xl">

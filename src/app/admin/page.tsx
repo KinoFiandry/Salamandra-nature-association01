@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useI18n } from "@/lib/i18n";
 import { supabase } from "@/lib/supabase";
 import { motion, AnimatePresence } from "framer-motion";
@@ -14,7 +15,8 @@ import {
   Edit3, 
   Save, 
   X,
-  FileText
+  FileText,
+  LogOut
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,12 +25,14 @@ import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function AdminDashboard() {
+  const router = useRouter();
   const { t, language } = useI18n();
   const [activeTab, setActiveTab] = useState("events");
   const [events, setEvents] = useState<any[]>([]);
   const [videos, setVideos] = useState<any[]>([]);
   const [partners, setPartners] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // Form states
   const [showEventForm, setShowEventForm] = useState(false);

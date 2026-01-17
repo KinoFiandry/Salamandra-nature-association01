@@ -24,24 +24,24 @@ export default function DonatePage() {
     appearance: {
       theme: "stripe",
       variables: {
-        colorPrimary: "#059669",
+        colorPrimary: "#c17a4a",
         colorBackground: "#ffffff",
-        colorText: "#064e3b",
+        colorText: "#333b33",
         colorDanger: "#dc2626",
         fontFamily: "system-ui, sans-serif",
         borderRadius: "8px",
       },
       rules: {
         ".Input": {
-          border: "1px solid #d1fae5",
+          border: "1px solid #e3e6e3",
           boxShadow: "none",
         },
         ".Input:focus": {
-          border: "1px solid #059669",
-          boxShadow: "0 0 0 2px rgba(5, 150, 105, 0.2)",
+          border: "1px solid #c17a4a",
+          boxShadow: "0 0 0 2px rgba(193, 122, 74, 0.2)",
         },
         ".Label": {
-          color: "#065f46",
+          color: "#3d473d",
         },
       },
     },

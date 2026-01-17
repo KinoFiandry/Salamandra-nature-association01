@@ -336,9 +336,44 @@ export default function AdminDashboard() {
                 </div>
               ))}
             </div>
+            </TabsContent>
+
+          <TabsContent value="photos" className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold text-emerald-900">Manage Photos</h2>
+              <Button onClick={() => setShowPhotoForm(true)} className="bg-emerald-600 hover:bg-emerald-700 rounded-xl font-bold">
+                <Plus className="w-4 h-4 mr-2" /> Add Photo
+              </Button>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {photos.map(photo => (
+                <div key={photo.id} className="bg-white rounded-[2rem] border border-emerald-100 shadow-sm overflow-hidden group">
+                  <div className="aspect-square bg-slate-200 relative">
+                    <img src={photo.url} alt={photo.caption_en || "Photo"} className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <Button variant="destructive" size="icon" onClick={() => handleDeletePhoto(photo.id, photo.url)}>
+                        <Trash2 className="w-5 h-5" />
+                      </Button>
+                    </div>
+                  </div>
+                  {(photo.caption_en || photo.caption_fr) && (
+                    <div className="p-4">
+                      <p className="text-sm text-emerald-900 line-clamp-2">{photo.caption_en || photo.caption_fr}</p>
+                    </div>
+                  )}
+                </div>
+              ))}
+              {photos.length === 0 && (
+                <div className="col-span-full text-center py-12 text-emerald-400">
+                  <ImageIcon className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                  <p>No photos yet. Add your first photo!</p>
+                </div>
+              )}
+            </div>
           </TabsContent>
 
-          <TabsContent value="partners" className="space-y-6">
+            <TabsContent value="partners" className="space-y-6">
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold text-emerald-900">Manage Partners</h2>
               <Button onClick={() => setShowPartnerForm(true)} className="bg-emerald-600 hover:bg-emerald-700 rounded-xl font-bold">

@@ -68,14 +68,15 @@ export default function Home() {
         <section className="relative h-[90vh] flex items-center overflow-hidden">
           <div className="absolute inset-0 z-0">
             <img
-              src="https://images.unsplash.com/photo-1509316785289-025f5b846b35?q=80&w=2000"
+              /*src="https://images.unsplash.com/photo-1509316785289-025f5b846b35?q=80&w=2000"*/
+              src="/images/baobab.jpg"
               alt="Baobab trees Avenue of the Baobabs Madagascar"
               className="w-full h-full object-cover brightness-[0.35]"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-amber-950/60 via-emerald-900/30 to-transparent" />
             <div className="absolute bottom-0 right-0 w-1/2 h-1/2 opacity-30">
               <img
-                src="/images/baobab.jpg"
+                src=""
                 alt="Radiated tortoise Madagascar"
                 className="w-full h-full object-contain object-right-bottom mix-blend-luminosity"
               />

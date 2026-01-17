@@ -77,7 +77,7 @@ export default function Home() {
             <div className="absolute bottom-0 right-0 w-1/2 h-1/2 opacity-30">
               <img
                 src=""
-                alt="Radiated tortoise Madagascar"
+                alt=""
                 className="w-full h-full object-contain object-right-bottom mix-blend-luminosity"
               />
             </div>

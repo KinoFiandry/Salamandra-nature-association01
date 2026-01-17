@@ -31,8 +31,8 @@ export function Navbar() {
                   <span className="text-xl">🦎</span>
                 </div>
                 <div className="flex flex-col">
-                  <span className="font-bold text-lg text-emerald-900 leading-tight">Salamandra</span>
-                  <span className="text-xs text-amber-600 font-medium tracking-wider uppercase">Association</span>
+                  <span className="font-bold text-xl text-emerald-900 leading-tight">Salamandra</span>
+                  <span className="text-sm text-amber-600 font-medium tracking-wider uppercase">Nature</span>
                 </div>
               </Link>
             </div>

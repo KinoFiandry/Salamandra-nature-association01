@@ -128,7 +128,7 @@ export default function AdminLogin() {
         </div>
 
         <p className="text-center text-emerald-300/60 text-sm mt-8">
-          Salamandra Association - Admin Portal
+          Salamandra Nature - Admin Portal
         </p>
       </motion.div>
     </div>

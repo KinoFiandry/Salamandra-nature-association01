@@ -172,9 +172,14 @@ export default function AdminDashboard() {
               <p className="text-emerald-300 font-medium">Manage NGO Website Content</p>
             </div>
           </div>
-          <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20" onClick={() => window.location.href = "/"}>
-            Go to Website
-          </Button>
+          <div className="flex gap-3">
+            <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20" onClick={handleLogout}>
+              <LogOut className="w-4 h-4 mr-2" /> Logout
+            </Button>
+            <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20" onClick={() => window.location.href = "/"}>
+              Go to Website
+            </Button>
+          </div>
         </div>
       </div>
 

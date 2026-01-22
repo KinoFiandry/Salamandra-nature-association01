@@ -311,30 +311,7 @@ export default function Home() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {teamMembers.map((member, i) => (
-              <motion.div
-                key={member.name}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="bg-white rounded-[2rem] overflow-hidden border border-terracotta-100 shadow-sm hover:shadow-xl transition-all group"
-              >
-                <div className="h-64 overflow-hidden relative">
-                  <img 
-                    src={member.image} 
-                    alt={member.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-sage-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                </div>
-                <div className="p-6">
-                  <h3 className="text-lg font-black text-sage-800 mb-1">{member.name}</h3>
-                  <p className="text-terracotta-600 font-bold text-sm mb-4">{member.role[language as 'en' | 'fr']}</p>
-                  <p className="text-sage-700/60 text-sm leading-relaxed line-clamp-4">
-                    {member.bio[language as 'en' | 'fr']}
-                  </p>
-                </div>
-              </motion.div>
+              <TeamMemberCard key={member.name} member={member} language={language} index={i} />
             ))}
           </div>
         </div>

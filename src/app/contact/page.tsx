@@ -58,11 +58,11 @@ export default function ContactPage() {
             <h2 className="text-3xl font-bold text-sage-800 mb-8">{t('contact.subtitle')}</h2>
             
             <div className="space-y-10 mt-12">
-              {[
-                { icon: MapPin, title: 'Address', val: 'Antananarivo, Madagascar' },
-                { icon: Mail, title: 'Email', val: 'info@turtleconservation.mg' },
-                { icon: Phone, title: 'Phone', val: '+261 20 22 123 45' }
-              ].map((info, i) => (
+                {[
+                  { icon: MapPin, title: 'Address', val: 'Résidence les Villas de Saint Florent, 20232 OLETTA, France' },
+                  { icon: Mail, title: 'Email', val: 'salamandra.nature2@gmail.com' },
+                  { icon: Phone, title: 'Phone', val: '+33 6 65 44 29 47' }
+                ].map((info, i) => (
                 <div key={i} className="flex gap-6 items-start">
                   <div className="w-14 h-14 bg-sage-50 rounded-2xl flex items-center justify-center text-sage-600 flex-shrink-0 border border-sage-100 shadow-sm">
                     <info.icon className="w-6 h-6" />

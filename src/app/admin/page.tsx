@@ -239,16 +239,17 @@ export default function AdminDashboard() {
         .from('photos')
         .getPublicUrl(filePath);
 
-      const { error: dbError } = await supabase.from("media").insert([{
-        type: "photo",
-        url: publicUrl,
-        caption_en: newPhoto.caption_en,
-        caption_fr: newPhoto.caption_fr
-      }]);
+        const { error: dbError } = await supabase.from("media").insert([{
+          type: "photo",
+          url: publicUrl,
+          caption_en: newPhoto.caption_en,
+          caption_fr: newPhoto.caption_fr
+        }]);
 
-      if (dbError) throw dbError;
+        if (dbError) throw dbError;
 
-      toast.success("Photo uploaded successfully");
+        await logAdminAction("Added Photo", `Uploaded new photo: ${newPhoto.caption_en || 'No caption'}`);
+        toast.success("Photo uploaded successfully");
       setShowPhotoForm(false);
       setNewPhoto({ caption_en: "", caption_fr: "", url: "" });
       setSelectedFile(null);

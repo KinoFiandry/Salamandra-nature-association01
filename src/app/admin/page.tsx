@@ -298,20 +298,29 @@ export default function AdminDashboard() {
 
       <div className="max-w-7xl mx-auto px-4 py-12">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-          <TabsList className="bg-white p-1 rounded-2xl border border-sage-100 shadow-sm h-16 w-full md:w-auto">
-            <TabsTrigger value="events" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all">
-              <CalendarIcon className="w-4 h-4 mr-2" /> Events
-            </TabsTrigger>
-            <TabsTrigger value="videos" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all">
-              <Video className="w-4 h-4 mr-2" /> Videos
-            </TabsTrigger>
-            <TabsTrigger value="photos" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all">
-              <ImageIcon className="w-4 h-4 mr-2" /> Photos
-            </TabsTrigger>
-            <TabsTrigger value="partners" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all">
-              <Handshake className="w-4 h-4 mr-2" /> Partners
-            </TabsTrigger>
-          </TabsList>
+            <TabsList className="bg-white p-1 rounded-2xl border border-sage-100 shadow-sm h-16 w-full md:w-auto overflow-x-auto flex-nowrap">
+              <TabsTrigger value="events" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
+                <CalendarIcon className="w-4 h-4 mr-2" /> Events
+              </TabsTrigger>
+              <TabsTrigger value="videos" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
+                <Video className="w-4 h-4 mr-2" /> Videos
+              </TabsTrigger>
+              <TabsTrigger value="photos" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
+                <ImageIcon className="w-4 h-4 mr-2" /> Photos
+              </TabsTrigger>
+              <TabsTrigger value="partners" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
+                <Handshake className="w-4 h-4 mr-2" /> Partners
+              </TabsTrigger>
+              <TabsTrigger value="history" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
+                <History className="w-4 h-4 mr-2" /> History
+              </TabsTrigger>
+              <TabsTrigger value="logs" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
+                <Activity className="w-4 h-4 mr-2" /> Logs
+              </TabsTrigger>
+              <TabsTrigger value="donations" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
+                <Receipt className="w-4 h-4 mr-2" /> Donations
+              </TabsTrigger>
+            </TabsList>
 
           <TabsContent value="events" className="space-y-6">
             <div className="flex justify-between items-center">

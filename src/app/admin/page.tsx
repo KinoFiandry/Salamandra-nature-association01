@@ -146,6 +146,7 @@ export default function AdminDashboard() {
     if (error) {
       toast.error("Error adding event");
     } else {
+      await logAdminAction("Added Event", `Created event: ${newEvent.title_en}`);
       toast.success("Event added successfully");
       setShowEventForm(false);
       setNewEvent({ title_en: "", title_fr: "", description_en: "", description_fr: "", date: "", location_en: "", location_fr: "" });

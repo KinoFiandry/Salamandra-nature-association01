@@ -15,12 +15,12 @@ export default function DonatePage() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [elementsKey, setElementsKey] = useState(0);
   const [selectedAmount, setSelectedAmount] = useState(25);
-  const [selectedCurrency, setSelectedCurrency] = useState<"usd" | "eur">("usd");
+  const [selectedCurrency, setSelectedCurrency] = useState<"eur">("eur");
 
   const options: StripeElementsOptions = {
     mode: "payment",
     amount: Math.round(selectedAmount * 100),
-    currency: selectedCurrency,
+    currency: "eur",
     appearance: {
       theme: "stripe",
       variables: {

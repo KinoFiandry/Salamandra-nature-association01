@@ -37,6 +37,9 @@ export default function AdminDashboard() {
   const [partners, setPartners] = useState<any[]>([]);
   const [photos, setPhotos] = useState<any[]>([]);
   const [visitorCount, setVisitorCount] = useState(0);
+  const [history, setHistory] = useState<any[]>([]);
+  const [logs, setLogs] = useState<any[]>([]);
+  const [donations, setDonations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 

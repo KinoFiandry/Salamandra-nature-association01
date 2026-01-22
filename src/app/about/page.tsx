@@ -62,6 +62,49 @@ const teamMembers = [
   }
 ];
 
+function TeamMemberCard({ member, language, index }: { member: any, language: string, index: number }) {
+  const [isExpanded, setIsExpanded] = React.useState(false);
+  
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.1 }}
+      className="bg-white rounded-3xl overflow-hidden border border-sage-100 shadow-sm hover:shadow-lg transition-all flex flex-col"
+    >
+      <div className="h-48 overflow-hidden flex-shrink-0">
+        <img 
+          src={member.image} 
+          alt={member.name}
+          className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500"
+        />
+      </div>
+      <div className="p-8 flex flex-col flex-grow">
+        <h3 className="text-xl font-bold text-sage-800 mb-1">{member.name}</h3>
+        <p className="text-terracotta-600 font-bold text-sm mb-4">
+          {member.role[language as 'en' | 'fr']}
+        </p>
+        <div className="relative">
+          <p className={`text-sage-700/70 text-sm leading-relaxed ${!isExpanded ? 'line-clamp-4' : ''}`}>
+            {member.bio[language as 'en' | 'fr']}
+          </p>
+          {member.bio[language as 'en' | 'fr'].length > 150 && (
+            <button 
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="mt-2 text-terracotta-600 font-bold text-xs hover:text-terracotta-700 transition-colors uppercase tracking-wider text-left"
+            >
+              {isExpanded 
+                ? (language === 'fr' ? 'Voir moins' : 'See less') 
+                : (language === 'fr' ? 'Voir plus' : 'See more')}
+            </button>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 export default function AboutPage() {
   const { t, language } = useI18n();
 

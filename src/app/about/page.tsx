@@ -247,23 +247,20 @@ export default function AboutPage() {
           </div>
         </div>
 
-        {/* Team Section */}
-        <div className="mb-32">
-          <div className="flex items-center gap-4 mb-12">
-            <div className="w-12 h-12 bg-sage-100 rounded-xl flex items-center justify-center text-sage-600">
-              <Users className="w-6 h-6" />
+          {/* Team Section */}
+          <div className="mb-32">
+            <div className="flex items-center gap-4 mb-12">
+              <div className="w-12 h-12 bg-sage-100 rounded-xl flex items-center justify-center text-sage-600">
+                <Users className="w-6 h-6" />
+              </div>
+              <h2 className="text-4xl font-bold text-sage-800">
+                {language === 'fr' ? 'Notre Équipe' : 'Our Team'}
+              </h2>
             </div>
-            <h2 className="text-4xl font-bold text-sage-800">
-              {language === 'fr' ? 'Notre Équipe' : 'Our Team'}
-            </h2>
+            
+            <TeamCarousel teamMembers={teamMembers} language={language} />
           </div>
-          
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {teamMembers.map((member, i) => (
-                <TeamMemberCard key={member.name} member={member} language={language} index={i} />
-              ))}
-            </div>
-        </div>
+
       </div>
 
       {/* Call to Action */}

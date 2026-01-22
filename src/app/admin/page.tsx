@@ -158,7 +158,10 @@ export default function AdminDashboard() {
     if (confirm("Are you sure?")) {
       const { error } = await supabase.from("events").delete().eq("id", id);
       if (error) toast.error("Error deleting event");
-      else fetchData();
+      else {
+        await logAdminAction("Deleted Event", `Deleted event ID: ${id}`);
+        fetchData();
+      }
     }
   };
 
@@ -166,6 +169,7 @@ export default function AdminDashboard() {
     const { error } = await supabase.from("videos").insert([newVideo]);
     if (error) toast.error("Error adding video");
     else {
+      await logAdminAction("Added Video", `Added video: ${newVideo.title_en}`);
       toast.success("Video added successfully");
       setShowVideoForm(false);
       setNewVideo({ title_en: "", title_fr: "", url: "", thumbnail_url: "", category: "conservation" });
@@ -177,7 +181,10 @@ export default function AdminDashboard() {
     if (confirm("Are you sure?")) {
       const { error } = await supabase.from("videos").delete().eq("id", id);
       if (error) toast.error("Error deleting video");
-      else fetchData();
+      else {
+        await logAdminAction("Deleted Video", `Deleted video ID: ${id}`);
+        fetchData();
+      }
     }
   };
 
@@ -185,6 +192,7 @@ export default function AdminDashboard() {
     const { error } = await supabase.from("partners").insert([newPartner]);
     if (error) toast.error("Error adding partner");
     else {
+      await logAdminAction("Added Partner", `Added partner: ${newPartner.name}`);
       toast.success("Partner added successfully");
       setShowPartnerForm(false);
       setNewPartner({ name: "", logo_url: "", website_url: "", type: "international" });
@@ -196,7 +204,10 @@ export default function AdminDashboard() {
     if (confirm("Are you sure?")) {
       const { error } = await supabase.from("partners").delete().eq("id", id);
       if (error) toast.error("Error deleting partner");
-      else fetchData();
+      else {
+        await logAdminAction("Deleted Partner", `Deleted partner ID: ${id}`);
+        fetchData();
+      }
     }
   };
 

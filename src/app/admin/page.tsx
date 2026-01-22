@@ -440,8 +440,155 @@ export default function AdminDashboard() {
                 </div>
               ))}
             </div>
-          </TabsContent>
-        </Tabs>
+            </TabsContent>
+
+            <TabsContent value="history" className="space-y-6">
+              <div className="flex justify-between items-center">
+                <h2 className="text-2xl font-bold text-sage-800">Update History</h2>
+                <Button variant="outline" onClick={fetchData} className="rounded-xl font-bold">Refresh</Button>
+              </div>
+              <div className="bg-white rounded-2xl border border-sage-100 shadow-sm overflow-hidden">
+                <table className="w-full text-left">
+                  <thead className="bg-sage-50 border-b border-sage-100">
+                    <tr>
+                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">Date</th>
+                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">Admin</th>
+                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">Action</th>
+                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">Details</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-sage-50">
+                    {history.map((item) => (
+                      <tr key={item.id} className="hover:bg-sage-50/50 transition-colors">
+                        <td className="px-6 py-4 text-sm text-sage-500 font-medium">
+                          {new Date(item.created_at).toLocaleString()}
+                        </td>
+                        <td className="px-6 py-4 text-sm font-bold text-sage-800">{item.admin_user}</td>
+                        <td className="px-6 py-4">
+                          <span className="px-3 py-1 rounded-full bg-sage-100 text-sage-700 text-xs font-bold">
+                            {item.action}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-sage-600 italic">{item.details}</td>
+                      </tr>
+                    ))}
+                    {history.length === 0 && (
+                      <tr>
+                        <td colSpan={4} className="px-6 py-12 text-center text-sage-400 font-medium">
+                          No history records found.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="logs" className="space-y-6">
+              <div className="flex justify-between items-center">
+                <h2 className="text-2xl font-bold text-sage-800">System Logs</h2>
+                <Button variant="outline" onClick={fetchData} className="rounded-xl font-bold">Refresh</Button>
+              </div>
+              <div className="bg-white rounded-2xl border border-sage-100 shadow-sm overflow-hidden">
+                <table className="w-full text-left">
+                  <thead className="bg-sage-50 border-b border-sage-100">
+                    <tr>
+                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">Date</th>
+                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">Level</th>
+                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">Message</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-sage-50">
+                    {logs.map((log) => (
+                      <tr key={log.id} className="hover:bg-sage-50/50 transition-colors">
+                        <td className="px-6 py-4 text-sm text-sage-500 font-medium">
+                          {new Date(log.created_at).toLocaleString()}
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                            log.level === 'error' ? 'bg-red-100 text-red-700' : 
+                            log.level === 'warning' ? 'bg-amber-100 text-amber-700' : 
+                            'bg-blue-100 text-blue-700'
+                          }`}>
+                            {log.level.toUpperCase()}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-sage-800 font-medium">{log.message}</td>
+                      </tr>
+                    ))}
+                    {logs.length === 0 && (
+                      <tr>
+                        <td colSpan={3} className="px-6 py-12 text-center text-sage-400 font-medium">
+                          No system logs found.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="donations" className="space-y-6">
+              <div className="flex justify-between items-center">
+                <h2 className="text-2xl font-bold text-sage-800">Donation Receipts</h2>
+                <div className="flex gap-3">
+                  <div className="bg-terracotta-50 px-4 py-2 rounded-xl border border-terracotta-100">
+                    <span className="text-xs text-terracotta-600 font-bold uppercase block leading-none mb-1">Total Received</span>
+                    <span className="text-xl font-black text-terracotta-700">
+                      ${donations.reduce((acc, d) => acc + (d.status === 'completed' ? Number(d.amount) : 0), 0).toLocaleString()}
+                    </span>
+                  </div>
+                  <Button variant="outline" onClick={fetchData} className="rounded-xl font-bold">Refresh</Button>
+                </div>
+              </div>
+              <div className="bg-white rounded-2xl border border-sage-100 shadow-sm overflow-hidden">
+                <table className="w-full text-left">
+                  <thead className="bg-sage-50 border-b border-sage-100">
+                    <tr>
+                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">Date</th>
+                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">Donor</th>
+                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">Amount</th>
+                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-sage-50">
+                    {donations.map((donation) => (
+                      <tr key={donation.id} className="hover:bg-sage-50/50 transition-colors">
+                        <td className="px-6 py-4 text-sm text-sage-500 font-medium">
+                          {new Date(donation.created_at).toLocaleString()}
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex flex-col">
+                            <span className="text-sm font-bold text-sage-800">{donation.donor_name || 'Anonymous'}</span>
+                            <span className="text-xs text-sage-400">{donation.donor_email}</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 text-sm font-black text-sage-800">
+                          {donation.currency.toUpperCase()} {Number(donation.amount).toLocaleString()}
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                            donation.status === 'completed' ? 'bg-green-100 text-green-700' : 
+                            donation.status === 'failed' ? 'bg-red-100 text-red-700' : 
+                            'bg-amber-100 text-amber-700'
+                          }`}>
+                            {donation.status.toUpperCase()}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                    {donations.length === 0 && (
+                      <tr>
+                        <td colSpan={4} className="px-6 py-12 text-center text-sage-400 font-medium">
+                          No donation records yet.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </TabsContent>
+          </Tabs>
       </div>
 
       {/* Forms (Modals-like) */}

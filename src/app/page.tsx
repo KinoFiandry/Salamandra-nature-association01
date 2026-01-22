@@ -25,7 +25,7 @@ const teamMembers = [
     image: "/images/pr-roland.jpg"
   },
   {
-    name: ": M. GAUTHIER Frank",
+    name: "M. GAUTHIER Frank",
     role: { en: "Head of Research", fr: "Responsable de la Recherche" },
     bio: {
       en: "Leading our scientific programs, Dr. Fanja specializes in tortoise population dynamics and habitat mapping using cutting-edge satellite technology.",

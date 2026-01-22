@@ -20,24 +20,24 @@ export function DonationForm({ onSuccess, onCancel }: DonationFormProps) {
   const elements = useElements();
   const [amount, setAmount] = useState<number>(25);
   const [customAmount, setCustomAmount] = useState<string>("");
-  const [currency, setCurrency] = useState<"usd" | "eur">("usd");
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [paymentReady, setPaymentReady] = useState(false);
+    const [currency, setCurrency] = useState<"eur">("eur");
+    const [isProcessing, setIsProcessing] = useState(false);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [paymentReady, setPaymentReady] = useState(false);
 
-  const displayAmount = customAmount ? parseFloat(customAmount) || 0 : amount;
+    const displayAmount = customAmount ? parseFloat(customAmount) || 0 : amount;
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
 
-    if (!stripe || !elements) {
-      return;
-    }
+      if (!stripe || !elements) {
+        return;
+      }
 
-    if (displayAmount < 1) {
-      setErrorMessage("Please enter a valid donation amount (minimum $1)");
-      return;
-    }
+      if (displayAmount < 1) {
+        setErrorMessage("Please enter a valid donation amount (minimum 1€)");
+        return;
+      }
 
     setIsProcessing(true);
     setErrorMessage(null);

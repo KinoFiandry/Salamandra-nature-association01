@@ -38,6 +38,7 @@ export default function RootLayout({
           data-custom-data='{"appName": "YourApp", "version": "1.0.0", "greeting": "hi"}'
         />
         <I18nProvider>
+          <VisitTracker />
           <Navbar />
           {children}
         </I18nProvider>

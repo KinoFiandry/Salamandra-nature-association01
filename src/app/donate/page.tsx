@@ -147,7 +147,7 @@ export default function DonatePage() {
                     </svg>
                   </div>
                   <div>
-                    <span className="font-medium text-sage-800">$10</span>
+                    <span className="font-medium text-sage-800">10€</span>
                     <p className="text-sm text-sage-600">
                       Provides food for rescued turtles for one week
                     </p>
@@ -170,7 +170,7 @@ export default function DonatePage() {
                     </svg>
                   </div>
                   <div>
-                    <span className="font-medium text-sage-800">$25</span>
+                    <span className="font-medium text-sage-800">25€</span>
                     <p className="text-sm text-sage-600">
                       Supports nest protection for one nesting season
                     </p>
@@ -193,7 +193,7 @@ export default function DonatePage() {
                     </svg>
                   </div>
                   <div>
-                    <span className="font-medium text-sage-800">$50</span>
+                    <span className="font-medium text-sage-800">50€</span>
                     <p className="text-sm text-sage-600">
                       Funds community education workshops
                     </p>
@@ -216,7 +216,7 @@ export default function DonatePage() {
                     </svg>
                   </div>
                   <div>
-                    <span className="font-medium text-sage-800">$100</span>
+                    <span className="font-medium text-sage-800">100€</span>
                     <p className="text-sm text-sage-600">
                       Sponsors habitat restoration for one hectare
                     </p>

@@ -28,7 +28,7 @@ export default function ContactPage() {
       .insert([formData]);
 
     if (submitError) {
-      setError(language === 'en' ? "Failed to send message. Please try again." : "Échec de l'envoi du message. Veuillez réessayer.");
+      setError(t('contact.error'));
     } else {
       setSuccess(true);
       setFormData({ name: "", email: "", subject: "", message: "" });
@@ -59,9 +59,9 @@ export default function ContactPage() {
             
             <div className="space-y-10 mt-12">
                 {[
-                  { icon: MapPin, title: 'Address', val: 'Résidence les Villas de Saint Florent, 20232 OLETTA, France' },
-                  { icon: Mail, title: 'Email', val: 'salamandra.nature2@gmail.com' },
-                  { icon: Phone, title: 'Phone', val: '+33 6 65 44 29 47' }
+                  { icon: MapPin, title: t('contact.address_label'), val: 'Résidence les Villas de Saint Florent, 20232 OLETTA, France' },
+                  { icon: Mail, title: t('contact.email_label'), val: 'salamandra.nature2@gmail.com' },
+                  { icon: Phone, title: t('contact.phone_label'), val: '+33 6 65 44 29 47' }
                 ].map((info, i) => (
                 <div key={i} className="flex gap-6 items-start">
                   <div className="w-14 h-14 bg-sage-50 rounded-2xl flex items-center justify-center text-sage-600 flex-shrink-0 border border-sage-100 shadow-sm">
@@ -91,7 +91,7 @@ export default function ContactPage() {
                   onClick={() => setSuccess(false)}
                   className="bg-terracotta-500 text-white px-8 py-4 rounded-2xl font-bold hover:bg-terracotta-600 transition-all"
                 >
-                  {language === 'en' ? 'Send Another Message' : 'Envoyer un autre message'}
+                  {t('contact.send_another')}
                 </button>
               </motion.div>
             ) : (

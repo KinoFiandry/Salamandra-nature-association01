@@ -7,7 +7,7 @@ import { Shield, BookOpen, Search, ArrowRight, Heart, Users } from "lucide-react
 
 const teamMembers = [
   {
-    name: "Dr. Riana Andriamanalina",
+    name: "M. RAZAFINDRAKOTO Andriamampiandry Léon",
     role: { en: "Founder & Executive Director", fr: "Fondatrice & Directrice Exécutive" },
     bio: { 
       en: "A passionate herpetologist with 20+ years dedicated to Madagascar's endemic tortoises. Dr. Riana founded Salamandra Association to combat the alarming decline of radiated and spider tortoises.",
@@ -16,7 +16,7 @@ const teamMembers = [
     image: "/images/leon.jpg"
   },
   {
-    name: "Jean-Baptiste Rakoto",
+    name: "Pr ALBIGNAC Roland",
     role: { en: "Field Operations Manager", fr: "Responsable des Opérations Terrain" },
     bio: {
       en: "Born in Toliara, Jean-Baptiste leads our ranger teams across the spiny forests. His deep knowledge of local ecosystems and community ties makes him invaluable to our conservation efforts.",
@@ -25,7 +25,7 @@ const teamMembers = [
     image: "/images/pr-roland.jpg"
   },
   {
-    name: "Dr. Fanja Razafindrakoto",
+    name: ": M. GAUTHIER Frank",
     role: { en: "Head of Research", fr: "Responsable de la Recherche" },
     bio: {
       en: "Leading our scientific programs, Dr. Fanja specializes in tortoise population dynamics and habitat mapping using cutting-edge satellite technology.",
@@ -34,7 +34,16 @@ const teamMembers = [
     image: "/images/franck-gauthier.jpg"
   },
   {
-    name: "Hery Andrianarisoa",
+    name: "Mme GAUTHIER Maude",
+    role: { en: "Community Outreach Coordinator", fr: "Coordinateur Communautaire" },
+    bio: {
+      en: "Hery bridges the gap between conservation science and local communities. He develops education programs that empower villages to become guardians of their natural heritage.",
+      fr: "Hery fait le lien entre la science de la conservation et les communautés locales. Il développe des programmes éducatifs qui permettent aux villages de devenir gardiens de leur patrimoine naturel."
+    },
+    image: "/images/maud-gauthier.jpg"
+  }
+  {
+    name: "MAUGUIN Camille",
     role: { en: "Community Outreach Coordinator", fr: "Coordinateur Communautaire" },
     bio: {
       en: "Hery bridges the gap between conservation science and local communities. He develops education programs that empower villages to become guardians of their natural heritage.",

@@ -2,7 +2,64 @@
 
 import { useI18n } from "@/lib/i18n";
 import { motion } from "framer-motion";
-import { Info, Shield, TreePine, GraduationCap, Leaf, Sun, Sprout } from "lucide-react";
+import { Info, Shield, TreePine, GraduationCap, Leaf, Sun, Sprout, Users } from "lucide-react";
+
+const teamMembers = [
+  {
+    name: "Pr ALBIGNAC Roland",
+    role: { en: "Honorary President", fr: "Président d’honneur" },
+    bio: { 
+      en: "Honorary Professor at Universities in France and Madagascar, UNDP / UNESCO Expert Consultant.",
+      fr: "Professeur honoraire des Universités en France et à Madagascar, Consultant Expert PNUD / UNESCO."
+    },
+    image: "/images/pr-roland.jpg"
+  },
+  {
+    name: "M. RAZAFINDRAKOTO Andriamampiandry Léon",
+    role: { en: "President and Co-founder", fr: "Président et co-fondateur" },
+    bio: {
+      en: "Director of Dayu Biik, manager of the Thönyë Protected Natural Area in Hienghène, New Caledonia, IUCN Expert for Tortoise and Freshwater Turtle Group, member of the IUCN Economic, Social and Environmental Policy Commission.",
+      fr: "Directeur de Dayu Biik, gestionnaire de l’Aire Naturelle Protégée du Thönyë à Hienghène en Nouvelle-Calédonie, Expert UICN Groupe Tortues terrestres et d’eau douce, membre de la Commission de la Politique Économique, Sociale et Environnementale de l’UICN."
+    },
+    image: "/images/leon.jpg"
+  },
+  {
+    name: "M. GAUTHIER Frank",
+    role: { en: "General Secretary", fr: "Secrétaire Général" },
+    bio: {
+      en: "Environmental Technician at the French Biodiversity Office in Corsica.",
+      fr: "Technicien en Environnement à l’Office Français de la Biodiversité en Corse."
+    },
+    image: "/images/franck-gauthier.jpg"
+  },
+  {
+    name: "Mme GAUTHIER Maude",
+    role: { en: "Treasurer", fr: "Trésorière" },
+    bio: {
+      en: "School teacher in Corsica.",
+      fr: "Professeur des écoles en Corse."
+    },
+    image: "/images/maud-gauthier.jpg"
+  },
+  {
+    name: "MAUGUIN Camille",
+    role: { en: "Communications Officer", fr: "Chargée de la Communication" },
+    bio: {
+      en: "Freelance graphic designer in Nièvre.",
+      fr: "Graphiste indépendante dans la Nièvre."
+    },
+    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400"
+  },
+  {
+    name: "Mlle RAHOLISON Anjara Malala",
+    role: { en: "Madagascar Representative", fr: "Représentante de Salamandra Nature à Madagascar" },
+    bio: {
+      en: "Communications Manager at NGO Génération Mada, Advisor to the NGO Y’DAGO.",
+      fr: "Responsable Communication ONG Génération Mada, Conseillère de l’ONG Y’DAGO."
+    },
+    image: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?q=80&w=400"
+  }
+];
 
 export default function AboutPage() {
   const { t, language } = useI18n();
@@ -87,11 +144,11 @@ export default function AboutPage() {
             viewport={{ once: true }}
             className="text-2xl text-sage-700/80 leading-relaxed max-w-5xl"
           >
-            {presentation[language]}
+            {presentation[language as 'en' | 'fr']}
           </motion.p>
         </div>
 
-        <div>
+        <div className="mb-32">
           <div className="flex items-center gap-4 mb-12">
             <div className="w-12 h-12 bg-sage-100 rounded-xl flex items-center justify-center text-sage-600">
               <Sprout className="w-6 h-6" />
@@ -115,16 +172,58 @@ export default function AboutPage() {
                   </div>
                 </div>
                 <p className="text-lg text-sage-700/80 leading-relaxed pt-2">
-                  {action.content[language]}
+                  {action.content[language as 'en' | 'fr']}
                 </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* Team Section */}
+        <div className="mb-32">
+          <div className="flex items-center gap-4 mb-12">
+            <div className="w-12 h-12 bg-sage-100 rounded-xl flex items-center justify-center text-sage-600">
+              <Users className="w-6 h-6" />
+            </div>
+            <h2 className="text-4xl font-bold text-sage-800">
+              {language === 'fr' ? 'Notre Équipe' : 'Our Team'}
+            </h2>
+          </div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {teamMembers.map((member, i) => (
+              <motion.div
+                key={member.name}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="bg-white rounded-3xl overflow-hidden border border-sage-100 shadow-sm hover:shadow-lg transition-all"
+              >
+                <div className="h-48 overflow-hidden">
+                  <img 
+                    src={member.image} 
+                    alt={member.name}
+                    className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500"
+                  />
+                </div>
+                <div className="p-8">
+                  <h3 className="text-xl font-bold text-sage-800 mb-1">{member.name}</h3>
+                  <p className="text-terracotta-600 font-bold text-sm mb-4">
+                    {member.role[language as 'en' | 'fr']}
+                  </p>
+                  <p className="text-sage-700/70 text-sm leading-relaxed">
+                    {member.bio[language as 'en' | 'fr']}
+                  </p>
+                </div>
               </motion.div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Team / Call to Action */}
-      <div className="max-w-4xl mx-auto px-4 mt-32 text-center">
+      {/* Call to Action */}
+      <div className="max-w-4xl mx-auto px-4 text-center">
         <div className="bg-sage-900 text-white p-16 rounded-[4rem] relative overflow-hidden">
           <div className="absolute inset-0 opacity-10 bg-[url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?q=80&w=2000')] bg-cover bg-center" />
           <div className="relative z-10">

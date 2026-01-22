@@ -7,19 +7,22 @@ import { supabase } from "@/lib/supabase";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   LayoutDashboard, 
-  Calendar as CalendarIcon, 
-  Video, 
-  Handshake, 
-  Plus, 
-  Trash2, 
-  Edit3, 
+    Calendar as CalendarIcon, 
+    Video, 
+    Handshake, 
+    Plus, 
+    Trash2, 
+    Edit3, 
     Save, 
     X,
     FileText,
     LogOut,
     ImageIcon,
     Upload,
-    Users
+    Users,
+    History,
+    Activity,
+    Receipt
   } from "lucide-react";
 
 import { Button } from "@/components/ui/button";

@@ -71,12 +71,21 @@ export function DonationForm({ onSuccess, onCancel }: DonationFormProps) {
         },
       });
 
-      if (confirmError) {
-        setErrorMessage(confirmError.message || "Payment failed");
-        setIsProcessing(false);
-      } else {
-        onSuccess();
-      }
+        if (confirmError) {
+          setErrorMessage(confirmError.message || "Payment failed");
+          setIsProcessing(false);
+        } else {
+          // Record successful donation
+          await supabase.from("donations").insert([{
+            amount: displayAmount,
+            currency: currency,
+            status: 'completed',
+            stripe_payment_id: data.paymentIntentId,
+            donor_name: 'Anonymous Donor', // In a real app, you'd collect this
+            donor_email: 'donor@example.com' // In a real app, you'd collect this
+          }]);
+          onSuccess();
+        }
     } catch (err) {
       setErrorMessage(err instanceof Error ? err.message : "An error occurred");
       setIsProcessing(false);

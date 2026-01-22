@@ -14,9 +14,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!currency || !["usd", "eur"].includes(currency.toLowerCase())) {
+    if (!currency || currency.toLowerCase() !== "eur") {
       return NextResponse.json(
-        { error: "Invalid currency. Only USD and EUR are accepted." },
+        { error: "Invalid currency. Only EUR is accepted." },
         { status: 400 }
       );
     }

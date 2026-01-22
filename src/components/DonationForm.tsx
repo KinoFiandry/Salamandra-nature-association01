@@ -133,42 +133,11 @@ export function DonationForm({ onSuccess, onCancel }: DonationFormProps) {
         </div>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-sage-700 mb-3">
-          Currency
-        </label>
-        <div className="flex gap-3">
-          <button
-            type="button"
-            onClick={() => setCurrency("usd")}
-            className={`flex-1 py-3 rounded-lg font-semibold transition-all ${
-              currency === "usd"
-                ? "bg-terracotta-500 text-white shadow-md"
-                : "bg-sage-50 text-sage-600 hover:bg-sage-100 border border-sage-200"
-            }`}
-          >
-            USD ($)
-          </button>
-          <button
-            type="button"
-            onClick={() => setCurrency("eur")}
-            className={`flex-1 py-3 rounded-lg font-semibold transition-all ${
-              currency === "eur"
-                ? "bg-terracotta-500 text-white shadow-md"
-                : "bg-sage-50 text-sage-600 hover:bg-sage-100 border border-sage-200"
-            }`}
-          >
-            EUR (€)
-          </button>
-        </div>
-      </div>
-
       <div className="bg-sage-50 p-4 rounded-lg">
         <div className="flex justify-between items-center text-lg font-semibold text-sage-800">
           <span>Your Donation</span>
           <span>
-            {currency === "usd" ? "$" : "€"}
-            {displayAmount.toFixed(2)}
+            €{displayAmount.toFixed(2)}
           </span>
         </div>
       </div>
@@ -222,7 +191,7 @@ export function DonationForm({ onSuccess, onCancel }: DonationFormProps) {
               Processing...
             </span>
           ) : (
-            `Donate ${currency === "usd" ? "$" : "€"}${displayAmount.toFixed(2)}`
+            `Donate €${displayAmount.toFixed(2)}`
           )}
         </button>
       </div>

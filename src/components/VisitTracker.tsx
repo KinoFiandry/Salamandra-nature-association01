@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 import { supabase } from "@/lib/supabase";
-import { v4 as uuidv4 } from "uuid";
 
 export default function VisitTracker() {
   useEffect(() => {
@@ -11,7 +10,7 @@ export default function VisitTracker() {
       const sessionId = sessionStorage.getItem("site_session_id");
       
       if (!sessionId) {
-        const newSessionId = uuidv4();
+        const newSessionId = crypto.randomUUID();
         sessionStorage.setItem("site_session_id", newSessionId);
         
         try {

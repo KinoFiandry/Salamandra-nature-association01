@@ -6,6 +6,7 @@ import {
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
+import { supabase } from "@/lib/supabase";
 
 const PRESET_AMOUNTS = [10, 25, 50, 100];
 

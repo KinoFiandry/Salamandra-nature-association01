@@ -270,6 +270,7 @@ export default function AdminDashboard() {
         }
         const { error } = await supabase.from("media").delete().eq("id", id);
         if (error) throw error;
+        await logAdminAction("Deleted Photo", `Deleted photo ID: ${id}`);
         fetchData();
       } catch {
         toast.error("Error deleting photo");

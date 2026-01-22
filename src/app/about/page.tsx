@@ -72,7 +72,7 @@ function TeamMemberCard({ member, language, index }: { member: any, language: st
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.1 }}
-      className="bg-white rounded-3xl overflow-hidden border border-sage-100 shadow-sm hover:shadow-lg transition-all flex flex-col"
+      className="bg-white rounded-3xl overflow-hidden border border-sage-100 shadow-sm hover:shadow-lg transition-all flex flex-col h-full"
     >
       <div className="h-48 overflow-hidden flex-shrink-0">
         <img 
@@ -82,8 +82,8 @@ function TeamMemberCard({ member, language, index }: { member: any, language: st
         />
       </div>
       <div className="p-8 flex flex-col flex-grow">
-        <h3 className="text-xl font-bold text-sage-800 mb-1">{member.name}</h3>
-        <p className="text-terracotta-600 font-bold text-sm mb-4">
+        <h3 className="text-xl font-bold text-sage-800 mb-1 line-clamp-2">{member.name}</h3>
+        <p className="text-terracotta-600 font-bold text-sm mb-4 min-h-[40px]">
           {member.role[language as 'en' | 'fr']}
         </p>
         <div className="relative">
@@ -92,7 +92,10 @@ function TeamMemberCard({ member, language, index }: { member: any, language: st
           </p>
           {member.bio[language as 'en' | 'fr'].length > 150 && (
             <button 
-              onClick={() => setIsExpanded(!isExpanded)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsExpanded(!isExpanded);
+              }}
               className="mt-2 text-terracotta-600 font-bold text-xs hover:text-terracotta-700 transition-colors uppercase tracking-wider text-left"
             >
               {isExpanded 
@@ -103,6 +106,26 @@ function TeamMemberCard({ member, language, index }: { member: any, language: st
         </div>
       </div>
     </motion.div>
+  );
+}
+
+function TeamCarousel({ teamMembers, language }: { teamMembers: any[], language: string }) {
+  const [emblaRef] = useEmblaCarousel({ 
+    align: 'start',
+    containScroll: 'trimSnaps',
+    dragFree: true
+  });
+
+  return (
+    <div className="overflow-hidden cursor-grab active:cursor-grabbing pb-8" ref={emblaRef}>
+      <div className="flex gap-8">
+        {teamMembers.map((member, i) => (
+          <div key={member.name} className="flex-[0_0_85%] md:flex-[0_0_45%] lg:flex-[0_0_30%] min-w-0 h-full">
+            <TeamMemberCard member={member} language={language} index={i} />
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
 

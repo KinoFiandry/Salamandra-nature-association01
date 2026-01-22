@@ -254,14 +254,24 @@ export default function AdminDashboard() {
                 <p className="text-sage-300 font-medium">Manage NGO Website Content</p>
               </div>
             </div>
-          <div className="flex gap-3">
-            <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20" onClick={handleLogout}>
-              <LogOut className="w-4 h-4 mr-2" /> Logout
-            </Button>
-            <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20" onClick={() => window.location.href = "/"}>
-              Go to Website
-            </Button>
-          </div>
+            <div className="flex items-center gap-6">
+              <div className="hidden sm:flex items-center gap-2 bg-white/10 px-4 py-2 rounded-xl border border-white/10">
+                <Users className="w-5 h-5 text-terracotta-400" />
+                <div className="flex flex-col">
+                  <span className="text-xs text-sage-300 font-bold uppercase tracking-wider leading-none">Total Visitors</span>
+                  <span className="text-xl font-black leading-none">{visitorCount.toLocaleString()}</span>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20" onClick={handleLogout}>
+                  <LogOut className="w-4 h-4 mr-2" /> Logout
+                </Button>
+                <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20" onClick={() => window.location.href = "/"}>
+                  Go to Website
+                </Button>
+              </div>
+            </div>
+
         </div>
       </div>
 

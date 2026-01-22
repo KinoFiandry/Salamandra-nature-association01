@@ -5,6 +5,7 @@ import ErrorReporter from "@/components/ErrorReporter";
 import Script from "next/script";
 import { I18nProvider } from "@/lib/i18n";
 import { Navbar } from "@/components/Navbar";
+import VisitTracker from "@/components/VisitTracker";
 
 export const metadata: Metadata = {
   title: "Madagascar Turtle Conservation NGO",

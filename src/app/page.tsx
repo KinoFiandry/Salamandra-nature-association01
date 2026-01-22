@@ -310,11 +310,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {teamMembers.map((member, i) => (
-              <TeamMemberCard key={member.name} member={member} language={language} index={i} />
-            ))}
-          </div>
+          <TeamCarousel teamMembers={teamMembers} language={language} />
         </div>
       </section>
 

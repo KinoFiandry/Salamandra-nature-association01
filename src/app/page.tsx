@@ -62,6 +62,48 @@ const teamMembers = [
   }
 ];
 
+function TeamMemberCard({ member, language, index }: { member: any, language: string, index: number }) {
+  const [isExpanded, setIsExpanded] = React.useState(false);
+  
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.1 }}
+      className="bg-white rounded-[2rem] overflow-hidden border border-terracotta-100 shadow-sm hover:shadow-xl transition-all group flex flex-col"
+    >
+      <div className="h-64 overflow-hidden relative flex-shrink-0">
+        <img 
+          src={member.image} 
+          alt={member.name}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-sage-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+      </div>
+      <div className="p-6 flex flex-col flex-grow">
+        <h3 className="text-lg font-black text-sage-800 mb-1">{member.name}</h3>
+        <p className="text-terracotta-600 font-bold text-sm mb-4">{member.role[language as 'en' | 'fr']}</p>
+        <div className="relative">
+          <p className={`text-sage-700/60 text-sm leading-relaxed ${!isExpanded ? 'line-clamp-4' : ''}`}>
+            {member.bio[language as 'en' | 'fr']}
+          </p>
+          {member.bio[language as 'en' | 'fr'].length > 150 && (
+            <button 
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="mt-2 text-terracotta-600 font-bold text-xs hover:text-terracotta-700 transition-colors uppercase tracking-wider"
+            >
+              {isExpanded 
+                ? (language === 'fr' ? 'Voir moins' : 'See less') 
+                : (language === 'fr' ? 'Voir plus' : 'See more')}
+            </button>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 export default function Home() {
   const { t, language } = useI18n();
 

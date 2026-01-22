@@ -7,49 +7,58 @@ import { Shield, BookOpen, Search, ArrowRight, Heart, Users } from "lucide-react
 
 const teamMembers = [
   {
-    name: "M. RAZAFINDRAKOTO Andriamampiandry Léon",
-    role: { en: "Founder & Executive Director", fr: "Fondatrice & Directrice Exécutive" },
-    bio: { 
-      en: "A passionate herpetologist with 20+ years dedicated to Madagascar's endemic tortoises. Dr. Riana founded Salamandra Association to combat the alarming decline of radiated and spider tortoises.",
-      fr: "Herpétologue passionnée avec plus de 20 ans dédiés aux tortues endémiques de Madagascar. Dr. Riana a fondé l'Association Salamandra pour lutter contre le déclin alarmant des tortues radiées et araignées."
-    },
-    image: "/images/leon.jpg"
-  },
-  {
     name: "Pr ALBIGNAC Roland",
-    role: { en: "Field Operations Manager", fr: "Responsable des Opérations Terrain" },
-    bio: {
-      en: "Born in Toliara, Jean-Baptiste leads our ranger teams across the spiny forests. His deep knowledge of local ecosystems and community ties makes him invaluable to our conservation efforts.",
-      fr: "Né à Toliara, Jean-Baptiste dirige nos équipes de rangers dans les forêts épineuses. Sa connaissance approfondie des écosystèmes locaux et ses liens communautaires sont inestimables."
+    role: { en: "Honorary President", fr: "Président d’honneur" },
+    bio: { 
+      en: "Honorary Professor at Universities in France and Madagascar, UNDP / UNESCO Expert Consultant.",
+      fr: "Professeur honoraire des Universités en France et à Madagascar, Consultant Expert PNUD / UNESCO."
     },
     image: "/images/pr-roland.jpg"
   },
   {
-    name: "M. GAUTHIER Frank",
-    role: { en: "Head of Research", fr: "Responsable de la Recherche" },
+    name: "M. RAZAFINDRAKOTO Andriamampiandry Léon",
+    role: { en: "President and Co-founder", fr: "Président et co-fondateur" },
     bio: {
-      en: "Leading our scientific programs, Dr. Fanja specializes in tortoise population dynamics and habitat mapping using cutting-edge satellite technology.",
-      fr: "Dirigeant nos programmes scientifiques, Dr. Fanja se spécialise dans la dynamique des populations de tortues et la cartographie des habitats par satellite."
+      en: "Director of Dayu Biik, manager of the Thönyë Protected Natural Area in Hienghène, New Caledonia, IUCN Expert for Tortoise and Freshwater Turtle Group, member of the IUCN Economic, Social and Environmental Policy Commission.",
+      fr: "Directeur de Dayu Biik, gestionnaire de l’Aire Naturelle Protégée du Thönyë à Hienghène en Nouvelle-Calédonie, Expert UICN Groupe Tortues terrestres et d’eau douce, membre de la Commission de la Politique Économique, Sociale et Environnementale de l’UICN."
+    },
+    image: "/images/leon.jpg"
+  },
+  {
+    name: "M. GAUTHIER Frank",
+    role: { en: "General Secretary", fr: "Secrétaire Général" },
+    bio: {
+      en: "Environmental Technician at the French Biodiversity Office in Corsica.",
+      fr: "Technicien en Environnement à l’Office Français de la Biodiversité en Corse."
     },
     image: "/images/franck-gauthier.jpg"
   },
   {
     name: "Mme GAUTHIER Maude",
-    role: { en: "Community Outreach Coordinator", fr: "Coordinateur Communautaire" },
+    role: { en: "Treasurer", fr: "Trésorière" },
     bio: {
-      en: "Hery bridges the gap between conservation science and local communities. He develops education programs that empower villages to become guardians of their natural heritage.",
-      fr: "Hery fait le lien entre la science de la conservation et les communautés locales. Il développe des programmes éducatifs qui permettent aux villages de devenir gardiens de leur patrimoine naturel."
+      en: "School teacher in Corsica.",
+      fr: "Professeur des écoles en Corse."
     },
     image: "/images/maud-gauthier.jpg"
   },
   {
     name: "MAUGUIN Camille",
-    role: { en: "Community Outreach Coordinator", fr: "Coordinateur Communautaire" },
+    role: { en: "Communications Officer", fr: "Chargée de la Communication" },
     bio: {
-      en: "Hery bridges the gap between conservation science and local communities. He develops education programs that empower villages to become guardians of their natural heritage.",
-      fr: "Hery fait le lien entre la science de la conservation et les communautés locales. Il développe des programmes éducatifs qui permettent aux villages de devenir gardiens de leur patrimoine naturel."
+      en: "Freelance graphic designer in Nièvre.",
+      fr: "Graphiste indépendante dans la Nièvre."
     },
-    image: "/images/maud-gauthier.jpg"
+    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400"
+  },
+  {
+    name: "Mlle RAHOLISON Anjara Malala",
+    role: { en: "Madagascar Representative", fr: "Représentante de Salamandra Nature à Madagascar" },
+    bio: {
+      en: "Communications Manager at NGO Génération Mada, Advisor to the NGO Y’DAGO.",
+      fr: "Responsable Communication ONG Génération Mada, Conseillère de l’ONG Y’DAGO."
+    },
+    image: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?q=80&w=400"
   }
 ];
 

@@ -372,9 +372,9 @@ export default function Home() {
             <div>
               <h4 className="text-white font-bold text-lg mb-8 uppercase tracking-widest">{t('footer.contact')}</h4>
               <div className="text-sage-200/60 space-y-4 leading-relaxed">
-                <p>Toliara, Madagascar</p>
-                <p>contact@salamandra.mg</p>
-                <p>+261 20 22 123 45</p>
+                <p>Résidence les Villas de Saint Florent, 20232 OLETTA, France</p>
+                <p>salamandra.nature2@gmail.com</p>
+                <p>+33 6 65 44 29 47</p>
               </div>
             </div>
           </div>

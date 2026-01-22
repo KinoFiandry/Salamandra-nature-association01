@@ -41,7 +41,7 @@ const teamMembers = [
       fr: "Hery fait le lien entre la science de la conservation et les communautés locales. Il développe des programmes éducatifs qui permettent aux villages de devenir gardiens de leur patrimoine naturel."
     },
     image: "/images/maud-gauthier.jpg"
-  }
+  },
   {
     name: "MAUGUIN Camille",
     role: { en: "Community Outreach Coordinator", fr: "Coordinateur Communautaire" },

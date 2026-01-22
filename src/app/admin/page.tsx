@@ -13,13 +13,15 @@ import {
   Plus, 
   Trash2, 
   Edit3, 
-  Save, 
-  X,
-  FileText,
-  LogOut,
-  ImageIcon,
-  Upload
-} from "lucide-react";
+    Save, 
+    X,
+    FileText,
+    LogOut,
+    ImageIcon,
+    Upload,
+    Users
+  } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";

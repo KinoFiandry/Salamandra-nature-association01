@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { useI18n } from "@/lib/i18n";
 import { motion } from "framer-motion";
 import { Info, Shield, TreePine, GraduationCap, Leaf, Sun, Sprout, Users } from "lucide-react";

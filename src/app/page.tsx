@@ -73,7 +73,7 @@ function TeamMemberCard({ member, language, index }: { member: any, language: st
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.1 }}
-      className="bg-white rounded-[2rem] overflow-hidden border border-terracotta-100 shadow-sm hover:shadow-xl transition-all group flex flex-col"
+      className="bg-white rounded-[2rem] overflow-hidden border border-terracotta-100 shadow-sm hover:shadow-xl transition-all group flex flex-col h-full"
     >
       <div className="h-64 overflow-hidden relative flex-shrink-0">
         <img 
@@ -84,15 +84,18 @@ function TeamMemberCard({ member, language, index }: { member: any, language: st
         <div className="absolute inset-0 bg-gradient-to-t from-sage-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
       </div>
       <div className="p-6 flex flex-col flex-grow">
-        <h3 className="text-lg font-black text-sage-800 mb-1">{member.name}</h3>
-        <p className="text-terracotta-600 font-bold text-sm mb-4">{member.role[language as 'en' | 'fr']}</p>
+        <h3 className="text-lg font-black text-sage-800 mb-1 line-clamp-2">{member.name}</h3>
+        <p className="text-terracotta-600 font-bold text-sm mb-4 min-h-[40px]">{member.role[language as 'en' | 'fr']}</p>
         <div className="relative">
           <p className={`text-sage-700/60 text-sm leading-relaxed ${!isExpanded ? 'line-clamp-4' : ''}`}>
             {member.bio[language as 'en' | 'fr']}
           </p>
           {member.bio[language as 'en' | 'fr'].length > 150 && (
             <button 
-              onClick={() => setIsExpanded(!isExpanded)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsExpanded(!isExpanded);
+              }}
               className="mt-2 text-terracotta-600 font-bold text-xs hover:text-terracotta-700 transition-colors uppercase tracking-wider"
             >
               {isExpanded 
@@ -103,6 +106,26 @@ function TeamMemberCard({ member, language, index }: { member: any, language: st
         </div>
       </div>
     </motion.div>
+  );
+}
+
+function TeamCarousel({ teamMembers, language }: { teamMembers: any[], language: string }) {
+  const [emblaRef] = useEmblaCarousel({ 
+    align: 'start',
+    containScroll: 'trimSnaps',
+    dragFree: true
+  });
+
+  return (
+    <div className="overflow-hidden cursor-grab active:cursor-grabbing pb-8" ref={emblaRef}>
+      <div className="flex gap-8">
+        {teamMembers.map((member, i) => (
+          <div key={member.name} className="flex-[0_0_85%] md:flex-[0_0_45%] lg:flex-[0_0_22%] min-w-0 h-full">
+            <TeamMemberCard member={member} language={language} index={i} />
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
 

@@ -1,10 +1,10 @@
 "use client";
 
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n";
 import { motion } from "framer-motion";
-import { Shield, BookOpen, Search, ArrowRight, Heart, Users } from "lucide-react";
+import { Shield, BookOpen, Search, ArrowRight, Heart, Users, ChevronLeft, ChevronRight } from "lucide-react";
 import useEmblaCarousel from 'embla-carousel-react';
 
 const teamMembers = [

@@ -1,55 +1,31 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements } from "@stripe/react-stripe-js";
-import { DonationForm } from "@/components/DonationForm";
+import { useState } from "react";
 import Link from "next/link";
-import type { StripeElementsOptions } from "@stripe/stripe-js";
-
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
-);
+import PayPalDonateButton from "@/components/PayPalDonateButton";
+import { supabase } from "@/lib/supabase";
 
 export default function DonatePage() {
   const [showSuccess, setShowSuccess] = useState(false);
-  const [elementsKey, setElementsKey] = useState(0);
-  const [selectedAmount, setSelectedAmount] = useState(25);
-  const [selectedCurrency, setSelectedCurrency] = useState<"eur">("eur");
 
-  const options: StripeElementsOptions = {
-    mode: "payment",
-    amount: Math.round(selectedAmount * 100),
-    currency: "eur",
-    appearance: {
-      theme: "stripe",
-      variables: {
-        colorPrimary: "#c17a4a",
-        colorBackground: "#ffffff",
-        colorText: "#333b33",
-        colorDanger: "#dc2626",
-        fontFamily: "system-ui, sans-serif",
-        borderRadius: "8px",
-      },
-      rules: {
-        ".Input": {
-          border: "1px solid #e3e6e3",
-          boxShadow: "none",
-        },
-        ".Input:focus": {
-          border: "1px solid #c17a4a",
-          boxShadow: "0 0 0 2px rgba(193, 122, 74, 0.2)",
-        },
-        ".Label": {
-          color: "#3d473d",
-        },
-      },
-    },
+  const handlePayPalSuccess = async (params: any) => {
+    try {
+      // Record donation in Supabase
+      await supabase.from("donations").insert([{
+        amount: parseFloat(params.amt),
+        currency: params.cc,
+        status: 'completed',
+        stripe_payment_id: `paypal_${params.tx}`, // Using paypal tx id in the same field for simplicity or rename field
+        donor_name: 'Anonymous Donor',
+        donor_email: 'donor@example.com'
+      }]);
+      setShowSuccess(true);
+    } catch (error) {
+      console.error("Error recording donation:", error);
+      // Still show success to user since PayPal transaction completed
+      setShowSuccess(true);
+    }
   };
-
-  useEffect(() => {
-    setElementsKey((prev) => prev + 1);
-  }, [selectedAmount, selectedCurrency]);
 
   if (showSuccess) {
     return (
@@ -80,7 +56,7 @@ export default function DonatePage() {
           </p>
           <div className="bg-sage-50 rounded-lg p-4 mb-6">
             <p className="text-sm text-sage-600">
-              A confirmation email has been sent to your email address.
+              A confirmation has been sent to your PayPal account.
             </p>
           </div>
           <Link
@@ -228,23 +204,26 @@ export default function DonatePage() {
             <div className="bg-sage-700 text-white rounded-xl p-6">
               <h3 className="font-semibold mb-2">100% Secure Donation</h3>
               <p className="text-sage-100 text-sm">
-                Your payment information is encrypted and secure. We use Stripe,
-                a trusted payment processor used by millions of organizations
-                worldwide.
+                Your payment information is encrypted and secure. We use PayPal,
+                a trusted payment processor used worldwide. You can donate using
+                your PayPal balance or credit card.
               </p>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-6 shadow-xl h-fit">
+          <div className="bg-white rounded-xl p-10 shadow-xl h-fit flex flex-col items-center justify-center text-center">
             <h2 className="text-2xl font-bold text-sage-800 mb-6">
               Make a Donation
             </h2>
-            <Elements key={elementsKey} stripe={stripePromise} options={options}>
-              <DonationForm
-                onSuccess={() => setShowSuccess(true)}
-                onCancel={() => (window.location.href = "/")}
-              />
-            </Elements>
+            <p className="text-sage-600 mb-8">
+              Click the button below to donate securely via PayPal. You will be able to choose your donation amount on the PayPal page.
+            </p>
+            
+            <PayPalDonateButton onSuccess={handlePayPalSuccess} />
+            
+            <div className="mt-8 flex items-center justify-center gap-4 grayscale opacity-50">
+              <img src="https://www.paypalobjects.com/webstatic/mktg/logo/AM_mc_vs_dc_ae.jpg" alt="Credit Cards" className="h-8 w-auto" />
+            </div>
           </div>
         </div>
       </main>

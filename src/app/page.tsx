@@ -110,20 +110,91 @@ function TeamMemberCard({ member, language, index }: { member: any, language: st
 }
 
 function TeamCarousel({ teamMembers, language }: { teamMembers: any[], language: string }) {
-  const [emblaRef] = useEmblaCarousel({ 
+  const [emblaRef, emblaApi] = useEmblaCarousel({ 
     align: 'start',
     containScroll: 'trimSnaps',
-    dragFree: true
+    dragFree: false
   });
 
+  const [prevBtnEnabled, setPrevBtnEnabled] = useState(false);
+  const [nextBtnEnabled, setNextBtnEnabled] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
+
+  const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
+  const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
+  const scrollTo = useCallback((index: number) => emblaApi && emblaApi.scrollTo(index), [emblaApi]);
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setSelectedIndex(emblaApi.selectedScrollSnap());
+    setPrevBtnEnabled(emblaApi.canScrollPrev());
+    setNextBtnEnabled(emblaApi.canScrollNext());
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    onSelect();
+    setScrollSnaps(emblaApi.scrollSnapList());
+    emblaApi.on('select', onSelect);
+    emblaApi.on('reInit', onSelect);
+  }, [emblaApi, onSelect]);
+
   return (
-    <div className="overflow-hidden cursor-grab active:cursor-grabbing pb-8" ref={emblaRef}>
-      <div className="flex gap-8">
-        {teamMembers.map((member, i) => (
-          <div key={member.name} className="flex-[0_0_85%] md:flex-[0_0_45%] lg:flex-[0_0_22%] min-w-0 h-full">
-            <TeamMemberCard member={member} language={language} index={i} />
-          </div>
-        ))}
+    <div className="relative group">
+      <div className="overflow-hidden cursor-grab active:cursor-grabbing pb-8" ref={emblaRef}>
+        <div className="flex gap-8">
+          {teamMembers.map((member, i) => (
+            <div key={member.name} className="flex-[0_0_85%] md:flex-[0_0_45%] lg:flex-[0_0_30%] xl:flex-[0_0_22%] min-w-0 h-full">
+              <TeamMemberCard member={member} language={language} index={i} />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Navigation Buttons */}
+      <div className="flex justify-center items-center gap-4 mt-8">
+        <button
+          className={`w-12 h-12 rounded-full border-2 border-terracotta-200 flex items-center justify-center transition-all ${
+            prevBtnEnabled 
+              ? 'bg-white text-terracotta-600 hover:bg-terracotta-500 hover:text-white hover:border-terracotta-500 shadow-md' 
+              : 'bg-gray-50 text-gray-300 cursor-not-allowed border-gray-100'
+          }`}
+          onClick={scrollPrev}
+          disabled={!prevBtnEnabled}
+          aria-label="Previous slide"
+        >
+          <ChevronLeft className="w-6 h-6" />
+        </button>
+
+        {/* Pagination Dots */}
+        <div className="flex gap-2 mx-4">
+          {scrollSnaps.map((_, index) => (
+            <button
+              key={index}
+              className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                index === selectedIndex 
+                  ? 'bg-terracotta-500 w-8' 
+                  : 'bg-terracotta-200 hover:bg-terracotta-300'
+              }`}
+              onClick={() => scrollTo(index)}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </div>
+
+        <button
+          className={`w-12 h-12 rounded-full border-2 border-terracotta-200 flex items-center justify-center transition-all ${
+            nextBtnEnabled 
+              ? 'bg-white text-terracotta-600 hover:bg-terracotta-500 hover:text-white hover:border-terracotta-500 shadow-md' 
+              : 'bg-gray-50 text-gray-300 cursor-not-allowed border-gray-100'
+          }`}
+          onClick={scrollNext}
+          disabled={!nextBtnEnabled}
+          aria-label="Next slide"
+        >
+          <ChevronRight className="w-6 h-6" />
+        </button>
       </div>
     </div>
   );

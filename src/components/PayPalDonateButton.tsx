@@ -103,17 +103,19 @@ function ButtonsWrapper({
             layout: "vertical",
             color: "gold",
             shape: "rect",
-            label: "paypal",
+            label: "donate",
             tagline: false,
           }}
-        createOrder={handleCreateOrder}
-        onApprove={handleApprove}
-        onError={(err) => {
-          console.error("PayPal Button Error:", err);
-          onError?.("Payment failed to initialize");
-        }}
-        forceReRender={[amount, currency]}
-      />
+          createOrder={handleCreateOrder}
+          onApprove={handleApprove}
+          onError={(err) => {
+            console.error("PayPal Button Error:", err);
+            // This is where the user sees "Something went wrong" in the PayPal UI
+            // But we can also show a local error message
+            onError?.("The payment window closed or an error occurred. Please try again.");
+          }}
+          forceReRender={[amount, currency, donorName, donorEmail]}
+        />
     </div>
   );
 }

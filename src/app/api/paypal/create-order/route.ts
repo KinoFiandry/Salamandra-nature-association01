@@ -39,17 +39,29 @@ export async function POST(request: NextRequest) {
             currency_code: currency,
             value: amount.toFixed(2),
           },
-            description: "Donation to Madagascar Turtle Conservation",
-            // Use a simpler custom_id to avoid length or character issues
-            custom_id: `donation_${Date.now()}`,
-          },
-        ],
-        application_context: {
-          shipping_preference: "NO_SHIPPING",
-          user_action: "PAY_NOW",
-          brand_name: "Salamandra Nature",
+          description: "Donation to Madagascar Turtle Conservation",
+          custom_id: `donation_${Date.now()}`,
         },
-      };
+      ],
+      payer: {
+        email_address: donorEmail,
+        name: {
+          given_name: donorName.split(" ")[0] || "Anonymous",
+          surname: donorName.split(" ").slice(1).join(" ") || "Donor",
+        },
+      },
+      payment_source: {
+        paypal: {
+          experience_context: {
+            brand_name: "Salamandra Nature",
+            shipping_preference: "NO_SHIPPING",
+            user_action: "PAY_NOW",
+            return_url: "https://example.com/return",
+            cancel_url: "https://example.com/cancel",
+          },
+        },
+      },
+    };
 
     const response = await fetch(`${PAYPAL_API_URL}/v2/checkout/orders`, {
       method: "POST",

@@ -38,7 +38,7 @@ export default function DonatePage() {
           amount: parseFloat(data.amount),
           currency: data.currency,
           status: "completed",
-          paypal_order_id: data.orderId,
+          payment_id: data.orderId,
           donor_name: donorName || "Anonymous Donor",
           donor_email: donorEmail || "donor@example.com",
         },

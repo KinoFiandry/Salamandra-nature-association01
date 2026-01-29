@@ -109,10 +109,10 @@ function ButtonsWrapper({
         fundingSource={undefined}
         createOrder={handleCreateOrder}
         onApprove={handleApprove}
-        onError={(err) => {
-          console.error("PayPal Button Error:", err);
-          onError?.("Payment failed to initialize");
-        }}
+          onError={(err) => {
+            console.error("PayPal Button Error Detail:", err);
+            onError?.(err?.toString() || "Payment failed to initialize. Please try again or use a different browser/incognito mode.");
+          }}
         forceReRender={[amount, currency]}
       />
     </div>
@@ -157,7 +157,7 @@ export default function PayPalDonateButton({
         options={{
           clientId: clientId,
           currency: currency,
-          intent: "capture",
+          intent: "CAPTURE",
         }}
       >
         <ButtonsWrapper

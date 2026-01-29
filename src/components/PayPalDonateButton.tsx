@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useState, useEffect } from "react";
 import {
   PayPalScriptProvider,
   PayPalButtons,
@@ -142,6 +142,25 @@ export default function PayPalDonateButton({
   onError,
 }: PayPalDonateButtonProps) {
   const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "";
+  const [clientToken, setClientToken] = useState<string | null>(null);
+  const [loadingToken, setLoadingToken] = useState(true);
+
+  useEffect(() => {
+    async function fetchToken() {
+      try {
+        const res = await fetch(`/api/paypal/client-token?currency=${currency}&intent=CAPTURE`);
+        if (res.ok) {
+          const data = await res.json();
+          setClientToken(data.client_token);
+        }
+      } catch (err) {
+        console.error("Error fetching client token:", err);
+      } finally {
+        setLoadingToken(false);
+      }
+    }
+    fetchToken();
+  }, [currency]);
 
   if (!clientId) {
     return (
@@ -151,15 +170,27 @@ export default function PayPalDonateButton({
     );
   }
 
+  if (loadingToken) {
+    return (
+      <div className="space-y-3 animate-pulse">
+        <div className="h-14 bg-sage-100 rounded-lg" />
+        <div className="h-14 bg-sage-100 rounded-lg" />
+      </div>
+    );
+  }
+
   return (
     <div className="w-full">
-        <PayPalScriptProvider
-          options={{
-            clientId: clientId,
-            currency: currency,
-            intent: "CAPTURE",
-          }}
-        >
+      <PayPalScriptProvider
+        options={{
+          clientId: clientId,
+          currency: currency,
+          intent: "CAPTURE",
+          dataClientToken: clientToken || undefined,
+          components: "buttons",
+          "enable-funding": "card",
+        }}
+      >
         <ButtonsWrapper
           amount={amount}
           currency={currency}

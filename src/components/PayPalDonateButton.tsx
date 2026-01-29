@@ -1,12 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   PayPalScriptProvider,
   PayPalButtons,
   usePayPalScriptReducer,
-  PayPalCardFieldsProvider,
-  PayPalCardFieldsForm,
 } from "@paypal/react-paypal-js";
 
 function ButtonsWrapper({
@@ -30,7 +28,6 @@ function ButtonsWrapper({
   onError?: (error: string) => void;
 }) {
   const [{ isRejected, isPending, options }, dispatch] = usePayPalScriptReducer();
-  const [showCardForm, setShowCardForm] = useState(false);
 
   const handleCreateOrder = useCallback(async () => {
     try {
@@ -155,40 +152,12 @@ export default function PayPalDonateButton({
   onSuccess,
   onError,
 }: PayPalDonateButtonProps) {
-  const [clientToken, setClientToken] = useState<string | null>(null);
-  const [loadingToken, setLoadingToken] = useState(true);
   const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "";
-
-  useEffect(() => {
-    async function fetchToken() {
-      try {
-        const res = await fetch(`/api/paypal/client-token?currency=${currency}&intent=CAPTURE`);
-        const data = await res.json();
-        if (data.client_token) {
-          setClientToken(data.client_token);
-        }
-      } catch (err) {
-        console.error("Error fetching client token:", err);
-      } finally {
-        setLoadingToken(false);
-      }
-    }
-    fetchToken();
-  }, [currency]);
 
   if (!clientId) {
     return (
       <div className="p-4 bg-yellow-50 border border-yellow-100 rounded-lg text-yellow-700 text-sm">
         PayPal configuration missing.
-      </div>
-    );
-  }
-
-  if (loadingToken) {
-    return (
-      <div className="space-y-3 animate-pulse">
-        <div className="h-14 bg-sage-100 rounded-lg" />
-        <div className="h-14 bg-sage-100 rounded-lg" />
       </div>
     );
   }
@@ -200,8 +169,8 @@ export default function PayPalDonateButton({
           clientId: clientId,
           currency: currency,
           intent: "CAPTURE",
-          components: "buttons,card-fields",
-          dataClientToken: clientToken || undefined,
+          components: "buttons",
+          ...(clientId.startsWith("A") ? { buyerCountry: "US" } : {}),
         }}
       >
         <ButtonsWrapper

@@ -36,9 +36,10 @@ declare global {
 
 interface PayPalDonateButtonProps {
   onSuccess: (params: DonateParams) => void;
+  customData?: string;
 }
 
-export default function PayPalDonateButton({ onSuccess }: PayPalDonateButtonProps) {
+export default function PayPalDonateButton({ onSuccess, customData }: PayPalDonateButtonProps) {
   const [sdkReady, setSdkReady] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -51,6 +52,7 @@ export default function PayPalDonateButton({ onSuccess }: PayPalDonateButtonProp
         window.PayPal.Donation.Button({
           env: (process.env.NEXT_PUBLIC_PAYPAL_ENV as "sandbox" | "production") || "sandbox",
           hosted_button_id: process.env.NEXT_PUBLIC_PAYPAL_HOSTED_BUTTON_ID || "YOUR_HOSTED_BUTTON_ID",
+          custom: customData,
           image: {
             src: "https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif",
             title: "PayPal - The safer, easier way to pay online!",

@@ -3,8 +3,8 @@ const PAYPAL_API_URL = process.env.PAYPAL_ENV === "production"
   : "https://api-m.sandbox.paypal.com";
 
 export async function generateAccessToken(): Promise<string> {
-  const clientId = process.env.PAYPAL_CLIENT_ID;
-  const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
+  const clientId = process.env.PAYPAL_CLIENT_ID?.trim();
+  const clientSecret = process.env.PAYPAL_CLIENT_SECRET?.trim();
 
   if (!clientId || !clientSecret || clientId === "YOUR_PAYPAL_CLIENT_ID") {
     throw new Error("PayPal credentials not configured");
@@ -30,7 +30,7 @@ export async function generateAccessToken(): Promise<string> {
   return data.access_token;
 }
 
-export async function generateClientToken(): Promise<string> {
+export async function generateClientToken(currency: string = "EUR", intent: string = "CAPTURE"): Promise<string> {
   const accessToken = await generateAccessToken();
 
   const response = await fetch(`${PAYPAL_API_URL}/v1/identity/generate-token`, {
@@ -39,6 +39,10 @@ export async function generateClientToken(): Promise<string> {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
     },
+    body: JSON.stringify({
+      currency: currency.toUpperCase(),
+      intent: intent.toLowerCase(),
+    }),
   });
 
   if (!response.ok) {

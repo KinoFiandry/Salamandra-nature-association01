@@ -9,7 +9,37 @@ import {
   PayPalExpiryField,
   PayPalCVVField,
   usePayPalCardFields,
+  usePayPalScriptReducer,
 } from "@paypal/react-paypal-js";
+
+function ScriptErrorWrapper({ children }: { children: React.ReactNode }) {
+  const [{ isResolved, isPending, isRejected }] = usePayPalScriptReducer();
+
+  if (isRejected) {
+    return (
+      <div className="p-4 bg-red-50 border border-red-100 rounded-lg text-red-600 text-sm">
+        <p className="font-bold mb-1">Failed to load PayPal Secure Payment</p>
+        <p>This may be due to an ad-blocker or your account not being eligible for Advanced Card Payments in this region. Please try disabling ad-blockers or using a different browser.</p>
+      </div>
+    );
+  }
+
+  if (isPending) {
+    return (
+      <div className="space-y-3 animate-pulse">
+        <div className="h-12 bg-sage-100 rounded-lg" />
+        <div className="h-12 bg-sage-100 rounded-lg" />
+        <div className="grid grid-cols-2 gap-3">
+          <div className="h-12 bg-sage-100 rounded-lg" />
+          <div className="h-12 bg-sage-100 rounded-lg" />
+        </div>
+        <div className="h-12 bg-sage-200 rounded-lg" />
+      </div>
+    );
+  }
+
+  return <>{children}</>;
+}
 
 interface PayPalCardFormProps {
   amount: number;
@@ -225,7 +255,7 @@ export default function PayPalDonateButton({
   useEffect(() => {
     async function fetchClientToken() {
       try {
-        const response = await fetch("/api/paypal/client-token");
+        const response = await fetch(`/api/paypal/client-token?currency=${currency}&intent=CAPTURE`);
         const data = await response.json();
         if (data.client_token) {
           setClientToken(data.client_token);
@@ -239,7 +269,7 @@ export default function PayPalDonateButton({
     }
 
     fetchClientToken();
-  }, []);
+  }, [currency]);
 
   const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
   const isConfigured = clientId && clientId.length > 20 && !clientId.includes("YOUR_PAYPAL");
@@ -286,8 +316,9 @@ export default function PayPalDonateButton({
         "data-sdk-integration-source": "react-paypal-js",
       }}
     >
-      <PayPalCardFieldsProvider
-        createOrder={async () => {
+      <ScriptErrorWrapper>
+        <PayPalCardFieldsProvider
+          createOrder={async () => {
           console.log("createOrder callback triggered");
           const response = await fetch("/api/paypal/create-order", {
             method: "POST",

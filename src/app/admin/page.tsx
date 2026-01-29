@@ -287,23 +287,23 @@ export default function AdminDashboard() {
               <img src="/images/logo.png" alt="Salamandra Nature" className="h-14 w-auto" />
               <div>
                 <h1 className="text-3xl font-black">{t('admin.dashboard')}</h1>
-                <p className="text-sage-300 font-medium">Manage NGO Website Content</p>
+                <p className="text-sage-300 font-medium">{t('admin.manageContent')}</p>
               </div>
             </div>
             <div className="flex items-center gap-6">
               <div className="hidden sm:flex items-center gap-2 bg-white/10 px-4 py-2 rounded-xl border border-white/10">
                 <Users className="w-5 h-5 text-terracotta-400" />
                 <div className="flex flex-col">
-                  <span className="text-xs text-sage-300 font-bold uppercase tracking-wider leading-none">Total Visitors</span>
+                  <span className="text-xs text-sage-300 font-bold uppercase tracking-wider leading-none">{t('admin.totalVisitors')}</span>
                   <span className="text-xl font-black leading-none">{visitorCount.toLocaleString()}</span>
                 </div>
               </div>
               <div className="flex gap-3">
                 <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20" onClick={handleLogout}>
-                  <LogOut className="w-4 h-4 mr-2" /> Logout
+                  <LogOut className="w-4 h-4 mr-2" /> {t('admin.logout')}
                 </Button>
                 <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20" onClick={() => window.location.href = "/"}>
-                  Go to Website
+                  {t('admin.goWebsite')}
                 </Button>
               </div>
             </div>
@@ -315,33 +315,33 @@ export default function AdminDashboard() {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
             <TabsList className="bg-white p-1 rounded-2xl border border-sage-100 shadow-sm h-16 w-full md:w-auto overflow-x-auto flex-nowrap">
               <TabsTrigger value="events" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
-                <CalendarIcon className="w-4 h-4 mr-2" /> Events
+                <CalendarIcon className="w-4 h-4 mr-2" /> {t('admin.tabs.events')}
               </TabsTrigger>
               <TabsTrigger value="videos" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
-                <Video className="w-4 h-4 mr-2" /> Videos
+                <Video className="w-4 h-4 mr-2" /> {t('admin.tabs.videos')}
               </TabsTrigger>
               <TabsTrigger value="photos" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
-                <ImageIcon className="w-4 h-4 mr-2" /> Photos
+                <ImageIcon className="w-4 h-4 mr-2" /> {t('admin.tabs.photos')}
               </TabsTrigger>
               <TabsTrigger value="partners" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
-                <Handshake className="w-4 h-4 mr-2" /> Partners
+                <Handshake className="w-4 h-4 mr-2" /> {t('admin.tabs.partners')}
               </TabsTrigger>
               <TabsTrigger value="history" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
-                <History className="w-4 h-4 mr-2" /> History
+                <History className="w-4 h-4 mr-2" /> {t('admin.tabs.history')}
               </TabsTrigger>
               <TabsTrigger value="logs" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
-                <Activity className="w-4 h-4 mr-2" /> Logs
+                <Activity className="w-4 h-4 mr-2" /> {t('admin.tabs.logs')}
               </TabsTrigger>
               <TabsTrigger value="donations" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
-                <Receipt className="w-4 h-4 mr-2" /> Donations
+                <Receipt className="w-4 h-4 mr-2" /> {t('admin.tabs.donations')}
               </TabsTrigger>
             </TabsList>
 
           <TabsContent value="events" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-sage-800">Manage Events</h2>
+              <h2 className="text-2xl font-bold text-sage-800">{t('admin.manage.events')}</h2>
               <Button onClick={() => setShowEventForm(true)} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold">
-                <Plus className="w-4 h-4 mr-2" /> Add Event
+                <Plus className="w-4 h-4 mr-2" /> {t('admin.add.event')}
               </Button>
             </div>
 
@@ -370,9 +370,9 @@ export default function AdminDashboard() {
 
           <TabsContent value="videos" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-sage-800">Manage Videos</h2>
+              <h2 className="text-2xl font-bold text-sage-800">{t('admin.manage.videos')}</h2>
               <Button onClick={() => setShowVideoForm(true)} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold">
-                <Plus className="w-4 h-4 mr-2" /> Add Video
+                <Plus className="w-4 h-4 mr-2" /> {t('admin.add.video')}
               </Button>
             </div>
 
@@ -398,9 +398,9 @@ export default function AdminDashboard() {
 
           <TabsContent value="photos" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-sage-800">Manage Photos</h2>
+              <h2 className="text-2xl font-bold text-sage-800">{t('admin.manage.photos')}</h2>
               <Button onClick={() => setShowPhotoForm(true)} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold">
-                <Plus className="w-4 h-4 mr-2" /> Add Photo
+                <Plus className="w-4 h-4 mr-2" /> {t('admin.add.photo')}
               </Button>
             </div>
 
@@ -425,7 +425,7 @@ export default function AdminDashboard() {
               {photos.length === 0 && (
                 <div className="col-span-full text-center py-12 text-terracotta-400">
                   <ImageIcon className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p>No photos yet. Add your first photo!</p>
+                  <p>{t('admin.empty.donations')}</p>
                 </div>
               )}
             </div>
@@ -433,9 +433,9 @@ export default function AdminDashboard() {
 
             <TabsContent value="partners" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-sage-800">Manage Partners</h2>
+              <h2 className="text-2xl font-bold text-sage-800">{t('admin.manage.partners')}</h2>
               <Button onClick={() => setShowPartnerForm(true)} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold">
-                <Plus className="w-4 h-4 mr-2" /> Add Partner
+                <Plus className="w-4 h-4 mr-2" /> {t('admin.add.partner')}
               </Button>
             </div>
 
@@ -459,17 +459,17 @@ export default function AdminDashboard() {
 
             <TabsContent value="history" className="space-y-6">
               <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold text-sage-800">Update History</h2>
-                <Button variant="outline" onClick={fetchData} className="rounded-xl font-bold">Refresh</Button>
+                <h2 className="text-2xl font-bold text-sage-800">{t('admin.history.title')}</h2>
+                <Button variant="outline" onClick={fetchData} className="rounded-xl font-bold">{t('admin.refresh')}</Button>
               </div>
               <div className="bg-white rounded-2xl border border-sage-100 shadow-sm overflow-hidden">
                 <table className="w-full text-left">
                   <thead className="bg-sage-50 border-b border-sage-100">
                     <tr>
-                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">Date</th>
-                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">Admin</th>
-                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">Action</th>
-                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">Details</th>
+                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">{t('admin.table.date')}</th>
+                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">{t('admin.table.admin')}</th>
+                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">{t('admin.table.action')}</th>
+                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">{t('admin.table.details')}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-sage-50">
@@ -490,7 +490,7 @@ export default function AdminDashboard() {
                     {history.length === 0 && (
                       <tr>
                         <td colSpan={4} className="px-6 py-12 text-center text-sage-400 font-medium">
-                          No history records found.
+                          {t('admin.empty.history')}
                         </td>
                       </tr>
                     )}
@@ -501,16 +501,16 @@ export default function AdminDashboard() {
 
             <TabsContent value="logs" className="space-y-6">
               <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold text-sage-800">System Logs</h2>
-                <Button variant="outline" onClick={fetchData} className="rounded-xl font-bold">Refresh</Button>
+                <h2 className="text-2xl font-bold text-sage-800">{t('admin.logs.title')}</h2>
+                <Button variant="outline" onClick={fetchData} className="rounded-xl font-bold">{t('admin.refresh')}</Button>
               </div>
               <div className="bg-white rounded-2xl border border-sage-100 shadow-sm overflow-hidden">
                 <table className="w-full text-left">
                   <thead className="bg-sage-50 border-b border-sage-100">
                     <tr>
-                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">Date</th>
-                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">Level</th>
-                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">Message</th>
+                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">{t('admin.table.date')}</th>
+                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">{t('admin.table.level')}</th>
+                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">{t('admin.table.message')}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-sage-50">
@@ -534,7 +534,7 @@ export default function AdminDashboard() {
                     {logs.length === 0 && (
                       <tr>
                         <td colSpan={3} className="px-6 py-12 text-center text-sage-400 font-medium">
-                          No system logs found.
+                          {t('admin.empty.logs')}
                         </td>
                       </tr>
                     )}
@@ -545,25 +545,25 @@ export default function AdminDashboard() {
 
             <TabsContent value="donations" className="space-y-6">
               <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold text-sage-800">Donation Receipts</h2>
+                <h2 className="text-2xl font-bold text-sage-800">{t('admin.donations.title')}</h2>
                 <div className="flex gap-3">
                   <div className="bg-terracotta-50 px-4 py-2 rounded-xl border border-terracotta-100">
-                    <span className="text-xs text-terracotta-600 font-bold uppercase block leading-none mb-1">Total Received</span>
+                    <span className="text-xs text-terracotta-600 font-bold uppercase block leading-none mb-1">{t('admin.totalReceived')}</span>
                     <span className="text-xl font-black text-terracotta-700">
                       ${donations.reduce((acc, d) => acc + (d.status === 'completed' ? Number(d.amount) : 0), 0).toLocaleString()}
                     </span>
                   </div>
-                  <Button variant="outline" onClick={fetchData} className="rounded-xl font-bold">Refresh</Button>
+                  <Button variant="outline" onClick={fetchData} className="rounded-xl font-bold">{t('admin.refresh')}</Button>
                 </div>
               </div>
               <div className="bg-white rounded-2xl border border-sage-100 shadow-sm overflow-hidden">
                 <table className="w-full text-left">
                   <thead className="bg-sage-50 border-b border-sage-100">
                     <tr>
-                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">Date</th>
-                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">Donor</th>
-                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">Amount</th>
-                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">Status</th>
+                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">{t('admin.table.date')}</th>
+                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">{t('admin.table.donor')}</th>
+                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">{t('admin.table.amount')}</th>
+                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">{t('admin.table.status')}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-sage-50">
@@ -574,7 +574,7 @@ export default function AdminDashboard() {
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex flex-col">
-                            <span className="text-sm font-bold text-sage-800">{donation.donor_name || 'Anonymous'}</span>
+                            <span className="text-sm font-bold text-sage-800">{donation.donor_name || t('admin.anonymous')}</span>
                             <span className="text-xs text-sage-400">{donation.donor_email}</span>
                           </div>
                         </td>
@@ -595,7 +595,7 @@ export default function AdminDashboard() {
                     {donations.length === 0 && (
                       <tr>
                         <td colSpan={4} className="px-6 py-12 text-center text-sage-400 font-medium">
-                          No donation records yet.
+                          {t('admin.empty.donations')}
                         </td>
                       </tr>
                     )}
@@ -613,7 +613,7 @@ export default function AdminDashboard() {
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-sage-950/60 backdrop-blur-sm" onClick={() => setShowEventForm(false)} />
             <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden">
               <div className="bg-sage-800 p-8 text-white flex justify-between items-center">
-                <h2 className="text-2xl font-black">Add New Event</h2>
+                <h2 className="text-2xl font-black">{t('admin.add.event')}</h2>
                 <Button variant="ghost" size="icon" onClick={() => setShowEventForm(false)} className="text-white/60 hover:text-white">
                   <X className="w-6 h-6" />
                 </Button>
@@ -621,36 +621,36 @@ export default function AdminDashboard() {
               <div className="p-8 space-y-6 max-h-[70vh] overflow-y-auto">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-sage-800">Title (EN)</label>
+                    <label className="text-sm font-bold text-sage-800">{t('admin.form.titleEn')}</label>
                     <Input value={newEvent.title_en} onChange={e => setNewEvent({...newEvent, title_en: e.target.value})} placeholder="Event title in English" className="rounded-xl" />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-sage-800">Title (FR)</label>
+                    <label className="text-sm font-bold text-sage-800">{t('admin.form.titleFr')}</label>
                     <Input value={newEvent.title_fr} onChange={e => setNewEvent({...newEvent, title_fr: e.target.value})} placeholder="Titre de l'événement en Français" className="rounded-xl" />
                   </div>
                 </div>
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-sage-800">Date</label>
+                    <label className="text-sm font-bold text-sage-800">{t('admin.form.date')}</label>
                     <Input type="date" value={newEvent.date} onChange={e => setNewEvent({...newEvent, date: e.target.value})} className="rounded-xl" />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-sage-800">Location (EN)</label>
+                    <label className="text-sm font-bold text-sage-800">{t('admin.form.locationEn')}</label>
                     <Input value={newEvent.location_en} onChange={e => setNewEvent({...newEvent, location_en: e.target.value})} placeholder="Location in English" className="rounded-xl" />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-sage-800">Description (EN)</label>
+                  <label className="text-sm font-bold text-sage-800">{t('admin.form.descriptionEn')}</label>
                   <Textarea value={newEvent.description_en} onChange={e => setNewEvent({...newEvent, description_en: e.target.value})} placeholder="Detailed description in English" className="rounded-xl min-h-[100px]" />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-sage-800">Description (FR)</label>
+                  <label className="text-sm font-bold text-sage-800">{t('admin.form.descriptionFr')}</label>
                   <Textarea value={newEvent.description_fr} onChange={e => setNewEvent({...newEvent, description_fr: e.target.value})} placeholder="Description détaillée en Français" className="rounded-xl min-h-[100px]" />
                 </div>
               </div>
               <div className="p-8 bg-slate-50 flex justify-end gap-4 border-t border-sage-100">
-                <Button variant="ghost" onClick={() => setShowEventForm(false)} className="rounded-xl font-bold">Cancel</Button>
-                <Button onClick={handleAddEvent} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold px-8">Save Event</Button>
+                <Button variant="ghost" onClick={() => setShowEventForm(false)} className="rounded-xl font-bold">{t('admin.form.cancel')}</Button>
+                <Button onClick={handleAddEvent} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold px-8">{t('admin.form.saveEvent')}</Button>
               </div>
             </motion.div>
           </div>
@@ -661,26 +661,26 @@ export default function AdminDashboard() {
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-sage-950/60 backdrop-blur-sm" onClick={() => setShowVideoForm(false)} />
             <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden">
               <div className="bg-sage-800 p-8 text-white flex justify-between items-center">
-                <h2 className="text-2xl font-black">Add New Video</h2>
+                <h2 className="text-2xl font-black">{t('admin.add.video')}</h2>
                 <Button variant="ghost" size="icon" onClick={() => setShowVideoForm(false)} className="text-white/60 hover:text-white">
                   <X className="w-6 h-6" />
                 </Button>
               </div>
               <div className="p-8 space-y-6">
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-sage-800">Title (EN)</label>
+                  <label className="text-sm font-bold text-sage-800">{t('admin.form.titleEn')}</label>
                   <Input value={newVideo.title_en} onChange={e => setNewVideo({...newVideo, title_en: e.target.value})} placeholder="Video title" className="rounded-xl" />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-sage-800">Video URL (YouTube/Vimeo)</label>
+                  <label className="text-sm font-bold text-sage-800">{t('admin.form.videoUrl')}</label>
                   <Input value={newVideo.url} onChange={e => setNewVideo({...newVideo, url: e.target.value})} placeholder="https://youtube.com/watch?v=..." className="rounded-xl" />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-sage-800">Thumbnail URL</label>
+                  <label className="text-sm font-bold text-sage-800">{t('admin.form.thumbnailUrl')}</label>
                   <Input value={newVideo.thumbnail_url} onChange={e => setNewVideo({...newVideo, thumbnail_url: e.target.value})} placeholder="Image URL for preview" className="rounded-xl" />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-sage-800">Category</label>
+                  <label className="text-sm font-bold text-sage-800">{t('admin.form.category')}</label>
                   <select 
                     value={newVideo.category} 
                     onChange={e => setNewVideo({...newVideo, category: e.target.value})}
@@ -693,8 +693,8 @@ export default function AdminDashboard() {
                 </div>
               </div>
               <div className="p-8 bg-slate-50 flex justify-end gap-4 border-t border-sage-100">
-                <Button variant="ghost" onClick={() => setShowVideoForm(false)} className="rounded-xl font-bold">Cancel</Button>
-                <Button onClick={handleAddVideo} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold px-8">Save Video</Button>
+                <Button variant="ghost" onClick={() => setShowVideoForm(false)} className="rounded-xl font-bold">{t('admin.form.cancel')}</Button>
+                <Button onClick={handleAddVideo} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold px-8">{t('admin.form.saveVideo')}</Button>
               </div>
             </motion.div>
           </div>
@@ -705,26 +705,26 @@ export default function AdminDashboard() {
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-sage-950/60 backdrop-blur-sm" onClick={() => setShowPartnerForm(false)} />
               <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden">
                 <div className="bg-sage-800 p-8 text-white flex justify-between items-center">
-                  <h2 className="text-2xl font-black">Add New Partner</h2>
+                  <h2 className="text-2xl font-black">{t('admin.add.partner')}</h2>
                   <Button variant="ghost" size="icon" onClick={() => setShowPartnerForm(false)} className="text-white/60 hover:text-white">
                     <X className="w-6 h-6" />
                   </Button>
                 </div>
                 <div className="p-8 space-y-6">
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-sage-800">Partner Name</label>
+                    <label className="text-sm font-bold text-sage-800">{t('admin.form.partnerName')}</label>
                     <Input value={newPartner.name} onChange={e => setNewPartner({...newPartner, name: e.target.value})} placeholder="Organization Name" className="rounded-xl" />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-sage-800">Website URL</label>
+                    <label className="text-sm font-bold text-sage-800">{t('admin.form.websiteUrl')}</label>
                     <Input value={newPartner.website_url} onChange={e => setNewPartner({...newPartner, website_url: e.target.value})} placeholder="https://..." className="rounded-xl" />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-sage-800">Logo URL</label>
+                    <label className="text-sm font-bold text-sage-800">{t('admin.form.logoUrl')}</label>
                     <Input value={newPartner.logo_url} onChange={e => setNewPartner({...newPartner, logo_url: e.target.value})} placeholder="Image URL for logo" className="rounded-xl" />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-sage-800">Type</label>
+                    <label className="text-sm font-bold text-sage-800">{t('admin.form.type')}</label>
                     <select 
                       value={newPartner.type} 
                       onChange={e => setNewPartner({...newPartner, type: e.target.value})}
@@ -737,8 +737,8 @@ export default function AdminDashboard() {
                   </div>
                 </div>
                 <div className="p-8 bg-slate-50 flex justify-end gap-4 border-t border-sage-100">
-                  <Button variant="ghost" onClick={() => setShowPartnerForm(false)} className="rounded-xl font-bold">Cancel</Button>
-                  <Button onClick={handleAddPartner} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold px-8">Save Partner</Button>
+                  <Button variant="ghost" onClick={() => setShowPartnerForm(false)} className="rounded-xl font-bold">{t('admin.form.cancel')}</Button>
+                  <Button onClick={handleAddPartner} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold px-8">{t('admin.form.savePartner')}</Button>
                 </div>
               </motion.div>
             </div>
@@ -749,14 +749,14 @@ export default function AdminDashboard() {
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-sage-950/60 backdrop-blur-sm" onClick={() => setShowPhotoForm(false)} />
               <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden">
                 <div className="bg-sage-800 p-8 text-white flex justify-between items-center">
-                  <h2 className="text-2xl font-black">Add New Photo</h2>
+                  <h2 className="text-2xl font-black">{t('admin.add.photo')}</h2>
                   <Button variant="ghost" size="icon" onClick={() => setShowPhotoForm(false)} className="text-white/60 hover:text-white">
                     <X className="w-6 h-6" />
                   </Button>
                 </div>
                 <div className="p-8 space-y-6">
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-sage-800">Photo File</label>
+                    <label className="text-sm font-bold text-sage-800">{t('admin.form.photoFile')}</label>
                     <div className="relative">
                       <input
                         type="file"
@@ -778,24 +778,24 @@ export default function AdminDashboard() {
                         ) : (
                           <div className="text-center">
                             <Upload className="w-8 h-8 mx-auto text-terracotta-400 mb-2" />
-                            <p className="text-sm text-terracotta-500 font-medium">Click to upload photo</p>
-                            <p className="text-xs text-terracotta-400">JPG, PNG, GIF up to 10MB</p>
+                            <p className="text-sm text-terracotta-500 font-medium">{t('admin.form.photoClick')}</p>
+                            <p className="text-xs text-terracotta-400">{t('admin.form.photoSize')}</p>
                           </div>
                         )}
                       </label>
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-sage-800">Caption (EN)</label>
+                    <label className="text-sm font-bold text-sage-800">{t('admin.form.captionEn')}</label>
                     <Input value={newPhoto.caption_en} onChange={e => setNewPhoto({...newPhoto, caption_en: e.target.value})} placeholder="Photo description in English" className="rounded-xl" />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-sage-800">Caption (FR)</label>
+                    <label className="text-sm font-bold text-sage-800">{t('admin.form.captionFr')}</label>
                     <Input value={newPhoto.caption_fr} onChange={e => setNewPhoto({...newPhoto, caption_fr: e.target.value})} placeholder="Description en Français" className="rounded-xl" />
                   </div>
                 </div>
                 <div className="p-8 bg-slate-50 flex justify-end gap-4 border-t border-sage-100">
-                  <Button variant="ghost" onClick={() => { setShowPhotoForm(false); setSelectedFile(null); }} className="rounded-xl font-bold">Cancel</Button>
+                  <Button variant="ghost" onClick={() => { setShowPhotoForm(false); setSelectedFile(null); }} className="rounded-xl font-bold">{t('admin.form.cancel')}</Button>
                   <Button onClick={handleAddPhoto} disabled={uploading || !selectedFile} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold px-8 disabled:opacity-50">
                     {uploading ? (
                       <span className="flex items-center gap-2">
@@ -803,9 +803,9 @@ export default function AdminDashboard() {
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                         </svg>
-                        Uploading...
+                        {t('admin.form.uploading')}
                       </span>
-                    ) : "Upload Photo"}
+                    ) : t('admin.form.uploadPhoto')}
                   </Button>
                 </div>
               </motion.div>

@@ -150,16 +150,16 @@ export default function PayPalDonateButton({
     );
   }
 
-  return (
-    <div className="w-full">
-      <PayPalScriptProvider
-          options={{
-            clientId: clientId,
-            currency: currency,
-            intent: "capture",
-            components: "buttons",
-          }}
-      >
+    return (
+      <div className="w-full">
+        <PayPalScriptProvider
+            options={{
+              clientId: clientId,
+              currency: currency,
+              intent: "CAPTURE",
+              components: "buttons",
+            }}
+        >
         <ButtonsWrapper
           amount={amount}
           currency={currency}

@@ -19,25 +19,25 @@ export async function POST(request: NextRequest) {
 
     const accessToken = await generateAccessToken();
 
-        const orderPayload = {
-          intent: "capture",
-        purchase_units: [
-          {
-            amount: {
-              currency_code: currency,
-              value: amount.toFixed(2),
-            },
-            description: "Donation to Madagascar Turtle Conservation",
-            // Use a simpler custom_id to avoid length or character issues
-            custom_id: `${donorName.substring(0, 30)}|${donorEmail.substring(0, 50)}`,
+    const orderPayload = {
+      intent: "CAPTURE",
+      purchase_units: [
+        {
+          amount: {
+            currency_code: currency,
+            value: amount.toFixed(2),
           },
-        ],
-        application_context: {
-          shipping_preference: "NO_SHIPPING",
-          user_action: "PAY_NOW",
-          brand_name: "Salamandra Nature",
+          description: "Donation to Madagascar Turtle Conservation",
+          // Use a simpler custom_id to avoid length or character issues
+          custom_id: `${donorName.substring(0, 30)}|${donorEmail.substring(0, 50)}`,
         },
-      };
+      ],
+      application_context: {
+        shipping_preference: "NO_SHIPPING",
+        user_action: "PAY_NOW",
+        brand_name: "Salamandra Nature",
+      },
+    };
 
     const response = await fetch(`${PAYPAL_API_URL}/v2/checkout/orders`, {
       method: "POST",

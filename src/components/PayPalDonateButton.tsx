@@ -282,11 +282,13 @@ export default function PayPalDonateButton({
         components: "card-fields",
         dataClientToken: clientToken,
         currency: currency,
-        intent: "capture",
+        intent: "CAPTURE",
+        "data-sdk-integration-source": "react-paypal-js",
       }}
     >
       <PayPalCardFieldsProvider
         createOrder={async () => {
+          console.log("createOrder callback triggered");
           const response = await fetch("/api/paypal/create-order", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -300,13 +302,16 @@ export default function PayPalDonateButton({
 
           if (!response.ok) {
             const errData = await response.json();
+            console.error("Create order failed:", errData);
             throw new Error(errData.details || errData.error || "Failed to create order");
           }
 
           const data = await response.json();
+          console.log("Order created successfully:", data.id);
           return data.id;
         }}
         onApprove={async (data) => {
+          console.log("onApprove callback triggered", data);
           const response = await fetch("/api/paypal/capture-order", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -315,10 +320,12 @@ export default function PayPalDonateButton({
 
           if (!response.ok) {
             const errData = await response.json();
+            console.error("Capture order failed:", errData);
             throw new Error(errData.details || errData.error || "Failed to capture payment");
           }
 
           const captureData = await response.json();
+          console.log("Payment captured successfully:", captureData);
           onSuccess({
             orderId: captureData.id,
             captureId: captureData.captureId,
@@ -327,7 +334,7 @@ export default function PayPalDonateButton({
           });
         }}
         onError={(err) => {
-          console.error("PayPal CardFields error:", err);
+          console.error("PayPal CardFields provider error:", err);
           onError?.(err instanceof Error ? err.message : "Payment failed");
         }}
       >

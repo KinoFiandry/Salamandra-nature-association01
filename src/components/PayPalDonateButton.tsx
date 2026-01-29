@@ -374,8 +374,10 @@ export default function PayPalDonateButton({
           currency={currency}
           onSuccess={onSuccess}
           onError={onError}
-        />
-      </PayPalCardFieldsProvider>
+          />
+        </PayPalCardFieldsProvider>
+      </ScriptErrorWrapper>
     </PayPalScriptProvider>
   );
 }
+

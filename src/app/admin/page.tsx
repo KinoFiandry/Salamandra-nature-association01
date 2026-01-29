@@ -86,25 +86,26 @@ export default function AdminDashboard() {
 
   const fetchData = async () => {
     setLoading(true);
-    const [eventsRes, videosRes, partnersRes, photosRes, visitsRes, historyRes, logsRes, donationsRes] = await Promise.all([
-      supabase.from("events").select("*").order("date", { ascending: true }),
-      supabase.from("videos").select("*").order("created_at", { ascending: false }),
-      supabase.from("partners").select("*").order("name", { ascending: true }),
-      supabase.from("media").select("*").eq("type", "photo").order("created_at", { ascending: false }),
-      supabase.from("site_visits").select("*", { count: 'exact', head: true }),
-      supabase.from("update_history").select("*").order("created_at", { ascending: false }).limit(50),
-      supabase.from("system_logs").select("*").order("created_at", { ascending: false }).limit(50),
-      supabase.from("donations").select("*").order("created_at", { ascending: false })
-    ]);
+      const [eventsRes, videosRes, partnersRes, photosRes, visitsRes, historyRes, logsRes, donationsRes] = await Promise.all([
+        supabase.from("events").select("*").order("date", { ascending: true }),
+        supabase.from("videos").select("*").order("created_at", { ascending: false }),
+        supabase.from("partners").select("*").order("name", { ascending: true }),
+        supabase.from("media").select("*").eq("type", "photo").order("created_at", { ascending: false }),
+        supabase.from("unique_visitors_count").select("*").single(),
+        supabase.from("update_history").select("*").order("created_at", { ascending: false }).limit(50),
+        supabase.from("system_logs").select("*").order("created_at", { ascending: false }).limit(50),
+        supabase.from("donations").select("*").order("created_at", { ascending: false })
+      ]);
 
-    if (eventsRes.data) setEvents(eventsRes.data);
-    if (videosRes.data) setVideos(videosRes.data);
-    if (partnersRes.data) setPartners(partnersRes.data);
-    if (photosRes.data) setPhotos(photosRes.data);
-    if (visitsRes.count !== null) setVisitorCount(visitsRes.count);
-    if (historyRes.data) setHistory(historyRes.data);
-    if (logsRes.data) setLogs(logsRes.data);
-    if (donationsRes.data) setDonations(donationsRes.data);
+      if (eventsRes.data) setEvents(eventsRes.data);
+      if (videosRes.data) setVideos(videosRes.data);
+      if (partnersRes.data) setPartners(partnersRes.data);
+      if (photosRes.data) setPhotos(photosRes.data);
+      if (visitsRes.data) setVisitorCount(visitsRes.data.count);
+      if (historyRes.data) setHistory(historyRes.data);
+      if (logsRes.data) setLogs(logsRes.data);
+      if (donationsRes.data) setDonations(donationsRes.data);
+
     setLoading(false);
   };
 

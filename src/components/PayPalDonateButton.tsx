@@ -225,12 +225,13 @@ export default function PayPalDonateButton({
   }, []);
 
   const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
-  const isConfigured = clientId && clientId !== "YOUR_PAYPAL_CLIENT_ID";
+  const isConfigured = clientId && clientId.length > 20 && !clientId.includes("YOUR_PAYPAL");
 
   if (!isConfigured) {
     return (
       <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 text-sm">
-        PayPal is not yet configured. Please contact the administrator.
+        <p className="font-bold mb-1">PayPal configuration missing</p>
+        <p>Please ensure <code className="bg-amber-100 px-1">NEXT_PUBLIC_PAYPAL_CLIENT_ID</code> is set correctly in your environment.</p>
       </div>
     );
   }

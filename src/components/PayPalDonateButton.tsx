@@ -282,7 +282,7 @@ export default function PayPalDonateButton({
 
           if (!response.ok) {
             const errData = await response.json();
-            throw new Error(errData.error || "Failed to create order");
+            throw new Error(errData.details || errData.error || "Failed to create order");
           }
 
           const data = await response.json();

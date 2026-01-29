@@ -221,19 +221,81 @@ export default function DonatePage() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-10 shadow-xl h-fit flex flex-col items-center justify-center text-center">
-            <h2 className="text-2xl font-bold text-sage-800 mb-6">
+          <div className="bg-white rounded-xl p-10 shadow-xl h-fit">
+            <h2 className="text-2xl font-bold text-sage-800 mb-6 text-center">
               Make a Donation
             </h2>
-            <p className="text-sage-600 mb-8">
-              Click the button below to donate securely via PayPal. You will be able to choose your donation amount on the PayPal page.
-            </p>
             
-            <PayPalDonateButton onSuccess={handlePayPalSuccess} />
-            
-            <div className="mt-8 flex items-center justify-center gap-4 grayscale opacity-50">
-              <img src="https://www.paypalobjects.com/webstatic/mktg/logo/AM_mc_vs_dc_ae.jpg" alt="Credit Cards" className="h-8 w-auto" />
-            </div>
+            {!formSubmitted ? (
+              <form onSubmit={handleFormSubmit} className="space-y-4">
+                <p className="text-sage-600 mb-6 text-center text-sm">
+                  Please provide your information before proceeding to PayPal.
+                </p>
+                <div>
+                  <label htmlFor="name" className="block text-sm font-medium text-sage-700 mb-1">
+                    Full Name
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    required
+                    value={donorName}
+                    onChange={(e) => setDonorName(e.target.value)}
+                    className="w-full px-4 py-2 border border-sage-200 rounded-lg focus:ring-2 focus:ring-terracotta-500 focus:border-terracotta-500 outline-none transition-all"
+                    placeholder="John Doe"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-sage-700 mb-1">
+                    Email Address
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    required
+                    value={donorEmail}
+                    onChange={(e) => setDonorEmail(e.target.value)}
+                    className="w-full px-4 py-2 border border-sage-200 rounded-lg focus:ring-2 focus:ring-terracotta-500 focus:border-terracotta-500 outline-none transition-all"
+                    placeholder="john@example.com"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="w-full bg-sage-800 text-white py-3 rounded-lg font-bold hover:bg-sage-900 transition-colors shadow-lg"
+                >
+                  Continue to Payment
+                </button>
+              </form>
+            ) : (
+              <div className="text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="bg-sage-50 rounded-lg p-4 mb-6 text-left">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-xs font-bold uppercase text-sage-400">Donor Info</span>
+                    <button 
+                      onClick={() => setFormSubmitted(false)}
+                      className="text-xs text-terracotta-600 hover:underline"
+                    >
+                      Edit
+                    </button>
+                  </div>
+                  <p className="font-bold text-sage-800">{donorName}</p>
+                  <p className="text-sm text-sage-600">{donorEmail}</p>
+                </div>
+                
+                <p className="text-sage-600 mb-8 text-sm">
+                  Click the button below to donate securely via PayPal.
+                </p>
+                
+                <PayPalDonateButton 
+                  onSuccess={handlePayPalSuccess} 
+                  customData={JSON.stringify({ name: donorName, email: donorEmail })}
+                />
+                
+                <div className="mt-8 flex items-center justify-center gap-4 grayscale opacity-50">
+                  <img src="https://www.paypalobjects.com/webstatic/mktg/logo/AM_mc_vs_dc_ae.jpg" alt="Credit Cards" className="h-8 w-auto" />
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </main>

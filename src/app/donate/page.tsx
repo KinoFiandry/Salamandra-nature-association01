@@ -7,23 +7,33 @@ import { supabase } from "@/lib/supabase";
 
 export default function DonatePage() {
   const [showSuccess, setShowSuccess] = useState(false);
+  const [donorName, setDonorName] = useState("");
+  const [donorEmail, setDonorEmail] = useState("");
+  const [formSubmitted, setFormSubmitted] = useState(false);
 
-    const handlePayPalSuccess = async (params: any) => {
-      try {
-        // Record donation in Supabase
-        await supabase.from("donations").insert([{
-          amount: parseFloat(params.amt),
-          currency: params.cc,
-          status: 'completed',
-          paypal_order_id: params.tx,
-          donor_name: 'Anonymous Donor',
-          donor_email: 'donor@example.com'
-        }]);
-        setShowSuccess(true);
-      } catch (error) {
+  const handlePayPalSuccess = async (params: any) => {
+    try {
+      // Record donation in Supabase
+      await supabase.from("donations").insert([{
+        amount: parseFloat(params.amt),
+        currency: params.cc,
+        status: 'completed',
+        paypal_order_id: params.tx,
+        donor_name: donorName || 'Anonymous Donor',
+        donor_email: donorEmail || 'donor@example.com'
+      }]);
+      setShowSuccess(true);
+    } catch (error) {
       console.error("Error recording donation:", error);
       // Still show success to user since PayPal transaction completed
       setShowSuccess(true);
+    }
+  };
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (donorName && donorEmail) {
+      setFormSubmitted(true);
     }
   };
 

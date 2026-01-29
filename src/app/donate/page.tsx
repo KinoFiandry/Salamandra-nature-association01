@@ -2,8 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import PayPalDonateButton from "@/components/PayPalDonateButton";
-// Trivial change to trigger re-compilation
+import dynamic from "next/dynamic";
+
+const PayPalDonateButton = dynamic(() => import("@/components/PayPalDonateButton"), {
+  ssr: false,
+  loading: () => <div className="h-14 bg-sage-100 rounded-lg animate-pulse" />,
+});
 
 import { supabase } from "@/lib/supabase";
 

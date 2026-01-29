@@ -19,8 +19,8 @@ export async function POST(request: NextRequest) {
 
     const accessToken = await generateAccessToken();
 
-      const orderPayload = {
-        intent: "CAPTURE",
+        const orderPayload = {
+          intent: "capture",
         purchase_units: [
           {
             amount: {

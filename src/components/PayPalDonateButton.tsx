@@ -34,14 +34,28 @@ function CardFieldsContent({
   const { cardFields } = usePayPalCardFields();
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [fieldsReady, setFieldsReady] = useState(false);
+
+  useEffect(() => {
+    if (cardFields?.submit) {
+      setFieldsReady(true);
+    }
+  }, [cardFields]);
 
   const handleSubmit = async () => {
-    if (!cardFields?.submit || processing) return;
+    console.log("Submit clicked, cardFields ready:", !!cardFields?.submit);
+    if (!cardFields?.submit) {
+      setError("Payment fields are still loading. Please wait a moment.");
+      return;
+    }
+    
+    if (processing) return;
 
     setProcessing(true);
     setError(null);
 
     try {
+      console.log("Triggering cardFields.submit()...");
       await cardFields.submit();
     } catch (err) {
       console.error("Card submit error:", err);
@@ -61,6 +75,7 @@ function CardFieldsContent({
           </label>
           <div className="h-12 border border-sage-200 rounded-lg overflow-hidden bg-white focus-within:ring-2 focus-within:ring-terracotta-500 focus-within:border-terracotta-500 transition-all">
             <PayPalNameField
+              onFocus={() => console.log("Name field focused")}
               style={{
                 input: {
                   "font-size": "16px",
@@ -130,7 +145,7 @@ function CardFieldsContent({
       </div>
 
       {error && (
-        <div className="p-3 bg-red-50 border border-red-100 rounded-lg text-red-600 text-sm">
+        <div className="p-3 bg-red-50 border border-red-100 rounded-lg text-red-600 text-sm animate-shake">
           {error}
         </div>
       )}
@@ -138,7 +153,7 @@ function CardFieldsContent({
       <button
         type="button"
         onClick={handleSubmit}
-        disabled={processing}
+        disabled={processing || (!fieldsReady && !error)}
         className="w-full bg-terracotta-500 text-white py-3.5 rounded-lg font-bold hover:bg-terracotta-600 transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
       >
         {processing ? (
@@ -165,6 +180,8 @@ function CardFieldsContent({
             </svg>
             Processing...
           </>
+        ) : !fieldsReady ? (
+          <>Initialising...</>
         ) : (
           <>
             <svg

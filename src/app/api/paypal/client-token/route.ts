@@ -1,13 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { generateClientToken } from "@/lib/paypal";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
-    const { searchParams } = new URL(request.url);
-    const currency = searchParams.get("currency") || "EUR";
-    const intent = searchParams.get("intent") || "CAPTURE";
-    
-    const clientToken = await generateClientToken(currency, intent);
+    const clientToken = await generateClientToken();
     return NextResponse.json({ client_token: clientToken });
   } catch (error) {
     console.error("PayPal client token error:", error);

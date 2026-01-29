@@ -19,6 +19,10 @@ export async function POST(request: NextRequest) {
 
     const accessToken = await generateAccessToken();
 
+    const host = request.headers.get("host");
+    const protocol = host?.includes("localhost") || host?.includes("orchids.cloud") ? "https" : "https"; // Orchids and local usually use https or can be forced
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || `${protocol}://${host}`;
+
     const orderPayload = {
       intent: "CAPTURE",
       purchase_units: [
@@ -34,8 +38,10 @@ export async function POST(request: NextRequest) {
       payment_source: {
         card: {
           experience_context: {
-            return_url: `${process.env.NEXT_PUBLIC_APP_URL || ""}/donate?success=true`,
-            cancel_url: `${process.env.NEXT_PUBLIC_APP_URL || ""}/donate?cancelled=true`,
+            return_url: `${baseUrl}/donate?success=true`,
+            cancel_url: `${baseUrl}/donate?cancelled=true`,
+            shipping_preference: "NO_SHIPPING",
+            user_action: "PAY_NOW",
           },
         },
       },

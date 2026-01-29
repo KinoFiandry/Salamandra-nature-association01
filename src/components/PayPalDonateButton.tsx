@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState, useEffect } from "react";
+import { useCallback } from "react";
 import {
   PayPalScriptProvider,
   PayPalButtons,
@@ -103,10 +103,9 @@ function ButtonsWrapper({
           layout: "vertical",
           color: "gold",
           shape: "rect",
-          label: "pay",
+          label: "donate",
           tagline: false,
         }}
-        fundingSource={undefined}
         createOrder={handleCreateOrder}
         onApprove={handleApprove}
         onError={(err) => {
@@ -142,39 +141,11 @@ export default function PayPalDonateButton({
   onError,
 }: PayPalDonateButtonProps) {
   const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "";
-  const [clientToken, setClientToken] = useState<string | null>(null);
-  const [loadingToken, setLoadingToken] = useState(true);
-
-  useEffect(() => {
-    async function fetchToken() {
-      try {
-        const res = await fetch(`/api/paypal/client-token?currency=${currency}&intent=CAPTURE`);
-        if (res.ok) {
-          const data = await res.json();
-          setClientToken(data.client_token);
-        }
-      } catch (err) {
-        console.error("Error fetching client token:", err);
-      } finally {
-        setLoadingToken(false);
-      }
-    }
-    fetchToken();
-  }, [currency]);
 
   if (!clientId) {
     return (
       <div className="p-4 bg-yellow-50 border border-yellow-100 rounded-lg text-yellow-700 text-sm">
         PayPal configuration missing. Please check your environment variables.
-      </div>
-    );
-  }
-
-  if (loadingToken) {
-    return (
-      <div className="space-y-3 animate-pulse">
-        <div className="h-14 bg-sage-100 rounded-lg" />
-        <div className="h-14 bg-sage-100 rounded-lg" />
       </div>
     );
   }
@@ -186,9 +157,7 @@ export default function PayPalDonateButton({
           clientId: clientId,
           currency: currency,
           intent: "CAPTURE",
-          dataClientToken: clientToken || undefined,
           components: "buttons",
-          "enable-funding": "card",
         }}
       >
         <ButtonsWrapper

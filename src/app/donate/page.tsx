@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import PayPalDonateButton from "@/components/PayPalDonateButton";
+// Trivial change to trigger re-compilation
+
 import { supabase } from "@/lib/supabase";
 
 const DONATION_AMOUNTS = [10, 25, 50, 100];

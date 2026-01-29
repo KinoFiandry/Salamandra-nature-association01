@@ -7,8 +7,20 @@ const PAYPAL_API_URL = process.env.PAYPAL_ENV === "production"
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { amount, currency = "EUR", donorName, donorEmail } = body;
+    const bodyText = await request.text();
+    if (!bodyText) {
+      return NextResponse.json({ error: "Empty request body" }, { status: 400 });
+    }
+    
+    let body;
+    try {
+      body = JSON.parse(bodyText);
+    } catch (e) {
+      console.error("JSON parse error on body:", bodyText);
+      return NextResponse.json({ error: "Invalid JSON in request body" }, { status: 400 });
+    }
+    
+    const { amount, currency = "EUR", donorName = "Anonymous", donorEmail = "donor@example.com" } = body;
 
     if (!amount || amount <= 0) {
       return NextResponse.json(

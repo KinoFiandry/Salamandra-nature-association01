@@ -153,22 +153,20 @@ export default function PayPalDonateButton({
     return (
       <div className="w-full">
         <PayPalScriptProvider
-            options={{
-              clientId: clientId,
-              currency: currency,
-              intent: "CAPTURE",
-              components: "buttons",
-            }}
+          options={{
+            clientId: clientId,
+            currency: currency,
+          }}
         >
-        <ButtonsWrapper
-          amount={amount}
-          currency={currency}
-          donorName={donorName}
-          donorEmail={donorEmail}
-          onSuccess={onSuccess}
-          onError={onError}
-        />
-      </PayPalScriptProvider>
-    </div>
-  );
+          <ButtonsWrapper
+            amount={amount}
+            currency={currency}
+            donorName={donorName}
+            donorEmail={donorEmail}
+            onSuccess={onSuccess}
+            onError={onError}
+          />
+        </PayPalScriptProvider>
+      </div>
+    );
 }

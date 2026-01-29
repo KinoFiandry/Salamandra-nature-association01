@@ -18,7 +18,6 @@ export async function POST(request: NextRequest) {
     }
 
     const accessToken = await generateAccessToken();
-    console.log("Generating PayPal order for amount:", amount, currency);
 
       const orderPayload = {
         intent: "CAPTURE",
@@ -29,56 +28,47 @@ export async function POST(request: NextRequest) {
               value: amount.toFixed(2),
             },
             description: "Donation to Madagascar Turtle Conservation",
+            // Use a simpler custom_id to avoid length or character issues
+            custom_id: `${donorName.substring(0, 30)}|${donorEmail.substring(0, 50)}`,
           },
         ],
-        payment_source: {
-          paypal: {
-            experience_context: {
-              payment_method_preference: "IMMEDIATE_PAYMENT_CAPITULATION",
-              brand_name: "Madagascar Turtle Conservation",
-              locale: "en-US",
-              landing_page: "GUEST_CHECKOUT",
-              shipping_preference: "NO_SHIPPING",
-              user_action: "PAY_NOW",
-              return_url: "https://example.com/return",
-              cancel_url: "https://example.com/cancel",
-            },
-          },
+        application_context: {
+          shipping_preference: "NO_SHIPPING",
+          user_action: "PAY_NOW",
+          brand_name: "Salamandra Nature",
         },
       };
-
 
     const response = await fetch(`${PAYPAL_API_URL}/v2/checkout/orders`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
-        "PayPal-Request-Id": `donation-${Date.now()}`,
+        "PayPal-Request-Id": `donation-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       },
       body: JSON.stringify(orderPayload),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("PayPal API Error Response:", errorText);
       let errorDetail;
       try {
         errorDetail = JSON.parse(errorText);
       } catch {
         errorDetail = errorText;
       }
+      console.error("PayPal create order detailed error:", JSON.stringify(errorDetail, null, 2));
       
       return NextResponse.json(
         { 
           error: "Failed to create PayPal order", 
-          details: errorDetail?.details?.[0]?.description || errorDetail?.message || "Check server logs"
+          details: errorDetail?.details?.[0]?.description || errorDetail?.message || "Check server logs for details"
         },
         { status: response.status }
       );
     }
 
     const order = await response.json();
-    console.log("PayPal Order Created successfully:", order.id);
     return NextResponse.json({ id: order.id, status: order.status });
   } catch (error) {
     console.error("PayPal create order error:", error);

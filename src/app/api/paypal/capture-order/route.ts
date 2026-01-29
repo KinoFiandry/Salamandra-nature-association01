@@ -18,7 +18,6 @@ export async function POST(request: NextRequest) {
     }
 
     const accessToken = await generateAccessToken();
-    console.log("Capturing PayPal order:", orderId);
 
     const response = await fetch(
       `${PAYPAL_API_URL}/v2/checkout/orders/${orderId}/capture`,
@@ -33,25 +32,24 @@ export async function POST(request: NextRequest) {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("PayPal Capture API Error:", errorText);
       let errorDetail;
       try {
         errorDetail = JSON.parse(errorText);
       } catch {
         errorDetail = errorText;
       }
-      
+      console.error("PayPal capture order detailed error:", JSON.stringify(errorDetail, null, 2));
+
       return NextResponse.json(
         { 
           error: "Failed to capture PayPal order",
-          details: errorDetail?.details?.[0]?.description || errorDetail?.message || "Check server logs"
+          details: errorDetail?.details?.[0]?.description || errorDetail?.message || "Check server logs for details"
         },
         { status: response.status }
       );
     }
 
     const captureData = await response.json();
-    console.log("PayPal Order Captured successfully:", orderId);
 
     const capture = captureData.purchase_units?.[0]?.payments?.captures?.[0];
     

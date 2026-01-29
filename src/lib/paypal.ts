@@ -41,7 +41,7 @@ export async function generateClientToken(currency: string = "EUR", intent: stri
     },
     body: JSON.stringify({
       currency: currency.toUpperCase(),
-      intent: intent.toUpperCase(),
+      intent: intent.toLowerCase(),
     }),
   });
 

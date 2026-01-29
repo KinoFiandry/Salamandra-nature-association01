@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import {
   PayPalScriptProvider,
   PayPalButtons,
@@ -27,27 +27,21 @@ function ButtonsWrapper({
   }) => void;
   onError?: (error: string) => void;
 }) {
-  const [{ isRejected, isPending, options }, dispatch] = usePayPalScriptReducer();
+  const [{ isRejected, isPending }] = usePayPalScriptReducer();
 
   const handleCreateOrder = useCallback(async () => {
-    try {
-      const res = await fetch("/api/paypal/create-order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount, currency, donorName, donorEmail }),
-      });
-      if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(errData.error || "Order creation failed");
-      }
-      const data = await res.json();
-      return data.id;
-    } catch (err) {
-      console.error("Create order error:", err);
-      onError?.(err instanceof Error ? err.message : "Failed to initialize payment");
-      throw err;
+    const res = await fetch("/api/paypal/create-order", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ amount, currency, donorName, donorEmail }),
+    });
+    if (!res.ok) {
+      const errData = await res.json();
+      throw new Error(errData.error || "Order creation failed");
     }
-  }, [amount, currency, donorName, donorEmail, onError]);
+    const data = await res.json();
+    return data.id;
+  }, [amount, currency, donorName, donorEmail]);
 
   const handleApprove = useCallback(
     async (data: { orderID: string }) => {
@@ -81,8 +75,8 @@ function ButtonsWrapper({
       <div className="p-4 bg-red-50 border border-red-100 rounded-lg text-red-600 text-sm">
         <p className="font-bold mb-1">Failed to load Payment System</p>
         <p>
-          Please check your internet connection or disable any ad-blockers.
-          Using an <strong>Incognito/Private window</strong> is highly recommended for sandbox testing.
+          Please check your internet connection or disable any ad-blockers that
+          might be preventing the payment from loading.
         </p>
       </div>
     );
@@ -98,34 +92,29 @@ function ButtonsWrapper({
   }
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-4">
-        <PayPalButtons
-          style={{
-            layout: "vertical",
-            color: "gold",
-            shape: "rect",
-            label: "pay",
-            tagline: false,
-          }}
-          createOrder={handleCreateOrder}
-          onApprove={handleApprove}
-          onError={(err) => {
-            console.error("PayPal Button Error:", err);
-            onError?.("Payment failed to initialize. If 'Debit or Credit Card' doesn't respond, please try the PayPal button or use Incognito mode.");
-          }}
-          forceReRender={[amount, currency]}
-        />
-      </div>
-
-      <div className="relative py-4">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-sage-200"></div>
-        </div>
-        <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-white px-2 text-sage-400 font-medium">Safe & Secure</span>
-        </div>
-      </div>
+    <div className="space-y-4">
+      <p className="text-sm text-sage-600 mb-2 text-center">
+        Secure payment via PayPal. You can pay with your PayPal account or{" "}
+        <strong>click &quot;Debit or Credit Card&quot;</strong> to pay directly
+        (no PayPal account required).
+      </p>
+      <PayPalButtons
+        style={{
+          layout: "vertical",
+          color: "gold",
+          shape: "rect",
+          label: "pay",
+          tagline: false,
+        }}
+        fundingSource={undefined}
+        createOrder={handleCreateOrder}
+        onApprove={handleApprove}
+        onError={(err) => {
+          console.error("PayPal Button Error:", err);
+          onError?.("Payment failed to initialize");
+        }}
+        forceReRender={[amount, currency]}
+      />
     </div>
   );
 }
@@ -157,22 +146,20 @@ export default function PayPalDonateButton({
   if (!clientId) {
     return (
       <div className="p-4 bg-yellow-50 border border-yellow-100 rounded-lg text-yellow-700 text-sm">
-        PayPal configuration missing.
+        PayPal configuration missing. Please check your environment variables.
       </div>
     );
   }
 
   return (
     <div className="w-full">
-      <PayPalScriptProvider
-        options={{
-          clientId: clientId,
-          currency: currency,
-          intent: "CAPTURE",
-          components: "buttons",
-          ...(clientId.startsWith("A") ? { buyerCountry: "US" } : {}),
-        }}
-      >
+        <PayPalScriptProvider
+          options={{
+            clientId: clientId,
+            currency: currency,
+            intent: "CAPTURE",
+          }}
+        >
         <ButtonsWrapper
           amount={amount}
           currency={currency}

@@ -1,43 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
-
-declare global {
-  interface Window {
-    paypal?: {
-      CardFields: (options: CardFieldsOptions) => CardFieldsInstance;
-    };
-  }
-}
-
-interface CardFieldsOptions {
-  createOrder: () => Promise<string>;
-  onApprove: (data: { orderID: string }) => Promise<void>;
-  onError?: (err: unknown) => void;
-  style?: Record<string, Record<string, string>>;
-  inputEvents?: {
-    onChange?: (state: CardFieldState) => void;
-    onFocus?: (state: CardFieldState) => void;
-    onBlur?: (state: CardFieldState) => void;
-  };
-}
-
-interface CardFieldsInstance {
-  isEligible: () => boolean;
-  NameField: () => { render: (selector: string) => Promise<void> };
-  NumberField: () => { render: (selector: string) => Promise<void> };
-  ExpiryField: () => { render: (selector: string) => Promise<void> };
-  CVVField: () => { render: (selector: string) => Promise<void> };
-  submit: (options?: { billingAddress?: object }) => Promise<void>;
-  getState: () => CardFieldState;
-}
-
-interface CardFieldState {
-  cards: Array<{ type: string }>;
-  errors: string[];
-  isFormValid: boolean;
-  fields: Record<string, { isValid: boolean; isEmpty: boolean; isFocused: boolean }>;
-}
+import { useEffect, useState, useCallback } from "react";
+import {
+  PayPalScriptProvider,
+  PayPalCardFieldsProvider,
+  PayPalNameField,
+  PayPalNumberField,
+  PayPalExpiryField,
+  PayPalCVVField,
+  usePayPalCardFields,
+} from "@paypal/react-paypal-js";
 
 interface PayPalCardFormProps {
   amount: number;
@@ -53,222 +25,70 @@ interface PayPalCardFormProps {
   onError?: (error: string) => void;
 }
 
-export default function PayPalDonateButton({
+function CardFieldsContent({
   amount,
-  currency = "EUR",
-  donorName,
-  donorEmail,
+  currency,
   onSuccess,
   onError,
-}: PayPalCardFormProps) {
-  const [loading, setLoading] = useState(true);
+}: Omit<PayPalCardFormProps, "donorName" | "donorEmail">) {
+  const { cardFields } = usePayPalCardFields();
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isEligible, setIsEligible] = useState(true);
-  const [formValid, setFormValid] = useState(false);
-  const cardFieldsRef = useRef<CardFieldsInstance | null>(null);
-  const initialized = useRef(false);
 
-  const handleSubmit = useCallback(async () => {
-    if (!cardFieldsRef.current || processing) return;
+  const handleSubmit = async () => {
+    if (!cardFields?.submit || processing) return;
 
     setProcessing(true);
     setError(null);
 
     try {
-      await cardFieldsRef.current.submit();
+      await cardFields.submit();
     } catch (err) {
       console.error("Card submit error:", err);
-      setError("Payment failed. Please check your card details.");
+      const msg = err instanceof Error ? err.message : "Payment failed. Please check your card details.";
+      setError(msg);
+      onError?.(msg);
       setProcessing(false);
     }
-  }, [processing]);
-
-  useEffect(() => {
-    if (initialized.current) return;
-    initialized.current = true;
-
-    const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
-    if (!clientId || clientId === "YOUR_PAYPAL_CLIENT_ID") {
-      setError("PayPal Client ID is not configured.");
-      setLoading(false);
-      return;
-    }
-
-    const loadScript = () => {
-      return new Promise<void>((resolve, reject) => {
-        if (window.paypal?.CardFields) {
-          resolve();
-          return;
-        }
-
-        const existingScript = document.querySelector(
-          'script[src*="paypal.com/sdk/js"]'
-        );
-        if (existingScript) {
-          existingScript.addEventListener("load", () => resolve());
-          return;
-        }
-
-        const script = document.createElement("script");
-        script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&components=card-fields&currency=${currency}`;
-        script.async = true;
-        script.onload = () => resolve();
-        script.onerror = () => reject(new Error("Failed to load PayPal SDK"));
-        document.body.appendChild(script);
-      });
-    };
-
-    const initCardFields = async () => {
-      try {
-        await loadScript();
-
-        if (!window.paypal?.CardFields) {
-          throw new Error("PayPal CardFields not available");
-        }
-
-        const cardFields = window.paypal.CardFields({
-          style: {
-            input: {
-              "font-size": "16px",
-              "font-family": "'Inter', system-ui, sans-serif",
-              color: "#1f2937",
-              padding: "12px",
-            },
-            ".invalid": {
-              color: "#dc2626",
-            },
-            ":focus": {
-              color: "#1f2937",
-            },
-          },
-          createOrder: async () => {
-            const response = await fetch("/api/paypal/create-order", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                amount,
-                currency,
-                donorName,
-                donorEmail,
-              }),
-            });
-
-            if (!response.ok) {
-              const errData = await response.json();
-              throw new Error(errData.error || "Failed to create order");
-            }
-
-            const data = await response.json();
-            return data.id;
-          },
-          onApprove: async (data: { orderID: string }) => {
-            const response = await fetch("/api/paypal/capture-order", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ orderId: data.orderID }),
-            });
-
-            if (!response.ok) {
-              const errData = await response.json();
-              throw new Error(errData.error || "Failed to capture payment");
-            }
-
-            const captureData = await response.json();
-            setProcessing(false);
-            onSuccess({
-              orderId: captureData.id,
-              captureId: captureData.captureId,
-              amount: captureData.amount,
-              currency: captureData.currency,
-            });
-          },
-          onError: (err: unknown) => {
-            console.error("PayPal CardFields error:", err);
-            const errorMessage =
-              err instanceof Error ? err.message : "Payment failed";
-            setError(errorMessage);
-            setProcessing(false);
-            onError?.(errorMessage);
-          },
-          inputEvents: {
-            onChange: (state: CardFieldState) => {
-              setFormValid(state.isFormValid);
-            },
-          },
-        });
-
-        if (!cardFields.isEligible()) {
-          setIsEligible(false);
-          setError(
-            "Card payments are not available in your region. Please contact us for alternative payment methods."
-          );
-          setLoading(false);
-          return;
-        }
-
-        cardFieldsRef.current = cardFields;
-
-        await Promise.all([
-          cardFields.NameField().render("#card-name-field"),
-          cardFields.NumberField().render("#card-number-field"),
-          cardFields.ExpiryField().render("#card-expiry-field"),
-          cardFields.CVVField().render("#card-cvv-field"),
-        ]);
-
-        setLoading(false);
-      } catch (err) {
-        console.error("CardFields init error:", err);
-        setError(
-          err instanceof Error ? err.message : "Failed to initialize payment form"
-        );
-        setLoading(false);
-      }
-    };
-
-    initCardFields();
-  }, [amount, currency, donorName, donorEmail, onSuccess, onError]);
-
-  if (error && !isEligible) {
-    return (
-      <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 text-sm">
-        {error}
-      </div>
-    );
-  }
+  };
 
   return (
     <div className="w-full space-y-4">
-      {loading && (
-        <div className="space-y-3 animate-pulse">
-          <div className="h-12 bg-sage-100 rounded-lg" />
-          <div className="h-12 bg-sage-100 rounded-lg" />
-          <div className="grid grid-cols-2 gap-3">
-            <div className="h-12 bg-sage-100 rounded-lg" />
-            <div className="h-12 bg-sage-100 rounded-lg" />
-          </div>
-        </div>
-      )}
-
-      <div className={loading ? "hidden" : "space-y-3"}>
+      <div className="space-y-3">
         <div>
           <label className="block text-sm font-medium text-sage-700 mb-1.5">
             Cardholder Name
           </label>
-          <div
-            id="card-name-field"
-            className="h-12 border border-sage-200 rounded-lg overflow-hidden bg-white focus-within:ring-2 focus-within:ring-terracotta-500 focus-within:border-terracotta-500 transition-all"
-          />
+          <div className="h-12 border border-sage-200 rounded-lg overflow-hidden bg-white focus-within:ring-2 focus-within:ring-terracotta-500 focus-within:border-terracotta-500 transition-all">
+            <PayPalNameField
+              style={{
+                input: {
+                  "font-size": "16px",
+                  "font-family": "inherit",
+                  color: "#1f2937",
+                  padding: "12px",
+                },
+              }}
+            />
+          </div>
         </div>
 
         <div>
           <label className="block text-sm font-medium text-sage-700 mb-1.5">
             Card Number
           </label>
-          <div
-            id="card-number-field"
-            className="h-12 border border-sage-200 rounded-lg overflow-hidden bg-white focus-within:ring-2 focus-within:ring-terracotta-500 focus-within:border-terracotta-500 transition-all"
-          />
+          <div className="h-12 border border-sage-200 rounded-lg overflow-hidden bg-white focus-within:ring-2 focus-within:ring-terracotta-500 focus-within:border-terracotta-500 transition-all">
+            <PayPalNumberField
+              style={{
+                input: {
+                  "font-size": "16px",
+                  "font-family": "inherit",
+                  color: "#1f2937",
+                  padding: "12px",
+                },
+              }}
+            />
+          </div>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
@@ -276,19 +96,35 @@ export default function PayPalDonateButton({
             <label className="block text-sm font-medium text-sage-700 mb-1.5">
               Expiry Date
             </label>
-            <div
-              id="card-expiry-field"
-              className="h-12 border border-sage-200 rounded-lg overflow-hidden bg-white focus-within:ring-2 focus-within:ring-terracotta-500 focus-within:border-terracotta-500 transition-all"
-            />
+            <div className="h-12 border border-sage-200 rounded-lg overflow-hidden bg-white focus-within:ring-2 focus-within:ring-terracotta-500 focus-within:border-terracotta-500 transition-all">
+              <PayPalExpiryField
+                style={{
+                  input: {
+                    "font-size": "16px",
+                    "font-family": "inherit",
+                    color: "#1f2937",
+                    padding: "12px",
+                  },
+                }}
+              />
+            </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-sage-700 mb-1.5">
               CVV
             </label>
-            <div
-              id="card-cvv-field"
-              className="h-12 border border-sage-200 rounded-lg overflow-hidden bg-white focus-within:ring-2 focus-within:ring-terracotta-500 focus-within:border-terracotta-500 transition-all"
-            />
+            <div className="h-12 border border-sage-200 rounded-lg overflow-hidden bg-white focus-within:ring-2 focus-within:ring-terracotta-500 focus-within:border-terracotta-500 transition-all">
+              <PayPalCVVField
+                style={{
+                  input: {
+                    "font-size": "16px",
+                    "font-family": "inherit",
+                    color: "#1f2937",
+                    padding: "12px",
+                  },
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -302,7 +138,7 @@ export default function PayPalDonateButton({
       <button
         type="button"
         onClick={handleSubmit}
-        disabled={loading || processing || !formValid}
+        disabled={processing}
         className="w-full bg-terracotta-500 text-white py-3.5 rounded-lg font-bold hover:bg-terracotta-600 transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
       >
         {processing ? (
@@ -355,5 +191,135 @@ export default function PayPalDonateButton({
         stored on our servers.
       </p>
     </div>
+  );
+}
+
+export default function PayPalDonateButton({
+  amount,
+  currency = "EUR",
+  donorName,
+  donorEmail,
+  onSuccess,
+  onError,
+}: PayPalCardFormProps) {
+  const [clientToken, setClientToken] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchClientToken() {
+      try {
+        const response = await fetch("/api/paypal/client-token");
+        const data = await response.json();
+        if (data.client_token) {
+          setClientToken(data.client_token);
+        } else {
+          throw new Error(data.error || "Failed to load PayPal client token");
+        }
+      } catch (err) {
+        console.error("Client token fetch error:", err);
+        setError("Payment system is currently unavailable. Please try again later.");
+      }
+    }
+
+    fetchClientToken();
+  }, []);
+
+  const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
+  const isConfigured = clientId && clientId !== "YOUR_PAYPAL_CLIENT_ID";
+
+  if (!isConfigured) {
+    return (
+      <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 text-sm">
+        PayPal is not yet configured. Please contact the administrator.
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-4 bg-red-50 border border-red-100 rounded-lg text-red-600 text-sm">
+        {error}
+      </div>
+    );
+  }
+
+  if (!clientToken) {
+    return (
+      <div className="space-y-3 animate-pulse">
+        <div className="h-12 bg-sage-100 rounded-lg" />
+        <div className="h-12 bg-sage-100 rounded-lg" />
+        <div className="grid grid-cols-2 gap-3">
+          <div className="h-12 bg-sage-100 rounded-lg" />
+          <div className="h-12 bg-sage-100 rounded-lg" />
+        </div>
+        <div className="h-12 bg-sage-200 rounded-lg" />
+      </div>
+    );
+  }
+
+  return (
+    <PayPalScriptProvider
+      options={{
+        clientId: clientId!,
+        components: "card-fields",
+        dataClientToken: clientToken,
+        currency: currency,
+        intent: "capture",
+      }}
+    >
+      <PayPalCardFieldsProvider
+        createOrder={async () => {
+          const response = await fetch("/api/paypal/create-order", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              amount,
+              currency,
+              donorName,
+              donorEmail,
+            }),
+          });
+
+          if (!response.ok) {
+            const errData = await response.json();
+            throw new Error(errData.error || "Failed to create order");
+          }
+
+          const data = await response.json();
+          return data.id;
+        }}
+        onApprove={async (data) => {
+          const response = await fetch("/api/paypal/capture-order", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ orderId: data.orderID }),
+          });
+
+          if (!response.ok) {
+            const errData = await response.json();
+            throw new Error(errData.error || "Failed to capture payment");
+          }
+
+          const captureData = await response.json();
+          onSuccess({
+            orderId: captureData.id,
+            captureId: captureData.captureId,
+            amount: captureData.amount,
+            currency: captureData.currency,
+          });
+        }}
+        onError={(err) => {
+          console.error("PayPal CardFields error:", err);
+          onError?.(err instanceof Error ? err.message : "Payment failed");
+        }}
+      >
+        <CardFieldsContent
+          amount={amount}
+          currency={currency}
+          onSuccess={onSuccess}
+          onError={onError}
+        />
+      </PayPalCardFieldsProvider>
+    </PayPalScriptProvider>
   );
 }

@@ -52,11 +52,21 @@ export async function POST(request: NextRequest) {
     });
 
     if (!response.ok) {
-      const error = await response.text();
-      console.error("PayPal create order error:", error);
+      const errorText = await response.text();
+      let errorDetail;
+      try {
+        errorDetail = JSON.parse(errorText);
+      } catch {
+        errorDetail = errorText;
+      }
+      console.error("PayPal create order detailed error:", JSON.stringify(errorDetail, null, 2));
+      
       return NextResponse.json(
-        { error: "Failed to create PayPal order" },
-        { status: 500 }
+        { 
+          error: "Failed to create PayPal order", 
+          details: errorDetail?.details?.[0]?.description || errorDetail?.message || "Check server logs for details"
+        },
+        { status: response.status }
       );
     }
 

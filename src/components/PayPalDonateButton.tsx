@@ -98,14 +98,14 @@ function ButtonsWrapper({
         <strong>click &quot;Debit or Credit Card&quot;</strong> to pay directly
         (no PayPal account required).
       </p>
-      <PayPalButtons
-        style={{
-          layout: "vertical",
-          color: "gold",
-          shape: "rect",
-          label: "donate",
-          tagline: false,
-        }}
+        <PayPalButtons
+          style={{
+            layout: "vertical",
+            color: "gold",
+            shape: "rect",
+            label: "paypal",
+            tagline: false,
+          }}
         createOrder={handleCreateOrder}
         onApprove={handleApprove}
         onError={(err) => {
@@ -152,12 +152,13 @@ export default function PayPalDonateButton({
 
     return (
       <div className="w-full">
-        <PayPalScriptProvider
-          options={{
-            clientId: clientId,
-            currency: currency,
-          }}
-        >
+          <PayPalScriptProvider
+            options={{
+              clientId: clientId,
+              currency: currency,
+              intent: "capture",
+            }}
+          >
           <ButtonsWrapper
             amount={amount}
             currency={currency}

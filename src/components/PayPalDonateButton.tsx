@@ -297,7 +297,7 @@ export default function PayPalDonateButton({
 
           if (!response.ok) {
             const errData = await response.json();
-            throw new Error(errData.error || "Failed to capture payment");
+            throw new Error(errData.details || errData.error || "Failed to capture payment");
           }
 
           const captureData = await response.json();

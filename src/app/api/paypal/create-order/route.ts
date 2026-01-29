@@ -20,18 +20,33 @@ export async function POST(request: NextRequest) {
     const accessToken = await generateAccessToken();
     console.log("Generating PayPal order for amount:", amount, currency);
 
-    const orderPayload = {
-      intent: "CAPTURE",
-      purchase_units: [
-        {
-          amount: {
-            currency_code: currency,
-            value: amount.toFixed(2),
+      const orderPayload = {
+        intent: "CAPTURE",
+        purchase_units: [
+          {
+            amount: {
+              currency_code: currency,
+              value: amount.toFixed(2),
+            },
+            description: "Donation to Madagascar Turtle Conservation",
           },
-          description: "Donation to Madagascar Turtle Conservation",
+        ],
+        payment_source: {
+          paypal: {
+            experience_context: {
+              payment_method_preference: "IMMEDIATE_PAYMENT_CAPITULATION",
+              brand_name: "Madagascar Turtle Conservation",
+              locale: "en-US",
+              landing_page: "GUEST_CHECKOUT",
+              shipping_preference: "NO_SHIPPING",
+              user_action: "PAY_NOW",
+              return_url: "https://example.com/return",
+              cancel_url: "https://example.com/cancel",
+            },
+          },
         },
-      ],
-    };
+      };
+
 
     const response = await fetch(`${PAYPAL_API_URL}/v2/checkout/orders`, {
       method: "POST",

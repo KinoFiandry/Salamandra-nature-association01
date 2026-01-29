@@ -12,7 +12,7 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
 
-  if (pathname === "/donate") {
+  if (pathname === "/donate" || pathname?.startsWith("/admin")) {
     return null;
   }
 

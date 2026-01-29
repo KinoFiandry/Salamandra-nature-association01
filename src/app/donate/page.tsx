@@ -5,34 +5,54 @@ import Link from "next/link";
 import PayPalDonateButton from "@/components/PayPalDonateButton";
 import { supabase } from "@/lib/supabase";
 
+const DONATION_AMOUNTS = [10, 25, 50, 100];
+
 export default function DonatePage() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [donorName, setDonorName] = useState("");
   const [donorEmail, setDonorEmail] = useState("");
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [selectedAmount, setSelectedAmount] = useState<number>(25);
+  const [customAmount, setCustomAmount] = useState("");
+  const [donationData, setDonationData] = useState<{
+    amount: string;
+    orderId: string;
+  } | null>(null);
 
-  const handlePayPalSuccess = async (params: any) => {
+  const actualAmount =
+    customAmount && parseFloat(customAmount) > 0
+      ? parseFloat(customAmount)
+      : selectedAmount;
+
+  const handlePayPalSuccess = async (data: {
+    orderId: string;
+    captureId: string;
+    amount: string;
+    currency: string;
+  }) => {
     try {
-      // Record donation in Supabase
-      await supabase.from("donations").insert([{
-        amount: parseFloat(params.amt),
-        currency: params.cc,
-        status: 'completed',
-        paypal_order_id: params.tx,
-        donor_name: donorName || 'Anonymous Donor',
-        donor_email: donorEmail || 'donor@example.com'
-      }]);
+      await supabase.from("donations").insert([
+        {
+          amount: parseFloat(data.amount),
+          currency: data.currency,
+          status: "completed",
+          paypal_order_id: data.orderId,
+          donor_name: donorName || "Anonymous Donor",
+          donor_email: donorEmail || "donor@example.com",
+        },
+      ]);
+      setDonationData({ amount: data.amount, orderId: data.orderId });
       setShowSuccess(true);
     } catch (error) {
       console.error("Error recording donation:", error);
-      // Still show success to user since PayPal transaction completed
+      setDonationData({ amount: data.amount, orderId: data.orderId });
       setShowSuccess(true);
     }
   };
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (donorName && donorEmail) {
+    if (donorName && donorEmail && actualAmount > 0) {
       setFormSubmitted(true);
     }
   };
@@ -56,17 +76,19 @@ export default function DonatePage() {
               />
             </svg>
           </div>
-          <h1 className="text-3xl font-bold text-sage-800 mb-4">
-            Thank You!
-          </h1>
+          <h1 className="text-3xl font-bold text-sage-800 mb-4">Thank You!</h1>
           <p className="text-sage-700 mb-6">
-            Your generous donation will help protect Madagascar&apos;s endangered
-            turtles. Every contribution makes a difference in our conservation
-            efforts.
+            Your generous donation of{" "}
+            <span className="font-bold text-terracotta-600">
+              €{donationData?.amount || actualAmount}
+            </span>{" "}
+            will help protect Madagascar&apos;s endangered turtles. Every
+            contribution makes a difference in our conservation efforts.
           </p>
           <div className="bg-sage-50 rounded-lg p-4 mb-6">
             <p className="text-sm text-sage-600">
-              A confirmation has been sent to your PayPal account.
+              A confirmation email has been sent to{" "}
+              <span className="font-medium">{donorEmail}</span>.
             </p>
           </div>
           <Link
@@ -86,7 +108,11 @@ export default function DonatePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center gap-3">
-              <img src="/images/logo.png" alt="Salamandra Nature" className="h-12 w-auto" />
+              <img
+                src="/images/logo.png"
+                alt="Salamandra Nature"
+                className="h-12 w-auto"
+              />
             </Link>
             <Link
               href="/"
@@ -116,123 +142,105 @@ export default function DonatePage() {
                 Your Impact
               </h2>
               <ul className="space-y-4">
-                <li className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-terracotta-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <svg
-                      className="w-4 h-4 text-terracotta-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                  </div>
-                  <div>
-                    <span className="font-medium text-sage-800">10€</span>
-                    <p className="text-sm text-sage-600">
-                      Provides food for rescued turtles for one week
-                    </p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-terracotta-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <svg
-                      className="w-4 h-4 text-terracotta-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                  </div>
-                  <div>
-                    <span className="font-medium text-sage-800">25€</span>
-                    <p className="text-sm text-sage-600">
-                      Supports nest protection for one nesting season
-                    </p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-terracotta-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <svg
-                      className="w-4 h-4 text-terracotta-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                  </div>
-                  <div>
-                    <span className="font-medium text-sage-800">50€</span>
-                    <p className="text-sm text-sage-600">
-                      Funds community education workshops
-                    </p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-terracotta-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <svg
-                      className="w-4 h-4 text-terracotta-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                  </div>
-                  <div>
-                    <span className="font-medium text-sage-800">100€</span>
-                    <p className="text-sm text-sage-600">
-                      Sponsors habitat restoration for one hectare
-                    </p>
-                  </div>
-                </li>
+                {[
+                  { amount: "10€", desc: "Provides food for rescued turtles for one week" },
+                  { amount: "25€", desc: "Supports nest protection for one nesting season" },
+                  { amount: "50€", desc: "Funds community education workshops" },
+                  { amount: "100€", desc: "Sponsors habitat restoration for one hectare" },
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-3">
+                    <div className="w-8 h-8 bg-terracotta-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <svg
+                        className="w-4 h-4 text-terracotta-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <span className="font-medium text-sage-800">
+                        {item.amount}
+                      </span>
+                      <p className="text-sm text-sage-600">{item.desc}</p>
+                    </div>
+                  </li>
+                ))}
               </ul>
             </div>
 
             <div className="bg-sage-700 text-white rounded-xl p-6">
               <h3 className="font-semibold mb-2">100% Secure Donation</h3>
               <p className="text-sage-100 text-sm">
-                Your payment information is encrypted and secure. We use PayPal,
-                a trusted payment processor used worldwide. You can donate using
-                your PayPal balance or credit card.
+                Your payment information is encrypted and secure. Pay directly
+                with your credit or debit card - no PayPal account required.
+                Funds go directly to our association&apos;s PayPal account.
               </p>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-10 shadow-xl h-fit">
+          <div className="bg-white rounded-xl p-8 shadow-xl h-fit">
             <h2 className="text-2xl font-bold text-sage-800 mb-6 text-center">
               Make a Donation
             </h2>
-            
+
             {!formSubmitted ? (
-              <form onSubmit={handleFormSubmit} className="space-y-4">
-                <p className="text-sage-600 mb-6 text-center text-sm">
-                  Please provide your information before proceeding to PayPal.
-                </p>
+              <form onSubmit={handleFormSubmit} className="space-y-5">
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-sage-700 mb-1">
+                  <label className="block text-sm font-medium text-sage-700 mb-2">
+                    Select Amount
+                  </label>
+                  <div className="grid grid-cols-4 gap-2">
+                    {DONATION_AMOUNTS.map((amt) => (
+                      <button
+                        key={amt}
+                        type="button"
+                        onClick={() => {
+                          setSelectedAmount(amt);
+                          setCustomAmount("");
+                        }}
+                        className={`py-3 rounded-lg font-semibold transition-all ${
+                          selectedAmount === amt && !customAmount
+                            ? "bg-terracotta-500 text-white shadow-md"
+                            : "bg-sage-100 text-sage-700 hover:bg-sage-200"
+                        }`}
+                      >
+                        €{amt}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="mt-3">
+                    <label className="block text-xs text-sage-500 mb-1">
+                      Or enter custom amount
+                    </label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sage-500 font-medium">
+                        €
+                      </span>
+                      <input
+                        type="number"
+                        min="1"
+                        step="0.01"
+                        value={customAmount}
+                        onChange={(e) => setCustomAmount(e.target.value)}
+                        className="w-full pl-8 pr-4 py-2 border border-sage-200 rounded-lg focus:ring-2 focus:ring-terracotta-500 focus:border-terracotta-500 outline-none transition-all"
+                        placeholder="Custom amount"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-medium text-sage-700 mb-1"
+                  >
                     Full Name
                   </label>
                   <input
@@ -246,7 +254,10 @@ export default function DonatePage() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-sage-700 mb-1">
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-medium text-sage-700 mb-1"
+                  >
                     Email Address
                   </label>
                   <input
@@ -259,19 +270,32 @@ export default function DonatePage() {
                     placeholder="john@example.com"
                   />
                 </div>
+
+                <div className="bg-sage-50 rounded-lg p-3 text-center">
+                  <p className="text-sage-700">
+                    Donation amount:{" "}
+                    <span className="font-bold text-terracotta-600 text-xl">
+                      €{actualAmount.toFixed(2)}
+                    </span>
+                  </p>
+                </div>
+
                 <button
                   type="submit"
-                  className="w-full bg-sage-800 text-white py-3 rounded-lg font-bold hover:bg-sage-900 transition-colors shadow-lg"
+                  disabled={actualAmount <= 0}
+                  className="w-full bg-sage-800 text-white py-3 rounded-lg font-bold hover:bg-sage-900 transition-colors shadow-lg disabled:opacity-50"
                 >
                   Continue to Payment
                 </button>
               </form>
             ) : (
-              <div className="text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <div className="bg-sage-50 rounded-lg p-4 mb-6 text-left">
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-xs font-bold uppercase text-sage-400">Donor Info</span>
-                    <button 
+                    <span className="text-xs font-bold uppercase text-sage-400">
+                      Donation Details
+                    </span>
+                    <button
                       onClick={() => setFormSubmitted(false)}
                       className="text-xs text-terracotta-600 hover:underline"
                     >
@@ -280,19 +304,26 @@ export default function DonatePage() {
                   </div>
                   <p className="font-bold text-sage-800">{donorName}</p>
                   <p className="text-sm text-sage-600">{donorEmail}</p>
+                  <p className="text-lg font-bold text-terracotta-600 mt-2">
+                    €{actualAmount.toFixed(2)}
+                  </p>
                 </div>
-                
-                <p className="text-sage-600 mb-8 text-sm">
-                  Click the button below to donate securely via PayPal.
-                </p>
-                
-                <PayPalDonateButton 
-                  onSuccess={handlePayPalSuccess} 
-                  customData={JSON.stringify({ name: donorName, email: donorEmail })}
+
+                <PayPalDonateButton
+                  amount={actualAmount}
+                  currency="EUR"
+                  donorName={donorName}
+                  donorEmail={donorEmail}
+                  onSuccess={handlePayPalSuccess}
+                  onError={(err) => console.error("Payment error:", err)}
                 />
-                
-                <div className="mt-8 flex items-center justify-center gap-4 grayscale opacity-50">
-                  <img src="https://www.paypalobjects.com/webstatic/mktg/logo/AM_mc_vs_dc_ae.jpg" alt="Credit Cards" className="h-8 w-auto" />
+
+                <div className="mt-6 flex items-center justify-center gap-3 grayscale opacity-50">
+                  <img
+                    src="https://www.paypalobjects.com/webstatic/mktg/logo/AM_mc_vs_dc_ae.jpg"
+                    alt="Credit Cards"
+                    className="h-6 w-auto"
+                  />
                 </div>
               </div>
             )}

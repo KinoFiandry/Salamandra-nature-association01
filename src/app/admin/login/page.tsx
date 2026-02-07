@@ -31,16 +31,16 @@ export default function AdminLogin() {
         .single();
 
       if (dbError || !data) {
-        setError(t('admin.login.error.invalid'));
-        setLoading(false);
-        return;
-      }
+          setError(t('login.error'));
+          setLoading(false);
+          return;
+        }
 
       localStorage.setItem("admin_authenticated", "true");
       localStorage.setItem("admin_user", username);
       router.push("/admin");
     } catch {
-      setError(t('admin.login.error.generic'));
+      setError(t('login.errorGeneric'));
     } finally {
       setLoading(false);
     }
@@ -58,8 +58,8 @@ export default function AdminLogin() {
         <div className="bg-white rounded-[2.5rem] shadow-2xl overflow-hidden">
             <div className="bg-sage-800 p-10 text-center">
               <img src="/images/logo.png" alt="Salamandra Nature" className="h-20 w-auto mx-auto mb-6" />
-              <h1 className="text-2xl font-black text-white">{t('admin.login.title')}</h1>
-              <p className="text-sage-300 mt-2">{t('admin.login.subtitle')}</p>
+              <h1 className="text-2xl font-black text-white">{t('login.title')}</h1>
+                <p className="text-sage-300 mt-2">{t('login.subtitle')}</p>
             </div>
 
           <form onSubmit={handleLogin} className="p-10 space-y-6">
@@ -75,14 +75,14 @@ export default function AdminLogin() {
             )}
 
             <div className="space-y-2">
-              <label className="text-sm font-bold text-sage-800">{t('admin.login.username')}</label>
+              <label className="text-sm font-bold text-sage-800">{t('login.username')}</label>
               <div className="relative">
                 <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-terracotta-400" />
                 <Input
                   type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  placeholder={t('admin.login.usernamePlaceholder')}
+                  placeholder={t('login.usernamePlaceholder')}
                   className="pl-12 h-14 rounded-xl border-sage-200 focus:border-terracotta-400 focus:ring-terracotta-400"
                   required
                 />
@@ -90,14 +90,14 @@ export default function AdminLogin() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-bold text-sage-800">{t('admin.login.password')}</label>
+              <label className="text-sm font-bold text-sage-800">{t('login.password')}</label>
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-terracotta-400" />
                 <Input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder={t('admin.login.passwordPlaceholder')}
+                  placeholder={t('login.passwordPlaceholder')}
                   className="pl-12 h-14 rounded-xl border-sage-200 focus:border-terracotta-400 focus:ring-terracotta-400"
                   required
                 />
@@ -115,12 +115,12 @@ export default function AdminLogin() {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                   </svg>
-                  {t('admin.login.submitting')}
+                  {t('login.signing')}
                 </span>
               ) : (
                 <span className="flex items-center gap-2 justify-center">
                   <LogIn className="w-5 h-5" />
-                  {t('admin.login.submit')}
+                  {t('login.submit')}
                 </span>
               )}
             </Button>
@@ -128,7 +128,7 @@ export default function AdminLogin() {
         </div>
 
         <p className="text-center text-sage-300/60 text-sm mt-8">
-          {t('admin.login.footer')}
+          {t('login.portal')}
         </p>
       </motion.div>
     </div>

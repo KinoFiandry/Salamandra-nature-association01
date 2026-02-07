@@ -6,30 +6,33 @@ import { useI18n } from "@/lib/i18n";
 import { supabase } from "@/lib/supabase";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  LayoutDashboard, 
-    Calendar as CalendarIcon, 
-    Video, 
-    Handshake, 
-    Plus, 
-    Trash2, 
-    Edit3, 
-    Save, 
-    X,
-    FileText,
-    LogOut,
-    ImageIcon,
-    Upload,
-    Users,
-    History,
-    Activity,
-    Receipt
-  } from "lucide-react";
+    LayoutDashboard, 
+      Calendar as CalendarIcon, 
+      Video, 
+      Handshake, 
+      Plus, 
+      Trash2, 
+      Edit3, 
+      Save, 
+      X,
+      FileText,
+      LogOut,
+      ImageIcon,
+      Upload,
+      Users,
+      History,
+      Activity,
+      Receipt,
+        Newspaper,
+        FolderOpen
+      } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import DragDropImageUpload from "@/components/DragDropImageUpload";
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -39,12 +42,39 @@ export default function AdminDashboard() {
   const [videos, setVideos] = useState<any[]>([]);
   const [partners, setPartners] = useState<any[]>([]);
   const [photos, setPhotos] = useState<any[]>([]);
+  const [members, setMembers] = useState<any[]>([]);
   const [visitorCount, setVisitorCount] = useState(0);
   const [history, setHistory] = useState<any[]>([]);
   const [logs, setLogs] = useState<any[]>([]);
   const [donations, setDonations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+    // News state
+    const [news, setNews] = useState<any[]>([]);
+    const [showNewsForm, setShowNewsForm] = useState(false);
+    const [editingNews, setEditingNews] = useState<any>(null);
+    const [newNews, setNewNews] = useState({
+      title_en: "",
+      title_fr: "",
+      content_en: "",
+      content_fr: "",
+      image_url: ""
+      });
+
+      // Projects state
+      const [projects, setProjects] = useState<any[]>([]);
+      const [showProjectForm, setShowProjectForm] = useState(false);
+      const [editingProject, setEditingProject] = useState<any>(null);
+      const [newProject, setNewProject] = useState({
+        title_en: "",
+        title_fr: "",
+        description_en: "",
+        description_fr: "",
+        image_url: "",
+        category_en: "",
+        category_fr: ""
+      });
 
   // Form states
   const [showEventForm, setShowEventForm] = useState(false);
@@ -84,18 +114,35 @@ export default function AdminDashboard() {
   const [uploading, setUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
+    const [showMemberForm, setShowMemberForm] = useState(false);
+    const [editingMember, setEditingMember] = useState<any>(null);
+    const [newMember, setNewMember] = useState({
+      name: "",
+      role_en: "",
+      role_fr: "",
+      bio_en: "",
+      bio_fr: "",
+      photo_url: "",
+      display_order: 0
+    });
+  const [memberPhotoFile, setMemberPhotoFile] = useState<File | null>(null);
+  const [uploadingMember, setUploadingMember] = useState(false);
+
   const fetchData = async () => {
     setLoading(true);
-      const [eventsRes, videosRes, partnersRes, photosRes, visitsRes, historyRes, logsRes, donationsRes] = await Promise.all([
-        supabase.from("events").select("*").order("date", { ascending: true }),
-        supabase.from("videos").select("*").order("created_at", { ascending: false }),
-        supabase.from("partners").select("*").order("name", { ascending: true }),
-        supabase.from("media").select("*").eq("type", "photo").order("created_at", { ascending: false }),
-        supabase.from("unique_visitors_count").select("*").single(),
-        supabase.from("update_history").select("*").order("created_at", { ascending: false }).limit(50),
-        supabase.from("system_logs").select("*").order("created_at", { ascending: false }).limit(50),
-        supabase.from("donations").select("*").order("created_at", { ascending: false })
-      ]);
+    const [eventsRes, videosRes, partnersRes, photosRes, visitsRes, historyRes, logsRes, donationsRes, membersRes, newsRes, projectsRes] = await Promise.all([
+            supabase.from("events").select("*").order("date", { ascending: true }),
+            supabase.from("videos").select("*").order("created_at", { ascending: false }),
+            supabase.from("partners").select("*").order("name", { ascending: true }),
+            supabase.from("media").select("*").eq("type", "photo").order("created_at", { ascending: false }),
+            supabase.from("unique_visitors_count").select("*").single(),
+            supabase.from("update_history").select("*").order("created_at", { ascending: false }).limit(50),
+            supabase.from("system_logs").select("*").order("created_at", { ascending: false }).limit(50),
+            supabase.from("donations").select("*").order("created_at", { ascending: false }),
+            supabase.from("group_members").select("*").order("display_order", { ascending: true }),
+            supabase.from("news").select("*").order("created_at", { ascending: false }),
+            supabase.from("projects").select("*").order("created_at", { ascending: false })
+          ]);
 
       if (eventsRes.data) setEvents(eventsRes.data);
       if (videosRes.data) setVideos(videosRes.data);
@@ -105,8 +152,11 @@ export default function AdminDashboard() {
       if (historyRes.data) setHistory(historyRes.data);
       if (logsRes.data) setLogs(logsRes.data);
       if (donationsRes.data) setDonations(donationsRes.data);
+        if (membersRes.data) setMembers(membersRes.data);
+          if (newsRes.data) setNews(newsRes.data);
+          if (projectsRes.data) setProjects(projectsRes.data);
 
-    setLoading(false);
+      setLoading(false);
   };
 
   const logAdminAction = async (action: string, details?: string) => {
@@ -262,22 +312,243 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleDeletePhoto = async (id: string, url: string) => {
-    if (confirm("Are you sure?")) {
-      try {
-        const pathMatch = url.match(/photos\/(.+)$/);
-        if (pathMatch) {
-          await supabase.storage.from('photos').remove([pathMatch[1]]);
+    const handleDeletePhoto = async (id: string, url: string) => {
+      if (confirm("Are you sure?")) {
+        try {
+          const pathMatch = url.match(/photos\/(.+)$/);
+          if (pathMatch) {
+            await supabase.storage.from('photos').remove([pathMatch[1]]);
+          }
+          const { error } = await supabase.from("media").delete().eq("id", id);
+          if (error) throw error;
+          await logAdminAction("Deleted Photo", `Deleted photo ID: ${id}`);
+          fetchData();
+        } catch {
+          toast.error("Error deleting photo");
         }
-        const { error } = await supabase.from("media").delete().eq("id", id);
-        if (error) throw error;
-        await logAdminAction("Deleted Photo", `Deleted photo ID: ${id}`);
-        fetchData();
-      } catch {
-        toast.error("Error deleting photo");
       }
+    };
+
+  const resetMemberForm = () => {
+    setNewMember({ name: "", role_en: "", role_fr: "", bio_en: "", bio_fr: "", photo_url: "", display_order: 0 });
+    setMemberPhotoFile(null);
+    setEditingMember(null);
+    setShowMemberForm(false);
+  };
+
+  const handleOpenEditMember = (member: any) => {
+    setEditingMember(member);
+    setNewMember({
+      name: member.name,
+      role_en: member.role_en,
+      role_fr: member.role_fr,
+      bio_en: member.bio_en,
+      bio_fr: member.bio_fr,
+      photo_url: member.photo_url || "",
+      display_order: member.display_order
+    });
+    setMemberPhotoFile(null);
+    setShowMemberForm(true);
+  };
+
+  const uploadMemberPhoto = async (file: File): Promise<string> => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}.${fileExt}`;
+    const filePath = `members/${fileName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('member-photos')
+      .upload(filePath, file);
+
+    if (uploadError) throw uploadError;
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('member-photos')
+      .getPublicUrl(filePath);
+
+    return publicUrl;
+  };
+
+  const handleSaveMember = async () => {
+    if (!newMember.name.trim()) {
+      toast.error(t('admin.members.name') + " is required");
+      return;
+    }
+
+    setUploadingMember(true);
+    try {
+      let photo_url = editingMember?.photo_url || newMember.photo_url || "";
+
+      if (memberPhotoFile) {
+        // Delete old photo if editing and replacing
+        if (editingMember?.photo_url) {
+          const pathMatch = editingMember.photo_url.match(/member-photos\/(.+)$/);
+          if (pathMatch) {
+            await supabase.storage.from('member-photos').remove([pathMatch[1]]);
+          }
+        }
+        photo_url = await uploadMemberPhoto(memberPhotoFile);
+      }
+
+      if (editingMember) {
+        const { error } = await supabase.from("group_members").update({
+            ...newMember,
+            photo_url
+          }).eq("id", editingMember.id);
+        if (error) throw error;
+        await logAdminAction("Updated Member", `Updated member: ${newMember.name}`);
+        toast.success(t('admin.members.edit') + " - OK");
+      } else {
+        const { error } = await supabase.from("group_members").insert([{
+          ...newMember,
+          photo_url
+        }]);
+        if (error) throw error;
+        await logAdminAction("Added Member", `Added member: ${newMember.name}`);
+        toast.success(t('admin.members.add') + " - OK");
+      }
+
+      resetMemberForm();
+      fetchData();
+    } catch (error: any) {
+      toast.error(error.message || "Error saving member");
+    } finally {
+      setUploadingMember(false);
     }
   };
+
+    const handleDeleteMember = async (id: string, photoUrl: string) => {
+      if (confirm(t('admin.members.deleteConfirm'))) {
+        try {
+          if (photoUrl) {
+            const pathMatch = photoUrl.match(/member-photos\/(.+)$/);
+            if (pathMatch) {
+              await supabase.storage.from('member-photos').remove([pathMatch[1]]);
+            }
+          }
+          const { error } = await supabase.from("group_members").delete().eq("id", id);
+          if (error) throw error;
+          await logAdminAction("Deleted Member", `Deleted member ID: ${id}`);
+          fetchData();
+        } catch {
+          toast.error("Error deleting member");
+        }
+      }
+    };
+
+    // News CRUD
+    const resetNewsForm = () => {
+      setNewNews({ title_en: "", title_fr: "", content_en: "", content_fr: "", image_url: "" });
+      setEditingNews(null);
+      setShowNewsForm(false);
+    };
+
+    const handleOpenEditNews = (item: any) => {
+      setEditingNews(item);
+      setNewNews({
+        title_en: item.title_en,
+        title_fr: item.title_fr,
+        content_en: item.content_en,
+        content_fr: item.content_fr,
+        image_url: item.image_url || ""
+      });
+      setShowNewsForm(true);
+    };
+
+    const handleSaveNews = async () => {
+      if (!newNews.title_en.trim()) {
+        toast.error(t('admin.news.titleEn') + " is required");
+        return;
+      }
+      try {
+        if (editingNews) {
+          const { error } = await supabase.from("news").update(newNews).eq("id", editingNews.id);
+          if (error) throw error;
+          await logAdminAction("Updated News", `Updated article: ${newNews.title_en}`);
+          toast.success(t('admin.news.edit') + " - OK");
+        } else {
+          const { error } = await supabase.from("news").insert([newNews]);
+          if (error) throw error;
+          await logAdminAction("Added News", `Added article: ${newNews.title_en}`);
+          toast.success(t('admin.news.add') + " - OK");
+        }
+        resetNewsForm();
+        fetchData();
+      } catch (error: any) {
+        toast.error(error.message || "Error saving article");
+      }
+    };
+
+      const handleDeleteNews = async (id: string) => {
+        if (confirm(t('admin.news.deleteConfirm'))) {
+          try {
+            const { error } = await supabase.from("news").delete().eq("id", id);
+            if (error) throw error;
+            await logAdminAction("Deleted News", `Deleted article ID: ${id}`);
+            fetchData();
+          } catch {
+            toast.error("Error deleting article");
+          }
+        }
+      };
+
+      // Projects CRUD
+      const resetProjectForm = () => {
+        setNewProject({ title_en: "", title_fr: "", description_en: "", description_fr: "", image_url: "", category_en: "", category_fr: "" });
+        setEditingProject(null);
+        setShowProjectForm(false);
+      };
+
+      const handleOpenEditProject = (item: any) => {
+        setEditingProject(item);
+        setNewProject({
+          title_en: item.title_en,
+          title_fr: item.title_fr,
+          description_en: item.description_en,
+          description_fr: item.description_fr,
+          image_url: item.image_url || "",
+          category_en: item.category_en || "",
+          category_fr: item.category_fr || ""
+        });
+        setShowProjectForm(true);
+      };
+
+      const handleSaveProject = async () => {
+        if (!newProject.title_en.trim()) {
+          toast.error(t('admin.projects.titleEn') + " is required");
+          return;
+        }
+        try {
+          if (editingProject) {
+            const { error } = await supabase.from("projects").update(newProject).eq("id", editingProject.id);
+            if (error) throw error;
+            await logAdminAction("Updated Project", `Updated project: ${newProject.title_en}`);
+            toast.success(t('admin.projects.edit') + " - OK");
+          } else {
+            const { error } = await supabase.from("projects").insert([newProject]);
+            if (error) throw error;
+            await logAdminAction("Added Project", `Added project: ${newProject.title_en}`);
+            toast.success(t('admin.projects.add') + " - OK");
+          }
+          resetProjectForm();
+          fetchData();
+        } catch (error: any) {
+          toast.error(error.message || "Error saving project");
+        }
+      };
+
+      const handleDeleteProject = async (id: string) => {
+        if (confirm(t('admin.projects.deleteConfirm'))) {
+          try {
+            const { error } = await supabase.from("projects").delete().eq("id", id);
+            if (error) throw error;
+            await logAdminAction("Deleted Project", `Deleted project ID: ${id}`);
+            fetchData();
+          } catch {
+            toast.error("Error deleting project");
+          }
+        }
+      };
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -287,7 +558,7 @@ export default function AdminDashboard() {
               <img src="/images/logo.png" alt="Salamandra Nature" className="h-14 w-auto" />
               <div>
                 <h1 className="text-3xl font-black">{t('admin.dashboard')}</h1>
-                <p className="text-sage-300 font-medium">{t('admin.manageContent')}</p>
+                <p className="text-sage-300 font-medium">{t('admin.subtitle')}</p>
               </div>
             </div>
             <div className="flex items-center gap-6">
@@ -303,7 +574,7 @@ export default function AdminDashboard() {
                   <LogOut className="w-4 h-4 mr-2" /> {t('admin.logout')}
                 </Button>
                 <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20" onClick={() => window.location.href = "/"}>
-                  {t('admin.goWebsite')}
+                  {t('admin.goToWebsite')}
                 </Button>
               </div>
             </div>
@@ -315,8 +586,14 @@ export default function AdminDashboard() {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
             <TabsList className="bg-white p-1 rounded-2xl border border-sage-100 shadow-sm h-16 w-full md:w-auto overflow-x-auto flex-nowrap">
               <TabsTrigger value="events" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
-                <CalendarIcon className="w-4 h-4 mr-2" /> {t('admin.tabs.events')}
-              </TabsTrigger>
+                  <CalendarIcon className="w-4 h-4 mr-2" /> {t('admin.tabs.events')}
+                </TabsTrigger>
+                  <TabsTrigger value="news" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
+                    <Newspaper className="w-4 h-4 mr-2" /> {t('admin.tabs.news')}
+                  </TabsTrigger>
+                  <TabsTrigger value="projects" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
+                    <FolderOpen className="w-4 h-4 mr-2" /> {t('admin.tabs.projects')}
+                  </TabsTrigger>
               <TabsTrigger value="videos" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
                 <Video className="w-4 h-4 mr-2" /> {t('admin.tabs.videos')}
               </TabsTrigger>
@@ -324,7 +601,10 @@ export default function AdminDashboard() {
                 <ImageIcon className="w-4 h-4 mr-2" /> {t('admin.tabs.photos')}
               </TabsTrigger>
               <TabsTrigger value="partners" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
-                <Handshake className="w-4 h-4 mr-2" /> {t('admin.tabs.partners')}
+                <Handshake className="w-4 h-4 mr-2" /> {t('nav.partners')}
+              </TabsTrigger>
+              <TabsTrigger value="members" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
+                <Users className="w-4 h-4 mr-2" /> {t('admin.members')}
               </TabsTrigger>
               <TabsTrigger value="history" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
                 <History className="w-4 h-4 mr-2" /> {t('admin.tabs.history')}
@@ -339,9 +619,9 @@ export default function AdminDashboard() {
 
           <TabsContent value="events" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-sage-800">{t('admin.manage.events')}</h2>
-              <Button onClick={() => setShowEventForm(true)} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold">
-                <Plus className="w-4 h-4 mr-2" /> {t('admin.add.event')}
+                <h2 className="text-2xl font-bold text-sage-800">{t('admin.events.manage')}</h2>
+                <Button onClick={() => setShowEventForm(true)} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold">
+                  <Plus className="w-4 h-4 mr-2" /> {t('admin.events.add')}
               </Button>
             </div>
 
@@ -368,11 +648,97 @@ export default function AdminDashboard() {
             </div>
           </TabsContent>
 
-          <TabsContent value="videos" className="space-y-6">
+            <TabsContent value="news" className="space-y-6">
+              <div className="flex justify-between items-center">
+                <h2 className="text-2xl font-bold text-sage-800">{t('admin.news.manage')}</h2>
+                <Button onClick={() => { resetNewsForm(); setShowNewsForm(true); }} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold">
+                  <Plus className="w-4 h-4 mr-2" /> {t('admin.news.add')}
+                </Button>
+              </div>
+
+              <div className="grid gap-4">
+                {news.map(item => (
+                  <div key={item.id} className="bg-white p-6 rounded-2xl border border-sage-100 shadow-sm flex items-center gap-6 hover:shadow-md transition-shadow">
+                    {item.image_url && (
+                      <div className="w-20 h-20 rounded-xl overflow-hidden bg-sage-100 flex-shrink-0">
+                        <img src={item.image_url} alt={item.title_en} className="w-full h-full object-cover" />
+                      </div>
+                    )}
+                    <div className="flex-grow min-w-0">
+                      <h3 className="font-bold text-lg text-sage-800 truncate">{item.title_en}</h3>
+                      <p className="text-terracotta-500 text-sm font-medium">{item.title_fr}</p>
+                      <p className="text-sage-500 text-xs mt-1 line-clamp-1">{item.content_en}</p>
+                    </div>
+                    <div className="flex-shrink-0 text-xs text-sage-400 font-bold">
+                      {new Date(item.created_at).toLocaleDateString()}
+                    </div>
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <Button onClick={() => handleOpenEditNews(item)} variant="ghost" size="icon" className="text-terracotta-400 hover:text-terracotta-500">
+                        <Edit3 className="w-5 h-5" />
+                      </Button>
+                      <Button onClick={() => handleDeleteNews(item.id)} variant="ghost" size="icon" className="text-red-400 hover:text-red-600">
+                        <Trash2 className="w-5 h-5" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+                {news.length === 0 && (
+                  <div className="text-center py-12 text-sage-400">
+                    <Newspaper className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                    <p>{t('admin.news.empty')}</p>
+                  </div>
+                )}
+              </div>
+              </TabsContent>
+
+              <TabsContent value="projects" className="space-y-6">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-2xl font-bold text-sage-800">{t('admin.projects.manage')}</h2>
+                  <Button onClick={() => { resetProjectForm(); setShowProjectForm(true); }} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold">
+                    <Plus className="w-4 h-4 mr-2" /> {t('admin.projects.add')}
+                  </Button>
+                </div>
+
+                <div className="grid gap-4">
+                  {projects.map(item => (
+                    <div key={item.id} className="bg-white p-6 rounded-2xl border border-sage-100 shadow-sm flex items-center gap-6 hover:shadow-md transition-shadow">
+                      {item.image_url && (
+                        <div className="w-20 h-20 rounded-xl overflow-hidden bg-sage-100 flex-shrink-0">
+                          <img src={item.image_url} alt={item.title_en} className="w-full h-full object-cover" />
+                        </div>
+                      )}
+                      <div className="flex-grow min-w-0">
+                        <h3 className="font-bold text-lg text-sage-800 truncate">{item.title_en}</h3>
+                        <p className="text-terracotta-500 text-sm font-medium">{item.title_fr}</p>
+                        <p className="text-sage-500 text-xs mt-1 line-clamp-1">{item.description_en}</p>
+                        {item.category_en && (
+                          <span className="inline-block mt-1 px-2 py-0.5 bg-sage-100 text-sage-700 text-xs font-bold rounded-full">{item.category_en}</span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <Button onClick={() => handleOpenEditProject(item)} variant="ghost" size="icon" className="text-terracotta-400 hover:text-terracotta-500">
+                          <Edit3 className="w-5 h-5" />
+                        </Button>
+                        <Button onClick={() => handleDeleteProject(item.id)} variant="ghost" size="icon" className="text-red-400 hover:text-red-600">
+                          <Trash2 className="w-5 h-5" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                  {projects.length === 0 && (
+                    <div className="text-center py-12 text-sage-400">
+                      <FolderOpen className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                      <p>{t('admin.projects.empty')}</p>
+                    </div>
+                  )}
+                </div>
+              </TabsContent>
+
+              <TabsContent value="videos" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-sage-800">{t('admin.manage.videos')}</h2>
-              <Button onClick={() => setShowVideoForm(true)} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold">
-                <Plus className="w-4 h-4 mr-2" /> {t('admin.add.video')}
+                <h2 className="text-2xl font-bold text-sage-800">{t('admin.videos.manage')}</h2>
+                <Button onClick={() => setShowVideoForm(true)} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold">
+                  <Plus className="w-4 h-4 mr-2" /> {t('admin.videos.add')}
               </Button>
             </div>
 
@@ -398,9 +764,9 @@ export default function AdminDashboard() {
 
           <TabsContent value="photos" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-sage-800">{t('admin.manage.photos')}</h2>
+              <h2 className="text-2xl font-bold text-sage-800">Manage Photos</h2>
               <Button onClick={() => setShowPhotoForm(true)} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold">
-                <Plus className="w-4 h-4 mr-2" /> {t('admin.add.photo')}
+                <Plus className="w-4 h-4 mr-2" /> Add Photo
               </Button>
             </div>
 
@@ -425,7 +791,7 @@ export default function AdminDashboard() {
               {photos.length === 0 && (
                 <div className="col-span-full text-center py-12 text-terracotta-400">
                   <ImageIcon className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p>{t('admin.empty.donations')}</p>
+                  <p>No photos yet. Add your first photo!</p>
                 </div>
               )}
             </div>
@@ -433,9 +799,9 @@ export default function AdminDashboard() {
 
             <TabsContent value="partners" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-sage-800">{t('admin.manage.partners')}</h2>
+              <h2 className="text-2xl font-bold text-sage-800">Manage Partners</h2>
               <Button onClick={() => setShowPartnerForm(true)} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold">
-                <Plus className="w-4 h-4 mr-2" /> {t('admin.add.partner')}
+                <Plus className="w-4 h-4 mr-2" /> Add Partner
               </Button>
             </div>
 
@@ -455,21 +821,72 @@ export default function AdminDashboard() {
                 </div>
               ))}
             </div>
+              </TabsContent>
+
+            <TabsContent value="members" className="space-y-6">
+              <div className="flex justify-between items-center">
+                <h2 className="text-2xl font-bold text-sage-800">{t('admin.members.manage')}</h2>
+                <Button onClick={() => { resetMemberForm(); setShowMemberForm(true); }} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold">
+                  <Plus className="w-4 h-4 mr-2" /> {t('admin.members.add')}
+                </Button>
+              </div>
+
+              <div className="grid gap-4">
+                {members.map(member => (
+                  <div key={member.id} className="bg-white p-6 rounded-2xl border border-sage-100 shadow-sm flex items-center gap-6 hover:shadow-md transition-shadow">
+                    <div className="w-16 h-16 rounded-full overflow-hidden bg-sage-100 flex-shrink-0">
+                      {member.photo_url ? (
+                        <img src={member.photo_url} alt={member.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <Users className="w-8 h-8 text-sage-300" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-grow min-w-0">
+                      <h3 className="font-bold text-lg text-sage-800 truncate">{member.name}</h3>
+                      <p className="text-terracotta-500 text-sm font-medium">
+                        {language === 'fr' ? member.role_fr : member.role_en}
+                      </p>
+                      <p className="text-sage-500 text-xs mt-1 line-clamp-1">
+                        {language === 'fr' ? member.bio_fr : member.bio_en}
+                      </p>
+                    </div>
+                    <div className="flex-shrink-0 text-xs text-sage-400 font-bold">
+                      #{member.display_order}
+                    </div>
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <Button onClick={() => handleOpenEditMember(member)} variant="ghost" size="icon" className="text-terracotta-400 hover:text-terracotta-500">
+                        <Edit3 className="w-5 h-5" />
+                      </Button>
+                      <Button onClick={() => handleDeleteMember(member.id, member.photo_url)} variant="ghost" size="icon" className="text-red-400 hover:text-red-600">
+                        <Trash2 className="w-5 h-5" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+                {members.length === 0 && (
+                  <div className="text-center py-12 text-sage-400">
+                    <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                    <p>{t('admin.members.empty')}</p>
+                  </div>
+                )}
+              </div>
             </TabsContent>
 
-            <TabsContent value="history" className="space-y-6">
+              <TabsContent value="history" className="space-y-6">
               <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold text-sage-800">{t('admin.history.title')}</h2>
-                <Button variant="outline" onClick={fetchData} className="rounded-xl font-bold">{t('admin.refresh')}</Button>
+                <h2 className="text-2xl font-bold text-sage-800">Update History</h2>
+                <Button variant="outline" onClick={fetchData} className="rounded-xl font-bold">Refresh</Button>
               </div>
               <div className="bg-white rounded-2xl border border-sage-100 shadow-sm overflow-hidden">
                 <table className="w-full text-left">
                   <thead className="bg-sage-50 border-b border-sage-100">
                     <tr>
-                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">{t('admin.table.date')}</th>
-                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">{t('admin.table.admin')}</th>
-                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">{t('admin.table.action')}</th>
-                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">{t('admin.table.details')}</th>
+                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">Date</th>
+                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">Admin</th>
+                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">Action</th>
+                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">Details</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-sage-50">
@@ -490,7 +907,7 @@ export default function AdminDashboard() {
                     {history.length === 0 && (
                       <tr>
                         <td colSpan={4} className="px-6 py-12 text-center text-sage-400 font-medium">
-                          {t('admin.empty.history')}
+                          No history records found.
                         </td>
                       </tr>
                     )}
@@ -501,16 +918,16 @@ export default function AdminDashboard() {
 
             <TabsContent value="logs" className="space-y-6">
               <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold text-sage-800">{t('admin.logs.title')}</h2>
-                <Button variant="outline" onClick={fetchData} className="rounded-xl font-bold">{t('admin.refresh')}</Button>
+                <h2 className="text-2xl font-bold text-sage-800">System Logs</h2>
+                <Button variant="outline" onClick={fetchData} className="rounded-xl font-bold">Refresh</Button>
               </div>
               <div className="bg-white rounded-2xl border border-sage-100 shadow-sm overflow-hidden">
                 <table className="w-full text-left">
                   <thead className="bg-sage-50 border-b border-sage-100">
                     <tr>
-                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">{t('admin.table.date')}</th>
-                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">{t('admin.table.level')}</th>
-                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">{t('admin.table.message')}</th>
+                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">Date</th>
+                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">Level</th>
+                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">Message</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-sage-50">
@@ -534,7 +951,7 @@ export default function AdminDashboard() {
                     {logs.length === 0 && (
                       <tr>
                         <td colSpan={3} className="px-6 py-12 text-center text-sage-400 font-medium">
-                          {t('admin.empty.logs')}
+                          No system logs found.
                         </td>
                       </tr>
                     )}
@@ -545,25 +962,25 @@ export default function AdminDashboard() {
 
             <TabsContent value="donations" className="space-y-6">
               <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold text-sage-800">{t('admin.donations.title')}</h2>
+                <h2 className="text-2xl font-bold text-sage-800">Donation Receipts</h2>
                 <div className="flex gap-3">
                   <div className="bg-terracotta-50 px-4 py-2 rounded-xl border border-terracotta-100">
-                    <span className="text-xs text-terracotta-600 font-bold uppercase block leading-none mb-1">{t('admin.totalReceived')}</span>
+                    <span className="text-xs text-terracotta-600 font-bold uppercase block leading-none mb-1">Total Received</span>
                     <span className="text-xl font-black text-terracotta-700">
                       ${donations.reduce((acc, d) => acc + (d.status === 'completed' ? Number(d.amount) : 0), 0).toLocaleString()}
                     </span>
                   </div>
-                  <Button variant="outline" onClick={fetchData} className="rounded-xl font-bold">{t('admin.refresh')}</Button>
+                  <Button variant="outline" onClick={fetchData} className="rounded-xl font-bold">Refresh</Button>
                 </div>
               </div>
               <div className="bg-white rounded-2xl border border-sage-100 shadow-sm overflow-hidden">
                 <table className="w-full text-left">
                   <thead className="bg-sage-50 border-b border-sage-100">
                     <tr>
-                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">{t('admin.table.date')}</th>
-                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">{t('admin.table.donor')}</th>
-                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">{t('admin.table.amount')}</th>
-                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">{t('admin.table.status')}</th>
+                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">Date</th>
+                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">Donor</th>
+                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">Amount</th>
+                      <th className="px-6 py-4 text-xs font-black text-sage-600 uppercase tracking-wider">Status</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-sage-50">
@@ -574,7 +991,7 @@ export default function AdminDashboard() {
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex flex-col">
-                            <span className="text-sm font-bold text-sage-800">{donation.donor_name || t('admin.anonymous')}</span>
+                            <span className="text-sm font-bold text-sage-800">{donation.donor_name || 'Anonymous'}</span>
                             <span className="text-xs text-sage-400">{donation.donor_email}</span>
                           </div>
                         </td>
@@ -595,7 +1012,7 @@ export default function AdminDashboard() {
                     {donations.length === 0 && (
                       <tr>
                         <td colSpan={4} className="px-6 py-12 text-center text-sage-400 font-medium">
-                          {t('admin.empty.donations')}
+                          No donation records yet.
                         </td>
                       </tr>
                     )}
@@ -613,7 +1030,7 @@ export default function AdminDashboard() {
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-sage-950/60 backdrop-blur-sm" onClick={() => setShowEventForm(false)} />
             <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden">
               <div className="bg-sage-800 p-8 text-white flex justify-between items-center">
-                <h2 className="text-2xl font-black">{t('admin.add.event')}</h2>
+                <h2 className="text-2xl font-black">Add New Event</h2>
                 <Button variant="ghost" size="icon" onClick={() => setShowEventForm(false)} className="text-white/60 hover:text-white">
                   <X className="w-6 h-6" />
                 </Button>
@@ -621,36 +1038,36 @@ export default function AdminDashboard() {
               <div className="p-8 space-y-6 max-h-[70vh] overflow-y-auto">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-sage-800">{t('admin.form.titleEn')}</label>
+                    <label className="text-sm font-bold text-sage-800">Title (EN)</label>
                     <Input value={newEvent.title_en} onChange={e => setNewEvent({...newEvent, title_en: e.target.value})} placeholder="Event title in English" className="rounded-xl" />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-sage-800">{t('admin.form.titleFr')}</label>
+                    <label className="text-sm font-bold text-sage-800">Title (FR)</label>
                     <Input value={newEvent.title_fr} onChange={e => setNewEvent({...newEvent, title_fr: e.target.value})} placeholder="Titre de l'événement en Français" className="rounded-xl" />
                   </div>
                 </div>
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-sage-800">{t('admin.form.date')}</label>
+                    <label className="text-sm font-bold text-sage-800">Date</label>
                     <Input type="date" value={newEvent.date} onChange={e => setNewEvent({...newEvent, date: e.target.value})} className="rounded-xl" />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-sage-800">{t('admin.form.locationEn')}</label>
+                    <label className="text-sm font-bold text-sage-800">Location (EN)</label>
                     <Input value={newEvent.location_en} onChange={e => setNewEvent({...newEvent, location_en: e.target.value})} placeholder="Location in English" className="rounded-xl" />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-sage-800">{t('admin.form.descriptionEn')}</label>
+                  <label className="text-sm font-bold text-sage-800">Description (EN)</label>
                   <Textarea value={newEvent.description_en} onChange={e => setNewEvent({...newEvent, description_en: e.target.value})} placeholder="Detailed description in English" className="rounded-xl min-h-[100px]" />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-sage-800">{t('admin.form.descriptionFr')}</label>
+                  <label className="text-sm font-bold text-sage-800">Description (FR)</label>
                   <Textarea value={newEvent.description_fr} onChange={e => setNewEvent({...newEvent, description_fr: e.target.value})} placeholder="Description détaillée en Français" className="rounded-xl min-h-[100px]" />
                 </div>
               </div>
               <div className="p-8 bg-slate-50 flex justify-end gap-4 border-t border-sage-100">
-                <Button variant="ghost" onClick={() => setShowEventForm(false)} className="rounded-xl font-bold">{t('admin.form.cancel')}</Button>
-                <Button onClick={handleAddEvent} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold px-8">{t('admin.form.saveEvent')}</Button>
+                <Button variant="ghost" onClick={() => setShowEventForm(false)} className="rounded-xl font-bold">Cancel</Button>
+                <Button onClick={handleAddEvent} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold px-8">Save Event</Button>
               </div>
             </motion.div>
           </div>
@@ -661,26 +1078,26 @@ export default function AdminDashboard() {
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-sage-950/60 backdrop-blur-sm" onClick={() => setShowVideoForm(false)} />
             <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden">
               <div className="bg-sage-800 p-8 text-white flex justify-between items-center">
-                <h2 className="text-2xl font-black">{t('admin.add.video')}</h2>
+                <h2 className="text-2xl font-black">Add New Video</h2>
                 <Button variant="ghost" size="icon" onClick={() => setShowVideoForm(false)} className="text-white/60 hover:text-white">
                   <X className="w-6 h-6" />
                 </Button>
               </div>
               <div className="p-8 space-y-6">
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-sage-800">{t('admin.form.titleEn')}</label>
+                  <label className="text-sm font-bold text-sage-800">Title (EN)</label>
                   <Input value={newVideo.title_en} onChange={e => setNewVideo({...newVideo, title_en: e.target.value})} placeholder="Video title" className="rounded-xl" />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-sage-800">{t('admin.form.videoUrl')}</label>
+                  <label className="text-sm font-bold text-sage-800">Video URL (YouTube/Vimeo)</label>
                   <Input value={newVideo.url} onChange={e => setNewVideo({...newVideo, url: e.target.value})} placeholder="https://youtube.com/watch?v=..." className="rounded-xl" />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-sage-800">{t('admin.form.thumbnailUrl')}</label>
+                  <label className="text-sm font-bold text-sage-800">Thumbnail URL</label>
                   <Input value={newVideo.thumbnail_url} onChange={e => setNewVideo({...newVideo, thumbnail_url: e.target.value})} placeholder="Image URL for preview" className="rounded-xl" />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-sage-800">{t('admin.form.category')}</label>
+                  <label className="text-sm font-bold text-sage-800">Category</label>
                   <select 
                     value={newVideo.category} 
                     onChange={e => setNewVideo({...newVideo, category: e.target.value})}
@@ -693,8 +1110,8 @@ export default function AdminDashboard() {
                 </div>
               </div>
               <div className="p-8 bg-slate-50 flex justify-end gap-4 border-t border-sage-100">
-                <Button variant="ghost" onClick={() => setShowVideoForm(false)} className="rounded-xl font-bold">{t('admin.form.cancel')}</Button>
-                <Button onClick={handleAddVideo} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold px-8">{t('admin.form.saveVideo')}</Button>
+                <Button variant="ghost" onClick={() => setShowVideoForm(false)} className="rounded-xl font-bold">Cancel</Button>
+                <Button onClick={handleAddVideo} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold px-8">Save Video</Button>
               </div>
             </motion.div>
           </div>
@@ -705,26 +1122,26 @@ export default function AdminDashboard() {
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-sage-950/60 backdrop-blur-sm" onClick={() => setShowPartnerForm(false)} />
               <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden">
                 <div className="bg-sage-800 p-8 text-white flex justify-between items-center">
-                  <h2 className="text-2xl font-black">{t('admin.add.partner')}</h2>
+                  <h2 className="text-2xl font-black">Add New Partner</h2>
                   <Button variant="ghost" size="icon" onClick={() => setShowPartnerForm(false)} className="text-white/60 hover:text-white">
                     <X className="w-6 h-6" />
                   </Button>
                 </div>
                 <div className="p-8 space-y-6">
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-sage-800">{t('admin.form.partnerName')}</label>
+                    <label className="text-sm font-bold text-sage-800">Partner Name</label>
                     <Input value={newPartner.name} onChange={e => setNewPartner({...newPartner, name: e.target.value})} placeholder="Organization Name" className="rounded-xl" />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-sage-800">{t('admin.form.websiteUrl')}</label>
+                    <label className="text-sm font-bold text-sage-800">Website URL</label>
                     <Input value={newPartner.website_url} onChange={e => setNewPartner({...newPartner, website_url: e.target.value})} placeholder="https://..." className="rounded-xl" />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-sage-800">{t('admin.form.logoUrl')}</label>
+                    <label className="text-sm font-bold text-sage-800">Logo URL</label>
                     <Input value={newPartner.logo_url} onChange={e => setNewPartner({...newPartner, logo_url: e.target.value})} placeholder="Image URL for logo" className="rounded-xl" />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-sage-800">{t('admin.form.type')}</label>
+                    <label className="text-sm font-bold text-sage-800">Type</label>
                     <select 
                       value={newPartner.type} 
                       onChange={e => setNewPartner({...newPartner, type: e.target.value})}
@@ -737,8 +1154,8 @@ export default function AdminDashboard() {
                   </div>
                 </div>
                 <div className="p-8 bg-slate-50 flex justify-end gap-4 border-t border-sage-100">
-                  <Button variant="ghost" onClick={() => setShowPartnerForm(false)} className="rounded-xl font-bold">{t('admin.form.cancel')}</Button>
-                  <Button onClick={handleAddPartner} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold px-8">{t('admin.form.savePartner')}</Button>
+                  <Button variant="ghost" onClick={() => setShowPartnerForm(false)} className="rounded-xl font-bold">Cancel</Button>
+                  <Button onClick={handleAddPartner} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold px-8">Save Partner</Button>
                 </div>
               </motion.div>
             </div>
@@ -749,53 +1166,53 @@ export default function AdminDashboard() {
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-sage-950/60 backdrop-blur-sm" onClick={() => setShowPhotoForm(false)} />
               <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden">
                 <div className="bg-sage-800 p-8 text-white flex justify-between items-center">
-                  <h2 className="text-2xl font-black">{t('admin.add.photo')}</h2>
+                  <h2 className="text-2xl font-black">Add New Photo</h2>
                   <Button variant="ghost" size="icon" onClick={() => setShowPhotoForm(false)} className="text-white/60 hover:text-white">
                     <X className="w-6 h-6" />
                   </Button>
                 </div>
                 <div className="p-8 space-y-6">
-                  <div className="space-y-2">
-                    <label className="text-sm font-bold text-sage-800">{t('admin.form.photoFile')}</label>
-                    <div className="relative">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFileChange}
-                        className="hidden"
-                        id="photo-upload"
-                      />
-                      <label
-                        htmlFor="photo-upload"
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold text-sage-800">Photo File</label>
+                      <div
+                        onDrop={(e) => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) setSelectedFile(f); }}
+                        onDragOver={(e) => e.preventDefault()}
+                        onClick={() => document.getElementById('photo-upload')?.click()}
                         className="flex items-center justify-center gap-3 w-full h-32 border-2 border-dashed border-sage-200 rounded-xl cursor-pointer hover:border-terracotta-400 hover:bg-sage-50 transition-colors"
                       >
-                        {selectedFile ? (
-                          <div className="text-center">
-                            <ImageIcon className="w-8 h-8 mx-auto text-terracotta-500 mb-2" />
-                            <p className="text-sm text-sage-800 font-medium">{selectedFile.name}</p>
-                            <p className="text-xs text-terracotta-400">{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
-                          </div>
-                        ) : (
-                          <div className="text-center">
-                            <Upload className="w-8 h-8 mx-auto text-terracotta-400 mb-2" />
-                            <p className="text-sm text-terracotta-500 font-medium">{t('admin.form.photoClick')}</p>
-                            <p className="text-xs text-terracotta-400">{t('admin.form.photoSize')}</p>
-                          </div>
-                        )}
-                      </label>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFileChange}
+                          className="hidden"
+                          id="photo-upload"
+                        />
+                          {selectedFile ? (
+                            <div className="text-center">
+                              <ImageIcon className="w-8 h-8 mx-auto text-terracotta-500 mb-2" />
+                              <p className="text-sm text-sage-800 font-medium">{selectedFile.name}</p>
+                              <p className="text-xs text-terracotta-400">{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
+                            </div>
+                          ) : (
+                            <div className="text-center">
+                              <Upload className="w-8 h-8 mx-auto text-terracotta-400 mb-2" />
+                              <p className="text-sm text-terracotta-500 font-medium">Drag & drop or click to upload</p>
+                              <p className="text-xs text-terracotta-400">JPG, PNG, GIF up to 10MB</p>
+                            </div>
+                          )}
+                      </div>
                     </div>
-                  </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-sage-800">{t('admin.form.captionEn')}</label>
+                    <label className="text-sm font-bold text-sage-800">Caption (EN)</label>
                     <Input value={newPhoto.caption_en} onChange={e => setNewPhoto({...newPhoto, caption_en: e.target.value})} placeholder="Photo description in English" className="rounded-xl" />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-sage-800">{t('admin.form.captionFr')}</label>
+                    <label className="text-sm font-bold text-sage-800">Caption (FR)</label>
                     <Input value={newPhoto.caption_fr} onChange={e => setNewPhoto({...newPhoto, caption_fr: e.target.value})} placeholder="Description en Français" className="rounded-xl" />
                   </div>
                 </div>
                 <div className="p-8 bg-slate-50 flex justify-end gap-4 border-t border-sage-100">
-                  <Button variant="ghost" onClick={() => { setShowPhotoForm(false); setSelectedFile(null); }} className="rounded-xl font-bold">{t('admin.form.cancel')}</Button>
+                  <Button variant="ghost" onClick={() => { setShowPhotoForm(false); setSelectedFile(null); }} className="rounded-xl font-bold">Cancel</Button>
                   <Button onClick={handleAddPhoto} disabled={uploading || !selectedFile} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold px-8 disabled:opacity-50">
                     {uploading ? (
                       <span className="flex items-center gap-2">
@@ -803,15 +1220,217 @@ export default function AdminDashboard() {
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                         </svg>
-                        {t('admin.form.uploading')}
+                        Uploading...
                       </span>
-                    ) : t('admin.form.uploadPhoto')}
+                    ) : "Upload Photo"}
                   </Button>
                 </div>
               </motion.div>
             </div>
           )}
-        </AnimatePresence>
+
+            {showMemberForm && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-sage-950/60 backdrop-blur-sm" onClick={resetMemberForm} />
+              <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden">
+                <div className="bg-sage-800 p-8 text-white flex justify-between items-center">
+                  <h2 className="text-2xl font-black">{editingMember ? t('admin.members.edit') : t('admin.members.add')}</h2>
+                  <Button variant="ghost" size="icon" onClick={resetMemberForm} className="text-white/60 hover:text-white">
+                    <X className="w-6 h-6" />
+                  </Button>
+                </div>
+                <div className="p-8 space-y-6 max-h-[70vh] overflow-y-auto">
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-sage-800">{t('admin.members.photo')}</label>
+                    <div className="flex items-center gap-6">
+                      {(memberPhotoFile || editingMember?.photo_url) && (
+                        <div className="w-20 h-20 rounded-full overflow-hidden bg-sage-100 flex-shrink-0">
+                          <img
+                            src={memberPhotoFile ? URL.createObjectURL(memberPhotoFile) : editingMember?.photo_url}
+                            alt="Preview"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      )}
+                        <div className="flex-grow">
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => e.target.files?.[0] && setMemberPhotoFile(e.target.files[0])}
+                            className="hidden"
+                            id="member-photo-upload"
+                          />
+                          <div
+                            onDrop={(e) => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) setMemberPhotoFile(f); }}
+                            onDragOver={(e) => e.preventDefault()}
+                            onClick={() => document.getElementById('member-photo-upload')?.click()}
+                            className="flex items-center justify-center gap-3 w-full h-24 border-2 border-dashed border-sage-200 rounded-xl cursor-pointer hover:border-terracotta-400 hover:bg-sage-50 transition-colors"
+                          >
+                            <div className="text-center">
+                              <Upload className="w-6 h-6 mx-auto text-terracotta-400 mb-1" />
+                              <p className="text-sm text-terracotta-500 font-medium">{t('admin.members.uploadPhoto')}</p>
+                              <p className="text-xs text-sage-400">Drag & drop or click</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold text-sage-800">{t('admin.members.photoUrl')}</label>
+                      <Input value={newMember.photo_url} onChange={e => setNewMember({...newMember, photo_url: e.target.value})} placeholder="/images/photo.jpg or https://..." className="rounded-xl" />
+                      <p className="text-xs text-sage-400">{t('admin.members.photoUrlHint')}</p>
+                    </div>
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <label className="text-sm font-bold text-sage-800">{t('admin.members.name')}</label>
+                      <Input value={newMember.name} onChange={e => setNewMember({...newMember, name: e.target.value})} placeholder="Full name" className="rounded-xl" />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold text-sage-800">{t('admin.members.order')}</label>
+                      <Input type="number" value={newMember.display_order} onChange={e => setNewMember({...newMember, display_order: parseInt(e.target.value) || 0})} className="rounded-xl" />
+                    </div>
+                  </div>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold text-sage-800">{t('admin.members.roleEn')}</label>
+                      <Input value={newMember.role_en} onChange={e => setNewMember({...newMember, role_en: e.target.value})} placeholder="Role in English" className="rounded-xl" />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold text-sage-800">{t('admin.members.roleFr')}</label>
+                      <Input value={newMember.role_fr} onChange={e => setNewMember({...newMember, role_fr: e.target.value})} placeholder="Rôle en Français" className="rounded-xl" />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-sage-800">{t('admin.members.bioEn')}</label>
+                    <Textarea value={newMember.bio_en} onChange={e => setNewMember({...newMember, bio_en: e.target.value})} placeholder="Short bio in English" className="rounded-xl min-h-[80px]" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-sage-800">{t('admin.members.bioFr')}</label>
+                    <Textarea value={newMember.bio_fr} onChange={e => setNewMember({...newMember, bio_fr: e.target.value})} placeholder="Courte bio en Français" className="rounded-xl min-h-[80px]" />
+                  </div>
+                </div>
+                <div className="p-8 bg-slate-50 flex justify-end gap-4 border-t border-sage-100">
+                  <Button variant="ghost" onClick={resetMemberForm} className="rounded-xl font-bold">{t('admin.members.cancel')}</Button>
+                  <Button onClick={handleSaveMember} disabled={uploadingMember} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold px-8 disabled:opacity-50">
+                    {uploadingMember ? (
+                      <span className="flex items-center gap-2">
+                        <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                        </svg>
+                        Saving...
+                      </span>
+                    ) : t('admin.members.save')}
+                  </Button>
+                </div>
+              </motion.div>
+            </div>
+            )}
+
+            {showNewsForm && (
+              <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-sage-950/60 backdrop-blur-sm" onClick={resetNewsForm} />
+                <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden">
+                  <div className="bg-sage-800 p-8 text-white flex justify-between items-center">
+                    <h2 className="text-2xl font-black">{editingNews ? t('admin.news.edit') : t('admin.news.add')}</h2>
+                    <Button variant="ghost" size="icon" onClick={resetNewsForm} className="text-white/60 hover:text-white">
+                      <X className="w-6 h-6" />
+                    </Button>
+                  </div>
+                  <div className="p-8 space-y-6 max-h-[70vh] overflow-y-auto">
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <label className="text-sm font-bold text-sage-800">{t('admin.news.titleEn')}</label>
+                        <Input value={newNews.title_en} onChange={e => setNewNews({...newNews, title_en: e.target.value})} placeholder={t('admin.news.placeholderTitleEn')} className="rounded-xl" />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-bold text-sage-800">{t('admin.news.titleFr')}</label>
+                        <Input value={newNews.title_fr} onChange={e => setNewNews({...newNews, title_fr: e.target.value})} placeholder={t('admin.news.placeholderTitleFr')} className="rounded-xl" />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold text-sage-800">{t('admin.news.contentEn')}</label>
+                      <Textarea value={newNews.content_en} onChange={e => setNewNews({...newNews, content_en: e.target.value})} placeholder={t('admin.news.placeholderContentEn')} className="rounded-xl min-h-[120px]" />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold text-sage-800">{t('admin.news.contentFr')}</label>
+                      <Textarea value={newNews.content_fr} onChange={e => setNewNews({...newNews, content_fr: e.target.value})} placeholder={t('admin.news.placeholderContentFr')} className="rounded-xl min-h-[120px]" />
+                    </div>
+                    <DragDropImageUpload
+                        value={newNews.image_url}
+                        onChange={(url) => setNewNews({...newNews, image_url: url})}
+                        bucket="photos"
+                        folder="news"
+                        label={t('admin.news.imageUrl')}
+                      />
+                  </div>
+                  <div className="p-8 bg-slate-50 flex justify-end gap-4 border-t border-sage-100">
+                    <Button variant="ghost" onClick={resetNewsForm} className="rounded-xl font-bold">{t('admin.cancel')}</Button>
+                    <Button onClick={handleSaveNews} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold px-8">
+                      {t('admin.news.save')}
+                    </Button>
+                  </div>
+                </motion.div>
+              </div>
+              )}
+
+              {showProjectForm && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-sage-950/60 backdrop-blur-sm" onClick={resetProjectForm} />
+                  <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden">
+                    <div className="bg-sage-800 p-8 text-white flex justify-between items-center">
+                      <h2 className="text-2xl font-black">{editingProject ? t('admin.projects.edit') : t('admin.projects.add')}</h2>
+                      <Button variant="ghost" size="icon" onClick={resetProjectForm} className="text-white/60 hover:text-white">
+                        <X className="w-6 h-6" />
+                      </Button>
+                    </div>
+                    <div className="p-8 space-y-6 max-h-[70vh] overflow-y-auto">
+                      <div className="grid md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <label className="text-sm font-bold text-sage-800">{t('admin.projects.titleEn')}</label>
+                          <Input value={newProject.title_en} onChange={e => setNewProject({...newProject, title_en: e.target.value})} placeholder="Project title in English" className="rounded-xl" />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-sm font-bold text-sage-800">{t('admin.projects.titleFr')}</label>
+                          <Input value={newProject.title_fr} onChange={e => setNewProject({...newProject, title_fr: e.target.value})} placeholder="Titre du projet en Français" className="rounded-xl" />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-bold text-sage-800">{t('admin.projects.descEn')}</label>
+                        <Textarea value={newProject.description_en} onChange={e => setNewProject({...newProject, description_en: e.target.value})} placeholder="Description in English" className="rounded-xl min-h-[120px]" />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-bold text-sage-800">{t('admin.projects.descFr')}</label>
+                        <Textarea value={newProject.description_fr} onChange={e => setNewProject({...newProject, description_fr: e.target.value})} placeholder="Description en Français" className="rounded-xl min-h-[120px]" />
+                      </div>
+                      <DragDropImageUpload
+                          value={newProject.image_url}
+                          onChange={(url) => setNewProject({...newProject, image_url: url})}
+                          bucket="photos"
+                          folder="projects"
+                          label={t('admin.projects.imageUrl')}
+                        />
+                      <div className="grid md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <label className="text-sm font-bold text-sage-800">{t('admin.projects.categoryEn')}</label>
+                          <Input value={newProject.category_en} onChange={e => setNewProject({...newProject, category_en: e.target.value})} placeholder="Conservation" className="rounded-xl" />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-sm font-bold text-sage-800">{t('admin.projects.categoryFr')}</label>
+                          <Input value={newProject.category_fr} onChange={e => setNewProject({...newProject, category_fr: e.target.value})} placeholder="Conservation" className="rounded-xl" />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="p-8 bg-slate-50 flex justify-end gap-4 border-t border-sage-100">
+                      <Button variant="ghost" onClick={resetProjectForm} className="rounded-xl font-bold">{t('admin.cancel')}</Button>
+                      <Button onClick={handleSaveProject} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold px-8">
+                        {t('admin.projects.save')}
+                      </Button>
+                    </div>
+                  </motion.div>
+                </div>
+              )}
+            </AnimatePresence>
     </div>
   );
 }

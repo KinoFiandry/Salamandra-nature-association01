@@ -1,70 +1,26 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useI18n } from "@/lib/i18n";
+import { supabase } from "@/lib/supabase";
 import { motion } from "framer-motion";
-import { Info, Shield, TreePine, GraduationCap, Leaf, Sun, Sprout, Users } from "lucide-react";
+import { Info, Shield, TreePine, GraduationCap, Leaf, Sun, Sprout, Users, Loader2 } from "lucide-react";
 import useEmblaCarousel from 'embla-carousel-react';
 
-const teamMembers = [
-  {
-    name: "Pr ALBIGNAC Roland",
-    role: { en: "Honorary President", fr: "Président d’honneur" },
-    bio: { 
-      en: "Honorary Professor at Universities in France and Madagascar, UNDP / UNESCO Expert Consultant.",
-      fr: "Professeur honoraire des Universités en France et à Madagascar, Consultant Expert PNUD / UNESCO."
-    },
-    image: "/images/pr-roland.jpg"
-  },
-  {
-    name: "M. RAZAFINDRAKOTO Andriamampiandry Léon",
-    role: { en: "President and Co-founder", fr: "Président et co-fondateur" },
-    bio: {
-      en: "Director of Dayu Biik, manager of the Thönyë Protected Natural Area in Hienghène, New Caledonia, IUCN Expert for Tortoise and Freshwater Turtle Group, member of the IUCN Economic, Social and Environmental Policy Commission.",
-      fr: "Directeur de Dayu Biik, gestionnaire de l’Aire Naturelle Protégée du Thönyë à Hienghène en Nouvelle-Calédonie, Expert UICN Groupe Tortues terrestres et d’eau douce, membre de la Commission de la Politique Économique, Sociale et Environnementale de l’UICN."
-    },
-    image: "/images/leon.jpg"
-  },
-  {
-    name: "M. GAUTHIER Frank",
-    role: { en: "General Secretary", fr: "Secrétaire Général" },
-    bio: {
-      en: "Environmental Technician at the French Biodiversity Office in Corsica.",
-      fr: "Technicien en Environnement à l’Office Français de la Biodiversité en Corse."
-    },
-    image: "/images/franck-gauthier.jpg"
-  },
-  {
-    name: "Mme GAUTHIER Maude",
-    role: { en: "Treasurer", fr: "Trésorière" },
-    bio: {
-      en: "School teacher in Corsica.",
-      fr: "Professeur des écoles en Corse."
-    },
-    image: "/images/maud-gauthier.jpg"
-  },
-  {
-    name: "MAUGUIN Camille",
-    role: { en: "Communications Officer", fr: "Chargée de la Communication" },
-    bio: {
-      en: "Freelance graphic designer in Nièvre.",
-      fr: "Graphiste indépendante dans la Nièvre."
-    },
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400"
-  },
-  {
-    name: "Mlle RAHOLISON Anjara Malala",
-    role: { en: "Madagascar Representative", fr: "Représentante de Salamandra Nature à Madagascar" },
-    bio: {
-      en: "Communications Manager at NGO Génération Mada, Advisor to the NGO Y’DAGO.",
-      fr: "Responsable Communication ONG Génération Mada, Conseillère de l’ONG Y’DAGO."
-    },
-    image: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?q=80&w=400"
-  }
-];
+interface TeamMember {
+  id: string;
+  name: string;
+  role_en: string;
+  role_fr: string;
+  bio_en: string;
+  bio_fr: string;
+  photo_url: string;
+  display_order: number;
+}
 
-function TeamMemberCard({ member, language, index }: { member: any, language: string, index: number }) {
+function TeamMemberCard({ member, language, index }: { member: TeamMember, language: string, index: number }) {
   const [isExpanded, setIsExpanded] = React.useState(false);
+  const bio = language === 'fr' ? member.bio_fr : member.bio_en;
   
   return (
     <motion.div
@@ -76,7 +32,7 @@ function TeamMemberCard({ member, language, index }: { member: any, language: st
     >
       <div className="h-48 overflow-hidden flex-shrink-0">
         <img 
-          src={member.image} 
+          src={member.photo_url || 'https://images.unsplash.com/photo-1511367461989-f85a21fda167?q=80&w=400'} 
           alt={member.name}
           className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500"
         />
@@ -84,13 +40,13 @@ function TeamMemberCard({ member, language, index }: { member: any, language: st
       <div className="p-8 flex flex-col flex-grow">
         <h3 className="text-xl font-bold text-sage-800 mb-1 line-clamp-2">{member.name}</h3>
         <p className="text-terracotta-600 font-bold text-sm mb-4 min-h-[40px]">
-          {member.role[language as 'en' | 'fr']}
+          {language === 'fr' ? member.role_fr : member.role_en}
         </p>
         <div className="relative">
           <p className={`text-sage-700/70 text-sm leading-relaxed ${!isExpanded ? 'line-clamp-4' : ''}`}>
-            {member.bio[language as 'en' | 'fr']}
+            {bio}
           </p>
-          {member.bio[language as 'en' | 'fr'].length > 150 && (
+          {bio.length > 150 && (
             <button 
               onClick={(e) => {
                 e.stopPropagation();
@@ -109,7 +65,7 @@ function TeamMemberCard({ member, language, index }: { member: any, language: st
   );
 }
 
-function TeamCarousel({ teamMembers, language }: { teamMembers: any[], language: string }) {
+function TeamCarousel({ teamMembers, language }: { teamMembers: TeamMember[], language: string }) {
   const [emblaRef] = useEmblaCarousel({ 
     align: 'start',
     containScroll: 'trimSnaps',
@@ -120,16 +76,28 @@ function TeamCarousel({ teamMembers, language }: { teamMembers: any[], language:
     <div className="overflow-hidden cursor-grab active:cursor-grabbing pb-8" ref={emblaRef}>
       <div className="flex gap-8">
         {teamMembers.map((member, i) => (
-          <div key={member.name} className="flex-[0_0_85%] md:flex-[0_0_45%] lg:flex-[0_0_30%] min-w-0 h-full">
+          <div key={member.id} className="flex-[0_0_85%] md:flex-[0_0_45%] lg:flex-[0_0_30%] min-w-0 h-full">
             <TeamMemberCard member={member} language={language} index={i} />
           </div>
         ))}
       </div>
     </div>
   );
-}
+  }
 
 export default function AboutPage() {
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+
+  useEffect(() => {
+    async function fetchTeam() {
+      const { data } = await supabase
+        .from('team_members')
+        .select('*')
+        .order('display_order', { ascending: true });
+      if (data) setTeamMembers(data);
+    }
+    fetchTeam();
+  }, []);
   const { t, language } = useI18n();
 
   const presentation = {

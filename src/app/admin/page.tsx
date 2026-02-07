@@ -6,27 +6,24 @@ import { useI18n } from "@/lib/i18n";
 import { supabase } from "@/lib/supabase";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-    LayoutDashboard, 
-      Calendar as CalendarIcon, 
-      Video, 
-      Handshake, 
-      Plus, 
-      Trash2, 
-      Edit3, 
-      Save, 
-      X,
-      FileText,
-      LogOut,
-      ImageIcon,
-      Upload,
-      Users,
-      History,
-      Activity,
-      Receipt,
-      Newspaper,
-      FolderOpen,
-      UserPlus
-    } from "lucide-react";
+  LayoutDashboard, 
+    Calendar as CalendarIcon, 
+    Video, 
+    Handshake, 
+    Plus, 
+    Trash2, 
+    Edit3, 
+    Save, 
+    X,
+    FileText,
+    LogOut,
+    ImageIcon,
+    Upload,
+    Users,
+    History,
+    Activity,
+    Receipt
+  } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -85,37 +82,11 @@ export default function AdminDashboard() {
     url: ""
   });
   const [uploading, setUploading] = useState(false);
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
-    // Members state
-    const [members, setMembers] = useState<any[]>([]);
-    const [showMemberForm, setShowMemberForm] = useState(false);
-    const [editingMember, setEditingMember] = useState<any>(null);
-    const [newMember, setNewMember] = useState({
-      name: "", role_en: "", role_fr: "", bio_en: "", bio_fr: "", display_order: 0
-    });
-    const [memberFile, setMemberFile] = useState<File | null>(null);
-    const [memberUploading, setMemberUploading] = useState(false);
-
-    // News state
-    const [news, setNews] = useState<any[]>([]);
-    const [showNewsForm, setShowNewsForm] = useState(false);
-    const [editingNews, setEditingNews] = useState<any>(null);
-    const [newNews, setNewNews] = useState({
-      title_en: "", title_fr: "", content_en: "", content_fr: "", image_url: ""
-    });
-
-    // Projects state
-    const [projects, setProjects] = useState<any[]>([]);
-    const [showProjectForm, setShowProjectForm] = useState(false);
-    const [editingProject, setEditingProject] = useState<any>(null);
-    const [newProject, setNewProject] = useState({
-      title_en: "", title_fr: "", description_en: "", description_fr: "", image_url: "", category_en: "", category_fr: ""
-    });
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const fetchData = async () => {
     setLoading(true);
-      const [eventsRes, videosRes, partnersRes, photosRes, visitsRes, historyRes, logsRes, donationsRes, membersRes, newsRes, projectsRes] = await Promise.all([
+      const [eventsRes, videosRes, partnersRes, photosRes, visitsRes, historyRes, logsRes, donationsRes] = await Promise.all([
         supabase.from("events").select("*").order("date", { ascending: true }),
         supabase.from("videos").select("*").order("created_at", { ascending: false }),
         supabase.from("partners").select("*").order("name", { ascending: true }),
@@ -123,10 +94,7 @@ export default function AdminDashboard() {
         supabase.from("unique_visitors_count").select("*").single(),
         supabase.from("update_history").select("*").order("created_at", { ascending: false }).limit(50),
         supabase.from("system_logs").select("*").order("created_at", { ascending: false }).limit(50),
-        supabase.from("donations").select("*").order("created_at", { ascending: false }),
-        supabase.from("group_members").select("*").order("display_order", { ascending: true }),
-        supabase.from("news").select("*").order("created_at", { ascending: false }),
-        supabase.from("projects").select("*").order("created_at", { ascending: false })
+        supabase.from("donations").select("*").order("created_at", { ascending: false })
       ]);
 
       if (eventsRes.data) setEvents(eventsRes.data);
@@ -137,9 +105,6 @@ export default function AdminDashboard() {
       if (historyRes.data) setHistory(historyRes.data);
       if (logsRes.data) setLogs(logsRes.data);
       if (donationsRes.data) setDonations(donationsRes.data);
-      if (membersRes.data) setMembers(membersRes.data);
-      if (newsRes.data) setNews(newsRes.data);
-      if (projectsRes.data) setProjects(projectsRes.data);
 
     setLoading(false);
   };
@@ -297,181 +262,22 @@ export default function AdminDashboard() {
     }
   };
 
-    const handleDeletePhoto = async (id: string, url: string) => {
-      if (confirm("Are you sure?")) {
-        try {
-          const pathMatch = url.match(/photos\/(.+)$/);
-          if (pathMatch) {
-            await supabase.storage.from('photos').remove([pathMatch[1]]);
-          }
-          const { error } = await supabase.from("media").delete().eq("id", id);
-          if (error) throw error;
-          await logAdminAction("Deleted Photo", `Deleted photo ID: ${id}`);
-          fetchData();
-        } catch {
-          toast.error("Error deleting photo");
-        }
-      }
-    };
-
-    // === MEMBERS CRUD ===
-    const handleAddMember = async () => {
-      setMemberUploading(true);
+  const handleDeletePhoto = async (id: string, url: string) => {
+    if (confirm("Are you sure?")) {
       try {
-        let photo_url = "";
-        if (memberFile) {
-          const fileExt = memberFile.name.split('.').pop();
-          const fileName = `${Date.now()}.${fileExt}`;
-          const filePath = `members/${fileName}`;
-          const { error: uploadError } = await supabase.storage.from('member-photos').upload(filePath, memberFile);
-          if (uploadError) throw uploadError;
-          const { data: { publicUrl } } = supabase.storage.from('member-photos').getPublicUrl(filePath);
-          photo_url = publicUrl;
+        const pathMatch = url.match(/photos\/(.+)$/);
+        if (pathMatch) {
+          await supabase.storage.from('photos').remove([pathMatch[1]]);
         }
-
-        if (editingMember) {
-          const updateData: any = { ...newMember };
-          if (photo_url) updateData.photo_url = photo_url;
-          const { error } = await supabase.from("group_members").update(updateData).eq("id", editingMember.id);
-          if (error) throw error;
-          await logAdminAction("Updated Member", `Updated member: ${newMember.name}`);
-          toast.success("Member updated successfully");
-        } else {
-          const { error } = await supabase.from("group_members").insert([{ ...newMember, photo_url }]);
-          if (error) throw error;
-          await logAdminAction("Added Member", `Added member: ${newMember.name}`);
-          toast.success("Member added successfully");
-        }
-
-        setShowMemberForm(false);
-        setEditingMember(null);
-        setNewMember({ name: "", role_en: "", role_fr: "", bio_en: "", bio_fr: "", display_order: 0 });
-        setMemberFile(null);
+        const { error } = await supabase.from("media").delete().eq("id", id);
+        if (error) throw error;
+        await logAdminAction("Deleted Photo", `Deleted photo ID: ${id}`);
         fetchData();
-      } catch (error: any) {
-        toast.error(error.message || "Error saving member");
-      } finally {
-        setMemberUploading(false);
+      } catch {
+        toast.error("Error deleting photo");
       }
-    };
-
-    const handleEditMember = (member: any) => {
-      setEditingMember(member);
-      setNewMember({
-        name: member.name,
-        role_en: member.role_en,
-        role_fr: member.role_fr,
-        bio_en: member.bio_en,
-        bio_fr: member.bio_fr,
-        display_order: member.display_order || 0
-      });
-      setShowMemberForm(true);
-    };
-
-    const handleDeleteMember = async (id: string) => {
-      if (confirm("Are you sure?")) {
-        const { error } = await supabase.from("group_members").delete().eq("id", id);
-        if (error) toast.error("Error deleting member");
-        else {
-          await logAdminAction("Deleted Member", `Deleted member ID: ${id}`);
-          fetchData();
-        }
-      }
-    };
-
-    // === NEWS CRUD ===
-    const handleAddNews = async () => {
-      try {
-        if (editingNews) {
-          const { error } = await supabase.from("news").update(newNews).eq("id", editingNews.id);
-          if (error) throw error;
-          await logAdminAction("Updated News", `Updated news: ${newNews.title_en}`);
-          toast.success("News updated successfully");
-        } else {
-          const { error } = await supabase.from("news").insert([newNews]);
-          if (error) throw error;
-          await logAdminAction("Added News", `Added news: ${newNews.title_en}`);
-          toast.success("News added successfully");
-        }
-        setShowNewsForm(false);
-        setEditingNews(null);
-        setNewNews({ title_en: "", title_fr: "", content_en: "", content_fr: "", image_url: "" });
-        fetchData();
-      } catch (error: any) {
-        toast.error(error.message || "Error saving news");
-      }
-    };
-
-    const handleEditNews = (item: any) => {
-      setEditingNews(item);
-      setNewNews({
-        title_en: item.title_en,
-        title_fr: item.title_fr,
-        content_en: item.content_en,
-        content_fr: item.content_fr,
-        image_url: item.image_url || ""
-      });
-      setShowNewsForm(true);
-    };
-
-    const handleDeleteNews = async (id: string) => {
-      if (confirm("Are you sure?")) {
-        const { error } = await supabase.from("news").delete().eq("id", id);
-        if (error) toast.error("Error deleting news");
-        else {
-          await logAdminAction("Deleted News", `Deleted news ID: ${id}`);
-          fetchData();
-        }
-      }
-    };
-
-    // === PROJECTS CRUD ===
-    const handleAddProject = async () => {
-      try {
-        if (editingProject) {
-          const { error } = await supabase.from("projects").update(newProject).eq("id", editingProject.id);
-          if (error) throw error;
-          await logAdminAction("Updated Project", `Updated project: ${newProject.title_en}`);
-          toast.success("Project updated successfully");
-        } else {
-          const { error } = await supabase.from("projects").insert([newProject]);
-          if (error) throw error;
-          await logAdminAction("Added Project", `Added project: ${newProject.title_en}`);
-          toast.success("Project added successfully");
-        }
-        setShowProjectForm(false);
-        setEditingProject(null);
-        setNewProject({ title_en: "", title_fr: "", description_en: "", description_fr: "", image_url: "", category_en: "", category_fr: "" });
-        fetchData();
-      } catch (error: any) {
-        toast.error(error.message || "Error saving project");
-      }
-    };
-
-    const handleEditProject = (project: any) => {
-      setEditingProject(project);
-      setNewProject({
-        title_en: project.title_en,
-        title_fr: project.title_fr,
-        description_en: project.description_en,
-        description_fr: project.description_fr,
-        image_url: project.image_url || "",
-        category_en: project.category_en || "",
-        category_fr: project.category_fr || ""
-      });
-      setShowProjectForm(true);
-    };
-
-    const handleDeleteProject = async (id: string) => {
-      if (confirm("Are you sure?")) {
-        const { error } = await supabase.from("projects").delete().eq("id", id);
-        if (error) toast.error("Error deleting project");
-        else {
-          await logAdminAction("Deleted Project", `Deleted project ID: ${id}`);
-          fetchData();
-        }
-      }
-    };
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -509,17 +315,8 @@ export default function AdminDashboard() {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
             <TabsList className="bg-white p-1 rounded-2xl border border-sage-100 shadow-sm h-16 w-full md:w-auto overflow-x-auto flex-nowrap">
               <TabsTrigger value="events" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
-                  <CalendarIcon className="w-4 h-4 mr-2" /> {t('admin.tabs.events')}
-                </TabsTrigger>
-                <TabsTrigger value="members" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
-                  <UserPlus className="w-4 h-4 mr-2" /> {t('admin.tabs.members')}
-                </TabsTrigger>
-                <TabsTrigger value="news" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
-                  <Newspaper className="w-4 h-4 mr-2" /> {t('admin.tabs.news')}
-                </TabsTrigger>
-                <TabsTrigger value="projects" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
-                  <FolderOpen className="w-4 h-4 mr-2" /> {t('admin.tabs.projects')}
-                </TabsTrigger>
+                <CalendarIcon className="w-4 h-4 mr-2" /> {t('admin.tabs.events')}
+              </TabsTrigger>
               <TabsTrigger value="videos" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
                 <Video className="w-4 h-4 mr-2" /> {t('admin.tabs.videos')}
               </TabsTrigger>
@@ -571,130 +368,9 @@ export default function AdminDashboard() {
             </div>
           </TabsContent>
 
-            {/* === MEMBERS TAB === */}
-            <TabsContent value="members" className="space-y-6">
-              <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold text-sage-800">{t('admin.manage.members')}</h2>
-                <Button onClick={() => { setEditingMember(null); setNewMember({ name: "", role_en: "", role_fr: "", bio_en: "", bio_fr: "", display_order: 0 }); setMemberFile(null); setShowMemberForm(true); }} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold">
-                  <Plus className="w-4 h-4 mr-2" /> {t('admin.add.member')}
-                </Button>
-              </div>
-              <div className="grid gap-4">
-                {members.map(member => (
-                  <div key={member.id} className="bg-white p-6 rounded-2xl border border-sage-100 shadow-sm flex justify-between items-center hover:shadow-md transition-shadow">
-                    <div className="flex items-center gap-4">
-                      <div className="w-16 h-16 rounded-xl overflow-hidden bg-sage-100 flex-shrink-0">
-                        {member.photo_url ? (
-                          <img src={member.photo_url} alt={member.name} className="w-full h-full object-cover" />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-sage-300"><Users className="w-8 h-8" /></div>
-                        )}
-                      </div>
-                      <div>
-                        <h3 className="font-bold text-lg text-sage-800">{member.name}</h3>
-                        <p className="text-terracotta-500 text-sm font-medium">{member.role_en} / {member.role_fr}</p>
-                        <p className="text-sage-500 text-xs mt-1 line-clamp-1">{member.bio_en}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Button onClick={() => handleEditMember(member)} variant="ghost" size="icon" className="text-terracotta-400 hover:text-terracotta-500">
-                        <Edit3 className="w-5 h-5" />
-                      </Button>
-                      <Button onClick={() => handleDeleteMember(member.id)} variant="ghost" size="icon" className="text-red-400 hover:text-red-600">
-                        <Trash2 className="w-5 h-5" />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-                {members.length === 0 && (
-                  <div className="text-center py-12 text-sage-400"><Users className="w-12 h-12 mx-auto mb-4 opacity-50" /><p>No team members yet.</p></div>
-                )}
-              </div>
-            </TabsContent>
-
-            {/* === NEWS TAB === */}
-            <TabsContent value="news" className="space-y-6">
-              <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold text-sage-800">{t('admin.manage.news')}</h2>
-                <Button onClick={() => { setEditingNews(null); setNewNews({ title_en: "", title_fr: "", content_en: "", content_fr: "", image_url: "" }); setShowNewsForm(true); }} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold">
-                  <Plus className="w-4 h-4 mr-2" /> {t('admin.add.news')}
-                </Button>
-              </div>
-              <div className="grid gap-4">
-                {news.map(item => (
-                  <div key={item.id} className="bg-white p-6 rounded-2xl border border-sage-100 shadow-sm flex justify-between items-center hover:shadow-md transition-shadow">
-                    <div className="flex items-center gap-4">
-                      {item.image_url && (
-                        <div className="w-20 h-16 rounded-xl overflow-hidden bg-sage-100 flex-shrink-0">
-                          <img src={item.image_url} alt={item.title_en} className="w-full h-full object-cover" />
-                        </div>
-                      )}
-                      <div>
-                        <h3 className="font-bold text-lg text-sage-800">{item.title_en}</h3>
-                        <p className="text-sage-500 text-sm">{item.title_fr}</p>
-                        <p className="text-sage-400 text-xs mt-1">{new Date(item.created_at).toLocaleDateString()}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Button onClick={() => handleEditNews(item)} variant="ghost" size="icon" className="text-terracotta-400 hover:text-terracotta-500">
-                        <Edit3 className="w-5 h-5" />
-                      </Button>
-                      <Button onClick={() => handleDeleteNews(item.id)} variant="ghost" size="icon" className="text-red-400 hover:text-red-600">
-                        <Trash2 className="w-5 h-5" />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-                {news.length === 0 && (
-                  <div className="text-center py-12 text-sage-400"><Newspaper className="w-12 h-12 mx-auto mb-4 opacity-50" /><p>No news articles yet.</p></div>
-                )}
-              </div>
-            </TabsContent>
-
-            {/* === PROJECTS TAB === */}
-            <TabsContent value="projects" className="space-y-6">
-              <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold text-sage-800">{t('admin.manage.projects')}</h2>
-                <Button onClick={() => { setEditingProject(null); setNewProject({ title_en: "", title_fr: "", description_en: "", description_fr: "", image_url: "", category_en: "", category_fr: "" }); setShowProjectForm(true); }} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold">
-                  <Plus className="w-4 h-4 mr-2" /> {t('admin.add.project')}
-                </Button>
-              </div>
-              <div className="grid gap-4">
-                {projects.map(project => (
-                  <div key={project.id} className="bg-white p-6 rounded-2xl border border-sage-100 shadow-sm flex justify-between items-center hover:shadow-md transition-shadow">
-                    <div className="flex items-center gap-4">
-                      {project.image_url && (
-                        <div className="w-20 h-16 rounded-xl overflow-hidden bg-sage-100 flex-shrink-0">
-                          <img src={project.image_url} alt={project.title_en} className="w-full h-full object-cover" />
-                        </div>
-                      )}
-                      <div>
-                        <h3 className="font-bold text-lg text-sage-800">{project.title_en}</h3>
-                        <p className="text-sage-500 text-sm">{project.title_fr}</p>
-                        <div className="flex gap-2 mt-1">
-                          {project.category_en && <span className="text-xs bg-sage-100 text-sage-600 px-2 py-0.5 rounded-full">{project.category_en}</span>}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Button onClick={() => handleEditProject(project)} variant="ghost" size="icon" className="text-terracotta-400 hover:text-terracotta-500">
-                        <Edit3 className="w-5 h-5" />
-                      </Button>
-                      <Button onClick={() => handleDeleteProject(project.id)} variant="ghost" size="icon" className="text-red-400 hover:text-red-600">
-                        <Trash2 className="w-5 h-5" />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-                {projects.length === 0 && (
-                  <div className="text-center py-12 text-sage-400"><FolderOpen className="w-12 h-12 mx-auto mb-4 opacity-50" /><p>No projects yet.</p></div>
-                )}
-              </div>
-            </TabsContent>
-
           <TabsContent value="videos" className="space-y-6">
-              <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold text-sage-800">{t('admin.manage.videos')}</h2>
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold text-sage-800">{t('admin.manage.videos')}</h2>
               <Button onClick={() => setShowVideoForm(true)} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold">
                 <Plus className="w-4 h-4 mr-2" /> {t('admin.add.video')}
               </Button>
@@ -1135,162 +811,7 @@ export default function AdminDashboard() {
               </motion.div>
             </div>
           )}
-          {/* MEMBER FORM MODAL */}
-          {showMemberForm && (
-            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-sage-950/60 backdrop-blur-sm" onClick={() => setShowMemberForm(false)} />
-              <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden">
-                <div className="bg-sage-800 p-8 text-white flex justify-between items-center">
-                  <h2 className="text-2xl font-black">{editingMember ? t('admin.edit.member') : t('admin.add.member')}</h2>
-                  <Button variant="ghost" size="icon" onClick={() => setShowMemberForm(false)} className="text-white/60 hover:text-white"><X className="w-6 h-6" /></Button>
-                </div>
-                <div className="p-8 space-y-6 max-h-[70vh] overflow-y-auto">
-                  <div className="space-y-2">
-                    <label className="text-sm font-bold text-sage-800">{t('admin.form.memberName')}</label>
-                    <Input value={newMember.name} onChange={e => setNewMember({...newMember, name: e.target.value})} placeholder="Full name" className="rounded-xl" />
-                  </div>
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <label className="text-sm font-bold text-sage-800">{t('admin.form.roleEn')}</label>
-                      <Input value={newMember.role_en} onChange={e => setNewMember({...newMember, role_en: e.target.value})} placeholder="Role in English" className="rounded-xl" />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-sm font-bold text-sage-800">{t('admin.form.roleFr')}</label>
-                      <Input value={newMember.role_fr} onChange={e => setNewMember({...newMember, role_fr: e.target.value})} placeholder="Rôle en Français" className="rounded-xl" />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-bold text-sage-800">{t('admin.form.bioEn')}</label>
-                    <Textarea value={newMember.bio_en} onChange={e => setNewMember({...newMember, bio_en: e.target.value})} placeholder="Short bio in English" className="rounded-xl min-h-[80px]" />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-bold text-sage-800">{t('admin.form.bioFr')}</label>
-                    <Textarea value={newMember.bio_fr} onChange={e => setNewMember({...newMember, bio_fr: e.target.value})} placeholder="Courte biographie en Français" className="rounded-xl min-h-[80px]" />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-bold text-sage-800">{t('admin.form.photoFile')}</label>
-                    <div className="relative">
-                      <input type="file" accept="image/*" onChange={e => { if (e.target.files?.[0]) setMemberFile(e.target.files[0]); }} className="hidden" id="member-photo-upload" />
-                      <label htmlFor="member-photo-upload" className="flex items-center justify-center gap-3 w-full h-24 border-2 border-dashed border-sage-200 rounded-xl cursor-pointer hover:border-terracotta-400 hover:bg-sage-50 transition-colors">
-                        {memberFile ? (
-                          <div className="text-center"><ImageIcon className="w-6 h-6 mx-auto text-terracotta-500 mb-1" /><p className="text-sm text-sage-800 font-medium">{memberFile.name}</p></div>
-                        ) : (
-                          <div className="text-center"><Upload className="w-6 h-6 mx-auto text-terracotta-400 mb-1" /><p className="text-sm text-terracotta-500 font-medium">{editingMember ? 'Upload new photo (optional)' : 'Click to upload photo'}</p></div>
-                        )}
-                      </label>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-bold text-sage-800">{t('admin.form.displayOrder')}</label>
-                    <Input type="number" value={newMember.display_order} onChange={e => setNewMember({...newMember, display_order: parseInt(e.target.value) || 0})} className="rounded-xl" />
-                  </div>
-                </div>
-                <div className="p-8 bg-slate-50 flex justify-end gap-4 border-t border-sage-100">
-                  <Button variant="ghost" onClick={() => setShowMemberForm(false)} className="rounded-xl font-bold">{t('admin.form.cancel')}</Button>
-                  <Button onClick={handleAddMember} disabled={memberUploading} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold px-8 disabled:opacity-50">
-                    {memberUploading ? t('admin.form.uploading') : t('admin.form.saveMember')}
-                  </Button>
-                </div>
-              </motion.div>
-            </div>
-          )}
-
-          {/* NEWS FORM MODAL */}
-          {showNewsForm && (
-            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-sage-950/60 backdrop-blur-sm" onClick={() => setShowNewsForm(false)} />
-              <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden">
-                <div className="bg-sage-800 p-8 text-white flex justify-between items-center">
-                  <h2 className="text-2xl font-black">{editingNews ? t('admin.edit.news') : t('admin.add.news')}</h2>
-                  <Button variant="ghost" size="icon" onClick={() => setShowNewsForm(false)} className="text-white/60 hover:text-white"><X className="w-6 h-6" /></Button>
-                </div>
-                <div className="p-8 space-y-6 max-h-[70vh] overflow-y-auto">
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <label className="text-sm font-bold text-sage-800">{t('admin.form.titleEn')}</label>
-                      <Input value={newNews.title_en} onChange={e => setNewNews({...newNews, title_en: e.target.value})} placeholder="News title in English" className="rounded-xl" />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-sm font-bold text-sage-800">{t('admin.form.titleFr')}</label>
-                      <Input value={newNews.title_fr} onChange={e => setNewNews({...newNews, title_fr: e.target.value})} placeholder="Titre en Français" className="rounded-xl" />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-bold text-sage-800">{t('admin.form.contentEn')}</label>
-                    <Textarea value={newNews.content_en} onChange={e => setNewNews({...newNews, content_en: e.target.value})} placeholder="Content in English" className="rounded-xl min-h-[120px]" />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-bold text-sage-800">{t('admin.form.contentFr')}</label>
-                    <Textarea value={newNews.content_fr} onChange={e => setNewNews({...newNews, content_fr: e.target.value})} placeholder="Contenu en Français" className="rounded-xl min-h-[120px]" />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-bold text-sage-800">{t('admin.form.imageUrl')}</label>
-                    <Input value={newNews.image_url} onChange={e => setNewNews({...newNews, image_url: e.target.value})} placeholder="https://..." className="rounded-xl" />
-                  </div>
-                </div>
-                <div className="p-8 bg-slate-50 flex justify-end gap-4 border-t border-sage-100">
-                  <Button variant="ghost" onClick={() => setShowNewsForm(false)} className="rounded-xl font-bold">{t('admin.form.cancel')}</Button>
-                  <Button onClick={handleAddNews} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold px-8">
-                    {t('admin.form.saveNews')}
-                  </Button>
-                </div>
-              </motion.div>
-            </div>
-          )}
-
-          {/* PROJECT FORM MODAL */}
-          {showProjectForm && (
-            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-sage-950/60 backdrop-blur-sm" onClick={() => setShowProjectForm(false)} />
-              <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden">
-                <div className="bg-sage-800 p-8 text-white flex justify-between items-center">
-                  <h2 className="text-2xl font-black">{editingProject ? t('admin.edit.project') : t('admin.add.project')}</h2>
-                  <Button variant="ghost" size="icon" onClick={() => setShowProjectForm(false)} className="text-white/60 hover:text-white"><X className="w-6 h-6" /></Button>
-                </div>
-                <div className="p-8 space-y-6 max-h-[70vh] overflow-y-auto">
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <label className="text-sm font-bold text-sage-800">{t('admin.form.titleEn')}</label>
-                      <Input value={newProject.title_en} onChange={e => setNewProject({...newProject, title_en: e.target.value})} placeholder="Project title in English" className="rounded-xl" />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-sm font-bold text-sage-800">{t('admin.form.titleFr')}</label>
-                      <Input value={newProject.title_fr} onChange={e => setNewProject({...newProject, title_fr: e.target.value})} placeholder="Titre du projet en Français" className="rounded-xl" />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-bold text-sage-800">{t('admin.form.descriptionEn')}</label>
-                    <Textarea value={newProject.description_en} onChange={e => setNewProject({...newProject, description_en: e.target.value})} placeholder="Description in English" className="rounded-xl min-h-[120px]" />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-bold text-sage-800">{t('admin.form.descriptionFr')}</label>
-                    <Textarea value={newProject.description_fr} onChange={e => setNewProject({...newProject, description_fr: e.target.value})} placeholder="Description en Français" className="rounded-xl min-h-[120px]" />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-bold text-sage-800">{t('admin.form.imageUrl')}</label>
-                    <Input value={newProject.image_url} onChange={e => setNewProject({...newProject, image_url: e.target.value})} placeholder="https://..." className="rounded-xl" />
-                  </div>
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <label className="text-sm font-bold text-sage-800">{t('admin.form.categoryEn')}</label>
-                      <Input value={newProject.category_en} onChange={e => setNewProject({...newProject, category_en: e.target.value})} placeholder="Category in English" className="rounded-xl" />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-sm font-bold text-sage-800">{t('admin.form.categoryFr')}</label>
-                      <Input value={newProject.category_fr} onChange={e => setNewProject({...newProject, category_fr: e.target.value})} placeholder="Catégorie en Français" className="rounded-xl" />
-                    </div>
-                  </div>
-                </div>
-                <div className="p-8 bg-slate-50 flex justify-end gap-4 border-t border-sage-100">
-                  <Button variant="ghost" onClick={() => setShowProjectForm(false)} className="rounded-xl font-bold">{t('admin.form.cancel')}</Button>
-                  <Button onClick={handleAddProject} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold px-8">
-                    {t('admin.form.saveProject')}
-                  </Button>
-                </div>
-              </motion.div>
-            </div>
-          )}
-          </AnimatePresence>
+        </AnimatePresence>
     </div>
   );
 }

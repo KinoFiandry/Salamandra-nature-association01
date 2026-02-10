@@ -7,7 +7,7 @@ import { supabase } from "@/lib/supabase";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
     LayoutDashboard, 
-      Calendar as CalendarIcon, 
+      CalendarDays, 
       Video, 
       Handshake, 
       Plus, 
@@ -246,11 +246,27 @@ export default function AdminDashboard() {
         if (editingVideo) {
           const { error } = await supabase.from("videos").update(newVideo).eq("id", editingVideo.id);
           if (error) throw error;
+          // Sync to media table
+          await supabase.from("media").update({
+            url: newVideo.url,
+            caption_en: newVideo.title_en,
+            caption_fr: newVideo.title_fr,
+            thumbnail_url: newVideo.thumbnail_url || "",
+          }).eq("id", editingVideo.id);
           await logAdminAction("Updated Video", `Updated video: ${newVideo.title_en}`);
           toast.success("Video updated successfully");
         } else {
-          const { error } = await supabase.from("videos").insert([newVideo]);
+          const { data, error } = await supabase.from("videos").insert([newVideo]).select().single();
           if (error) throw error;
+          // Also insert into media table with same id
+          await supabase.from("media").insert([{
+            id: data.id,
+            type: "video",
+            url: newVideo.url,
+            caption_en: newVideo.title_en,
+            caption_fr: newVideo.title_fr,
+            thumbnail_url: newVideo.thumbnail_url || "",
+          }]);
           await logAdminAction("Added Video", `Added video: ${newVideo.title_en}`);
           toast.success("Video added successfully");
         }
@@ -264,11 +280,11 @@ export default function AdminDashboard() {
     const handleDeleteVideo = async (id: string) => {
       if (confirm("Are you sure?")) {
         const { error } = await supabase.from("videos").delete().eq("id", id);
-        if (error) toast.error("Error deleting video");
-        else {
-          await logAdminAction("Deleted Video", `Deleted video ID: ${id}`);
-          fetchData();
-        }
+        if (error) { toast.error("Error deleting video"); return; }
+        // Also delete from media table
+        await supabase.from("media").delete().eq("id", id);
+        await logAdminAction("Deleted Video", `Deleted video ID: ${id}`);
+        fetchData();
       }
     };
 
@@ -680,7 +696,7 @@ export default function AdminDashboard() {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
             <TabsList className="bg-white p-1 rounded-2xl border border-sage-100 shadow-sm h-16 w-full md:w-auto overflow-x-auto flex-nowrap">
               <TabsTrigger value="events" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
-                  <CalendarIcon className="w-4 h-4 mr-2" /> {t('admin.tabs.events')}
+                    <CalendarDays className="w-5 h-5 mr-2" /> {t('admin.tabs.events')}
                 </TabsTrigger>
                   <TabsTrigger value="news" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
                     <Newspaper className="w-4 h-4 mr-2" /> {t('admin.tabs.news')}

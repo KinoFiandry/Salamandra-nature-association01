@@ -22,6 +22,7 @@ export default function NewsPage() {
   const { t, language } = useI18n();
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     async function fetchNews() {
@@ -86,13 +87,27 @@ export default function NewsPage() {
                   <h2 className="text-4xl font-bold text-sage-800 mb-6 group-hover:text-terracotta-500 transition-colors">
                     {language === 'en' ? item.title_en : item.title_fr}
                   </h2>
-                  <p className="text-sage-700/70 text-xl leading-relaxed mb-10">
-                    {language === 'en' ? item.content_en : item.content_fr}
-                  </p>
-                  <button className="flex items-center gap-3 text-terracotta-500 font-black text-lg group/btn hover:translate-x-2 transition-transform">
-                    {language === 'en' ? 'Read Full Story' : 'Lire la suite'}
-                    <ArrowRight className="w-6 h-6 group-hover/btn:translate-x-2 transition-transform" />
-                  </button>
+                    <p className="text-sage-700/70 text-xl leading-relaxed mb-10">
+                      {(() => {
+                        const content = language === 'en' ? item.content_en : item.content_fr;
+                        if (expandedIds.has(item.id) || content.length <= 200) return content;
+                        return content.slice(0, 200) + '...';
+                      })()}
+                    </p>
+                    <button
+                      onClick={() => setExpandedIds(prev => {
+                        const next = new Set(prev);
+                        if (next.has(item.id)) next.delete(item.id);
+                        else next.add(item.id);
+                        return next;
+                      })}
+                      className="flex items-center gap-3 text-terracotta-500 font-black text-lg group/btn hover:translate-x-2 transition-transform"
+                    >
+                      {expandedIds.has(item.id)
+                        ? (language === 'en' ? 'Show Less' : 'Voir moins')
+                        : (language === 'en' ? 'Read Full Story' : 'Lire la suite')}
+                      <ArrowRight className={`w-6 h-6 group-hover/btn:translate-x-2 transition-transform ${expandedIds.has(item.id) ? 'rotate-[-90deg]' : ''}`} />
+                    </button>
                 </div>
               </motion.div>
             ))}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useI18n } from "@/lib/i18n";
 import { supabase } from "@/lib/supabase";
 import { motion } from "framer-motion";
@@ -70,11 +71,13 @@ export default function NewsPage() {
                 transition={{ delay: i * 0.1 }}
                 className="group grid md:grid-cols-2 gap-12 items-center"
               >
-                <div className={`overflow-hidden rounded-[3rem] h-[400px] border border-sage-100 ${i % 2 === 1 ? 'md:order-last' : ''}`}>
-                  <img
+                <div className={`overflow-hidden rounded-[3rem] h-[400px] relative border border-sage-100 ${i % 2 === 1 ? 'md:order-last' : ''}`}>
+                  <Image
                     src={item.image_url || 'https://images.unsplash.com/photo-1534067783941-51c9c23ecefd?q=80&w=1000'}
                     alt={language === 'en' ? item.title_en : item.title_fr}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                 </div>
                 <div>

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useI18n } from "@/lib/i18n";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { useState } from "react";
@@ -33,10 +34,14 @@ export function Navbar() {
         <div className="flex justify-between h-24">
             <div className="flex items-center">
               <Link href="/" className="flex items-center gap-3 group">
-                  <img 
-                    src="/images/logo.png" 
-                    alt="Salamandra Nature" 
-                    className="h-16 w-auto group-hover:scale-105 transition-transform"
+                  <Image
+                    src="/images/logo.png"
+                    alt="Salamandra Nature"
+                    width={200}
+                    height={64}
+                    priority
+                    style={{ height: '4rem', width: 'auto' }}
+                    className="group-hover:scale-105 transition-transform"
                   />
                 </Link>
             </div>

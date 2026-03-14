@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import { useI18n } from "@/lib/i18n";
 import { motion } from "framer-motion";
 import { Info, Shield, TreePine, GraduationCap, Leaf, Sun, Sprout, Users } from "lucide-react";
@@ -74,11 +75,13 @@ function TeamMemberCard({ member, language, index }: { member: any, language: st
       transition={{ delay: index * 0.1 }}
       className="bg-white rounded-3xl overflow-hidden border border-sage-100 shadow-sm hover:shadow-lg transition-all flex flex-col h-full"
     >
-      <div className="h-48 overflow-hidden flex-shrink-0">
-        <img 
-          src={member.image} 
+      <div className="h-48 overflow-hidden flex-shrink-0 relative">
+        <Image
+          src={member.image}
           alt={member.name}
-          className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500"
+          fill
+          sizes="(max-width: 768px) 85vw, (max-width: 1024px) 45vw, 30vw"
+          className="object-cover grayscale hover:grayscale-0 transition-all duration-500"
         />
       </div>
       <div className="p-8 flex flex-col flex-grow">

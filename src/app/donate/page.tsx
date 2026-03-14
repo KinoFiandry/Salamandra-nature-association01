@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import dynamic from "next/dynamic";
 import { useI18n } from "@/lib/i18n";
 
@@ -111,10 +112,13 @@ export default function DonatePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center gap-3">
-              <img
+              <Image
                 src="/images/logo.png"
                 alt="Salamandra Nature"
-                className="h-12 w-auto"
+                width={160}
+                height={48}
+                priority
+                style={{ height: '3rem', width: 'auto' }}
               />
             </Link>
             <div className="flex items-center gap-6">
@@ -343,10 +347,12 @@ export default function DonatePage() {
                 />
 
                 <div className="mt-6 flex items-center justify-center gap-3 grayscale opacity-50">
-                  <img
+                  <Image
                     src="https://www.paypalobjects.com/webstatic/mktg/logo/AM_mc_vs_dc_ae.jpg"
                     alt="Credit Cards"
-                    className="h-6 w-auto"
+                    width={160}
+                    height={24}
+                    style={{ height: '1.5rem', width: 'auto' }}
                   />
                 </div>
               </div>

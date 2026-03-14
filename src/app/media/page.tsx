@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useI18n } from "@/lib/i18n";
 import { supabase } from "@/lib/supabase";
 import { motion, AnimatePresence } from "framer-motion";
@@ -84,10 +85,12 @@ export default function MediaPage() {
                 onClick={() => setSelectedMedia(item)}
                 className="group relative cursor-pointer overflow-hidden rounded-[2rem] aspect-square bg-sage-50 border border-sage-100 shadow-sm hover:shadow-xl transition-all"
               >
-                <img
+                <Image
                   src={item.thumbnail_url || item.url}
                   alt={language === 'en' ? item.caption_en : item.caption_fr}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  className="object-cover group-hover:scale-110 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-sage-800/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                   <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center text-terracotta-500 shadow-xl scale-75 group-hover:scale-100 transition-transform">

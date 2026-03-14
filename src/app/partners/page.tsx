@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { useI18n } from "@/lib/i18n";
 import { supabase } from "@/lib/supabase";
 import { motion } from "framer-motion";
@@ -95,10 +96,12 @@ export default function PartnersPage() {
                     >
                       <div className="w-24 h-24 relative grayscale group-hover:grayscale-0 transition-all duration-500">
                         {partner.logo_url ? (
-                          <img
+                          <Image
                             src={partner.logo_url}
                             alt={partner.name}
-                            className="w-full h-full object-contain"
+                            fill
+                            sizes="96px"
+                            className="object-contain"
                           />
                         ) : (
                           <div className="w-full h-full bg-sage-50 rounded-full flex items-center justify-center text-sage-300">

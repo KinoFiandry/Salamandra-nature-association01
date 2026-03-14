@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useCallback, useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n";
 import { supabase } from "@/lib/supabase";
@@ -22,10 +23,12 @@ function TeamMemberCard({ member, language, index }: { member: any, language: st
       className="bg-white rounded-[2rem] overflow-hidden border border-terracotta-100 shadow-sm hover:shadow-xl transition-all group flex flex-col h-full"
     >
       <div className="h-64 overflow-hidden relative flex-shrink-0">
-        <img 
-          src={member.photo_url || '/images/placeholder.jpg'} 
+        <Image
+          src={member.photo_url || '/images/placeholder.jpg'}
           alt={member.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          fill
+          sizes="(max-width: 768px) 85vw, (max-width: 1280px) 45vw, 22vw"
+          className="object-cover group-hover:scale-105 transition-transform duration-500"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-sage-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
       </div>
@@ -190,11 +193,13 @@ export default function Home() {
         {/* Hero Section */}
         <section className="relative h-[90vh] flex items-center overflow-hidden">
           <div className="absolute inset-0 z-0">
-            <img
-              /*src="https://images.unsplash.com/photo-1509316785289-025f5b846b35?q=80&w=2000"*/
+            <Image
               src="/images/baobab.jpg"
               alt="Baobab trees Avenue of the Baobabs Madagascar"
-              className="w-full h-full object-cover brightness-[0.35]"
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover brightness-[0.35]"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-terracotta-950/60 via-sage-900/30 to-transparent" />
  
@@ -325,10 +330,12 @@ export default function Home() {
             <div className="grid md:grid-cols-2 gap-8">
               {newsItems.map((item) => (
                 <div key={item.id} className="group bg-white rounded-[2rem] overflow-hidden border border-sage-100 shadow-sm hover:shadow-xl transition-all">
-                  <div className="h-64 overflow-hidden">
-                    <img
+                  <div className="h-64 overflow-hidden relative">
+                    <Image
                       src={item.image_url || 'https://images.unsplash.com/photo-1534067783941-51c9c23ecefd?q=80&w=1000'}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      fill
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
                       alt={language === 'fr' ? item.title_fr : item.title_en}
                     />
                   </div>
@@ -406,10 +413,12 @@ export default function Home() {
           <div className="grid md:grid-cols-4 gap-16">
             <div className="md:col-span-2">
               <div className="flex items-center gap-3 mb-8">
-                <img 
-                  src="/images/logo.png" 
-                  alt="Salamandra Nature" 
-                  className="h-20 w-auto"
+                <Image
+                  src="/images/logo.png"
+                  alt="Salamandra Nature"
+                  width={200}
+                  height={80}
+                  style={{ height: '5rem', width: 'auto' }}
                 />
               </div>
               <p className="text-sage-200/60 text-lg max-w-md leading-relaxed">

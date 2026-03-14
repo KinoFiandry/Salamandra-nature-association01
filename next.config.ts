@@ -4,6 +4,8 @@ const LOADER = "src/visual-edits/component-tagger-loader.js";
 
 const nextConfig: NextConfig = {
   images: {
+    formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 3600,
     remotePatterns: [
       {
         protocol: 'https',

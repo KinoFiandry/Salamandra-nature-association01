@@ -206,12 +206,7 @@ export default function Home() {
           </div>
 
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-white">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="max-w-3xl"
-          >
+          <div className="max-w-3xl">
             <h1 className="text-5xl md:text-7xl font-extrabold mb-6 leading-tight tracking-tight">
               {t('hero.title')}{" "}
               <span className="text-terracotta-400">{t('hero.titleAccent')}</span>
@@ -235,7 +230,7 @@ export default function Home() {
                 <ArrowRight className="w-5 h-5" />
               </Link>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -392,7 +387,6 @@ export default function Home() {
             viewport={{ once: true }}
             className="bg-sage-600 rounded-[3rem] p-12 md:p-20 text-center text-white relative overflow-hidden shadow-2xl shadow-sage-900/20"
           >
-            <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 pointer-events-none" />
             <h2 className="text-4xl md:text-5xl font-black mb-8 relative z-10">{t('cta.title')}</h2>
             <p className="text-xl text-sage-50 mb-12 max-w-2xl mx-auto relative z-10 leading-relaxed font-light">
               {t('cta.desc')}

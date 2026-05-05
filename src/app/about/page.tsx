@@ -4,7 +4,7 @@ import React from "react";
 import Image from "next/image";
 import { useI18n } from "@/lib/i18n";
 import { motion } from "framer-motion";
-import { Info, Shield, TreePine, GraduationCap, Leaf, Sun, Sprout, Users } from "lucide-react";
+import { Info, Shield, TreePine, GraduationCap, Leaf, Sun, Sprout, Users, FileText, Download } from "lucide-react";
 import useEmblaCarousel from 'embla-carousel-react';
 
 const teamMembers = [
@@ -185,10 +185,24 @@ export default function AboutPage() {
     }
   ];
 
+  const reports = [
+    {
+      title: {
+        en: "Sharing Workshop Report",
+        fr: "Rapport d’atelier de partage"
+      },
+      description: {
+        en: "Summary report from the association’s sharing workshop on turtle conservation.",
+        fr: "Rapport de synthèse de l’atelier de partage de l’association sur la conservation des tortues."
+      },
+      file: "/reports/sharing-workshop-report.pdf",
+      year: "2024"
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-white pb-20">
       <div className="relative py-24 bg-sage-900 text-white overflow-hidden">
-        <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1516733725897-1aa73b87c8e8?q=80&w=2000')] bg-cover bg-center" />
         <div className="max-w-7xl mx-auto px-4 relative z-10">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
@@ -245,6 +259,56 @@ export default function AboutPage() {
                 <p className="text-lg text-sage-700/80 leading-relaxed pt-2">
                   {action.content[language as 'en' | 'fr']}
                 </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* Reports Section */}
+        <div className="mb-32">
+          <div className="flex items-center gap-4 mb-12">
+            <div className="w-12 h-12 bg-sage-100 rounded-xl flex items-center justify-center text-sage-600">
+              <FileText className="w-6 h-6" />
+            </div>
+            <h2 className="text-4xl font-bold text-sage-800">{t('about.reports')}</h2>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {reports.map((report, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="flex items-start gap-5 p-6 bg-sage-50/50 rounded-2xl border border-sage-100 hover:shadow-lg hover:shadow-sage-200/50 transition-all group"
+              >
+                <div className="flex-shrink-0 w-14 h-14 bg-white rounded-xl flex items-center justify-center text-terracotta-500 shadow-sm border border-sage-100 group-hover:bg-terracotta-500 group-hover:text-white transition-colors">
+                  <FileText className="w-7 h-7" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between gap-4 mb-1">
+                    <h3 className="text-lg font-bold text-sage-800 leading-tight">
+                      {report.title[language as 'en' | 'fr']}
+                    </h3>
+                    <span className="flex-shrink-0 text-xs font-semibold text-sage-500 bg-sage-100 px-2 py-0.5 rounded-full">
+                      {report.year}
+                    </span>
+                  </div>
+                  <p className="text-sm text-sage-700/70 leading-relaxed mb-4">
+                    {report.description[language as 'en' | 'fr']}
+                  </p>
+                  <a
+                    href={report.file}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    download
+                    className="inline-flex items-center gap-2 text-sm font-bold text-terracotta-600 hover:text-terracotta-700 transition-colors"
+                  >
+                    <Download className="w-4 h-4" />
+                    {t('about.reports.download')}
+                  </a>
+                </div>
               </motion.div>
             ))}
           </div>

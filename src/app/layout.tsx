@@ -23,6 +23,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://iqxjqpxnurxlmolncews.supabase.co" />
+        <link rel="preconnect" href="https://images.unsplash.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://iqxjqpxnurxlmolncews.supabase.co" />
+      </head>
         <body className="antialiased font-sans" suppressHydrationWarning>
         <Script
           id="orchids-browser-logs"

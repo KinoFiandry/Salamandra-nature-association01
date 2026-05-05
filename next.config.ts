@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
+import path from "path";
 
-const LOADER = "src/visual-edits/component-tagger-loader.js";
+const LOADER = path.resolve("./src/visual-edits/component-tagger-loader.js");
 
 const nextConfig: NextConfig = {
   images: {

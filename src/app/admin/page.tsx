@@ -5,15 +5,15 @@ import { useRouter } from "next/navigation";
 import { useI18n } from "@/lib/i18n";
 import { supabase } from "@/lib/supabase";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-    LayoutDashboard, 
-      CalendarDays, 
-      Video, 
-      Handshake, 
-      Plus, 
-      Trash2, 
-      Edit3, 
-      Save, 
+import {
+    LayoutDashboard,
+      CalendarDays,
+      Video,
+      Handshake,
+      Plus,
+      Trash2,
+      Edit3,
+      Save,
       X,
       FileText,
       LogOut,
@@ -24,7 +24,8 @@ import {
       Activity,
       Receipt,
         Newspaper,
-        FolderOpen
+        FolderOpen,
+        Download
       } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -75,6 +76,21 @@ export default function AdminDashboard() {
         category_en: "",
         category_fr: ""
       });
+
+      // Reports state
+      const [reports, setReports] = useState<any[]>([]);
+      const [showReportForm, setShowReportForm] = useState(false);
+      const [editingReport, setEditingReport] = useState<any>(null);
+      const [newReport, setNewReport] = useState({
+        title_en: "",
+        title_fr: "",
+        description_en: "",
+        description_fr: "",
+        file_url: "",
+        year: new Date().getFullYear().toString()
+      });
+      const [reportPdfFile, setReportPdfFile] = useState<File | null>(null);
+      const [uploadingReport, setUploadingReport] = useState(false);
 
   // Form states
   const [showEventForm, setShowEventForm] = useState(false);
@@ -133,7 +149,7 @@ export default function AdminDashboard() {
 
   const fetchData = async () => {
     setLoading(true);
-    const [eventsRes, videosRes, partnersRes, photosRes, visitsRes, historyRes, logsRes, donationsRes, membersRes, newsRes, projectsRes] = await Promise.all([
+    const [eventsRes, videosRes, partnersRes, photosRes, visitsRes, historyRes, logsRes, donationsRes, membersRes, newsRes, projectsRes, reportsRes] = await Promise.all([
             supabase.from("events").select("*").order("date", { ascending: true }),
             supabase.from("videos").select("*").order("created_at", { ascending: false }),
             supabase.from("partners").select("*").order("name", { ascending: true }),
@@ -144,7 +160,8 @@ export default function AdminDashboard() {
             supabase.from("donations").select("*").order("created_at", { ascending: false }),
             supabase.from("group_members").select("*").order("display_order", { ascending: true }),
             supabase.from("news").select("*").order("created_at", { ascending: false }),
-            supabase.from("projects").select("*").order("created_at", { ascending: false })
+            supabase.from("projects").select("*").order("created_at", { ascending: false }),
+            supabase.from("reports").select("*").order("year", { ascending: false })
           ]);
 
       if (eventsRes.data) setEvents(eventsRes.data);
@@ -158,6 +175,7 @@ export default function AdminDashboard() {
         if (membersRes.data) setMembers(membersRes.data);
           if (newsRes.data) setNews(newsRes.data);
           if (projectsRes.data) setProjects(projectsRes.data);
+          if (reportsRes.data) setReports(reportsRes.data);
 
       setLoading(false);
   };
@@ -660,6 +678,90 @@ export default function AdminDashboard() {
         }
       };
 
+      // Reports CRUD
+      const resetReportForm = () => {
+        setNewReport({ title_en: "", title_fr: "", description_en: "", description_fr: "", file_url: "", year: new Date().getFullYear().toString() });
+        setReportPdfFile(null);
+        setEditingReport(null);
+        setShowReportForm(false);
+      };
+
+      const handleOpenEditReport = (item: any) => {
+        setEditingReport(item);
+        setNewReport({
+          title_en: item.title_en,
+          title_fr: item.title_fr,
+          description_en: item.description_en || "",
+          description_fr: item.description_fr || "",
+          file_url: item.file_url || "",
+          year: item.year || new Date().getFullYear().toString()
+        });
+        setReportPdfFile(null);
+        setShowReportForm(true);
+      };
+
+      const handleSaveReport = async () => {
+        if (!newReport.title_en.trim()) {
+          toast.error(t('admin.reports.titleEn') + " is required");
+          return;
+        }
+        setUploadingReport(true);
+        try {
+          let file_url = newReport.file_url;
+
+          if (reportPdfFile) {
+            const fileExt = reportPdfFile.name.split('.').pop();
+            const fileName = `${Date.now()}.${fileExt}`;
+            const filePath = `reports/${fileName}`;
+            const { error: uploadError } = await supabase.storage
+              .from('reports')
+              .upload(filePath, reportPdfFile);
+            if (uploadError) throw uploadError;
+            const { data: { publicUrl } } = supabase.storage.from('reports').getPublicUrl(filePath);
+            file_url = publicUrl;
+          }
+
+          const payload = { ...newReport, file_url };
+
+          if (editingReport) {
+            const { error } = await supabase.from("reports").update(payload).eq("id", editingReport.id);
+            if (error) throw error;
+            await logAdminAction("Updated Report", `Updated report: ${newReport.title_en}`);
+            toast.success(t('admin.reports.edit') + " - OK");
+          } else {
+            const { error } = await supabase.from("reports").insert([payload]);
+            if (error) throw error;
+            await logAdminAction("Added Report", `Added report: ${newReport.title_en}`);
+            toast.success(t('admin.reports.add') + " - OK");
+          }
+          resetReportForm();
+          fetchData();
+        } catch (error: any) {
+          toast.error(error.message || "Error saving report");
+        } finally {
+          setUploadingReport(false);
+        }
+      };
+
+      const handleDeleteReport = async (id: string, fileUrl: string) => {
+        if (confirm(t('admin.reports.deleteConfirm'))) {
+          try {
+            if (fileUrl) {
+              const pathMatch = fileUrl.match(/reports\/(.+)$/);
+              if (pathMatch) {
+                await supabase.storage.from('reports').remove([pathMatch[1]]);
+              }
+            }
+            const { error } = await supabase.from("reports").delete().eq("id", id);
+            if (error) throw error;
+            await logAdminAction("Deleted Report", `Deleted report ID: ${id}`);
+            fetchData();
+          } catch {
+            toast.error("Error deleting report");
+          }
+        }
+      };
+
   return (
     <div className="min-h-screen bg-slate-50">
       <div className="bg-sage-800 text-white py-12 px-4 shadow-xl">
@@ -715,6 +817,9 @@ export default function AdminDashboard() {
               </TabsTrigger>
               <TabsTrigger value="members" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
                 <Users className="w-4 h-4 mr-2" /> {t('admin.members')}
+              </TabsTrigger>
+              <TabsTrigger value="reports" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
+                <FileText className="w-4 h-4 mr-2" /> {t('admin.tabs.reports')}
               </TabsTrigger>
               <TabsTrigger value="history" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
                 <History className="w-4 h-4 mr-2" /> {t('admin.tabs.history')}
@@ -839,6 +944,56 @@ export default function AdminDashboard() {
                     <div className="text-center py-12 text-sage-400">
                       <FolderOpen className="w-12 h-12 mx-auto mb-4 opacity-50" />
                       <p>{t('admin.projects.empty')}</p>
+                    </div>
+                  )}
+                </div>
+              </TabsContent>
+
+              <TabsContent value="reports" className="space-y-6">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-2xl font-bold text-sage-800">{t('admin.reports.manage')}</h2>
+                  <Button onClick={() => { resetReportForm(); setShowReportForm(true); }} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold">
+                    <Plus className="w-4 h-4 mr-2" /> {t('admin.reports.add')}
+                  </Button>
+                </div>
+
+                <div className="grid gap-4">
+                  {reports.map(item => (
+                    <div key={item.id} className="bg-white p-6 rounded-2xl border border-sage-100 shadow-sm flex items-center gap-6 hover:shadow-md transition-shadow">
+                      <div className="w-14 h-14 rounded-xl bg-terracotta-50 border border-terracotta-100 flex items-center justify-center flex-shrink-0">
+                        <FileText className="w-7 h-7 text-terracotta-500" />
+                      </div>
+                      <div className="flex-grow min-w-0">
+                        <div className="flex items-center gap-3 mb-0.5">
+                          <h3 className="font-bold text-lg text-sage-800 truncate">{item.title_en}</h3>
+                          {item.year && (
+                            <span className="flex-shrink-0 text-xs font-semibold text-sage-500 bg-sage-100 px-2 py-0.5 rounded-full">{item.year}</span>
+                          )}
+                        </div>
+                        <p className="text-terracotta-500 text-sm font-medium truncate">{item.title_fr}</p>
+                        {item.description_en && (
+                          <p className="text-sage-500 text-xs mt-1 line-clamp-1">{item.description_en}</p>
+                        )}
+                      </div>
+                      {item.file_url && (
+                        <a href={item.file_url} target="_blank" rel="noopener noreferrer" className="flex-shrink-0 flex items-center gap-1 text-xs font-bold text-terracotta-600 hover:text-terracotta-700 transition-colors">
+                          <Download className="w-4 h-4" /> PDF
+                        </a>
+                      )}
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <Button onClick={() => handleOpenEditReport(item)} variant="ghost" size="icon" className="text-terracotta-400 hover:text-terracotta-500">
+                          <Edit3 className="w-5 h-5" />
+                        </Button>
+                        <Button onClick={() => handleDeleteReport(item.id, item.file_url)} variant="ghost" size="icon" className="text-red-400 hover:text-red-600">
+                          <Trash2 className="w-5 h-5" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                  {reports.length === 0 && (
+                    <div className="text-center py-12 text-sage-400">
+                      <FileText className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                      <p>{t('admin.reports.empty')}</p>
                     </div>
                   )}
                 </div>
@@ -1571,6 +1726,82 @@ export default function AdminDashboard() {
                       <Button variant="ghost" onClick={resetProjectForm} className="rounded-xl font-bold">{t('admin.cancel')}</Button>
                       <Button onClick={handleSaveProject} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold px-8">
                         {t('admin.projects.save')}
+                      </Button>
+                    </div>
+                  </motion.div>
+                </div>
+              )}
+              {showReportForm && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-sage-950/60 backdrop-blur-sm" onClick={resetReportForm} />
+                  <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden">
+                    <div className="bg-sage-800 p-8 text-white flex justify-between items-center">
+                      <h2 className="text-2xl font-black">{editingReport ? t('admin.reports.edit') : t('admin.reports.add')}</h2>
+                      <Button variant="ghost" size="icon" onClick={resetReportForm} className="text-white/60 hover:text-white">
+                        <X className="w-6 h-6" />
+                      </Button>
+                    </div>
+                    <div className="p-8 space-y-6 max-h-[70vh] overflow-y-auto">
+                      <div className="grid md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <label className="text-sm font-bold text-sage-800">{t('admin.reports.titleEn')}</label>
+                          <Input value={newReport.title_en} onChange={e => setNewReport({...newReport, title_en: e.target.value})} placeholder="Report title in English" className="rounded-xl" />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-sm font-bold text-sage-800">{t('admin.reports.titleFr')}</label>
+                          <Input value={newReport.title_fr} onChange={e => setNewReport({...newReport, title_fr: e.target.value})} placeholder="Titre du rapport en Français" className="rounded-xl" />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-bold text-sage-800">{t('admin.reports.descEn')}</label>
+                        <Textarea value={newReport.description_en} onChange={e => setNewReport({...newReport, description_en: e.target.value})} placeholder="Short description in English" className="rounded-xl min-h-[80px]" />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-bold text-sage-800">{t('admin.reports.descFr')}</label>
+                        <Textarea value={newReport.description_fr} onChange={e => setNewReport({...newReport, description_fr: e.target.value})} placeholder="Courte description en Français" className="rounded-xl min-h-[80px]" />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-bold text-sage-800">{t('admin.reports.year')}</label>
+                        <Input value={newReport.year} onChange={e => setNewReport({...newReport, year: e.target.value})} placeholder="2024" className="rounded-xl" />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-bold text-sage-800">{t('admin.reports.uploadPdf')}</label>
+                        <div className="border-2 border-dashed border-sage-200 rounded-xl p-6 text-center hover:border-terracotta-300 transition-colors">
+                          <input
+                            type="file"
+                            accept=".pdf"
+                            id="report-pdf-upload"
+                            className="hidden"
+                            onChange={e => setReportPdfFile(e.target.files?.[0] || null)}
+                          />
+                          <label htmlFor="report-pdf-upload" className="cursor-pointer flex flex-col items-center gap-2">
+                            <FileText className="w-10 h-10 text-sage-300" />
+                            {reportPdfFile ? (
+                              <span className="text-sm font-bold text-sage-700">{reportPdfFile.name}</span>
+                            ) : (
+                              <span className="text-sm text-sage-500">Click to upload PDF</span>
+                            )}
+                          </label>
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-bold text-sage-800">{t('admin.reports.fileUrl')}</label>
+                        <Input value={newReport.file_url} onChange={e => setNewReport({...newReport, file_url: e.target.value})} placeholder="https://... (or upload above)" className="rounded-xl" />
+                        <p className="text-xs text-sage-400">Upload takes priority if both provided.</p>
+                      </div>
+                    </div>
+                    <div className="p-8 bg-slate-50 flex justify-end gap-4 border-t border-sage-100">
+                      <Button variant="ghost" onClick={resetReportForm} className="rounded-xl font-bold">{t('admin.cancel')}</Button>
+                      <Button onClick={handleSaveReport} disabled={uploadingReport} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold px-8 disabled:opacity-50">
+                        {uploadingReport ? (
+                          <span className="flex items-center gap-2">
+                            <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                            </svg>
+                            Saving...
+                          </span>
+                        ) : t('admin.reports.save')}
                       </Button>
                     </div>
                   </motion.div>

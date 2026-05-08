@@ -1,8 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useI18n } from "@/lib/i18n";
+import { supabase } from "@/lib/supabase";
 import { motion } from "framer-motion";
 import { Info, Shield, TreePine, GraduationCap, Leaf, Sun, Sprout, Users, FileText, Download } from "lucide-react";
 import useEmblaCarousel from 'embla-carousel-react';
@@ -134,6 +135,15 @@ function TeamCarousel({ teamMembers, language }: { teamMembers: any[], language:
 
 export default function AboutPage() {
   const { t, language } = useI18n();
+  const [reports, setReports] = useState<any[]>([]);
+
+  useEffect(() => {
+    supabase
+      .from("reports")
+      .select("*")
+      .order("year", { ascending: false })
+      .then(({ data }) => { if (data) setReports(data); });
+  }, []);
 
   const presentation = {
     en: "Founded in 2004, Association Salamandra Nature is a non-profit association active in France and Madagascar. Its main objective is to promote knowledge, nature conservation, and sustainable development, with a particular focus on the preservation of endangered species, Madagascar's tortoise fauna, and natural ecosystems.",
@@ -182,21 +192,6 @@ export default function AboutPage() {
         en: "Planting of local species in Southwest Madagascar to restore ecosystems.",
         fr: "Plantation d’essences locales dans le Sud-ouest de Madagascar pour restaurer les écosystèmes."
       }
-    }
-  ];
-
-  const reports = [
-    {
-      title: {
-        en: "Sharing Workshop Report",
-        fr: "Rapport d’atelier de partage"
-      },
-      description: {
-        en: "Summary report from the association’s sharing workshop on turtle conservation.",
-        fr: "Rapport de synthèse de l’atelier de partage de l’association sur la conservation des tortues."
-      },
-      file: "/reports/sharing-workshop-report.pdf",
-      year: "2024"
     }
   ];
 
@@ -273,10 +268,13 @@ export default function AboutPage() {
             <h2 className="text-4xl font-bold text-sage-800">{t('about.reports')}</h2>
           </div>
 
+          {reports.length === 0 ? (
+            <p className="text-sage-500 italic">{language === 'fr' ? 'Aucun rapport disponible pour le moment.' : 'No reports available yet.'}</p>
+          ) : (
           <div className="grid md:grid-cols-2 gap-6">
             {reports.map((report, i) => (
               <motion.div
-                key={i}
+                key={report.id || i}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -289,29 +287,36 @@ export default function AboutPage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-4 mb-1">
                     <h3 className="text-lg font-bold text-sage-800 leading-tight">
-                      {report.title[language as 'en' | 'fr']}
+                      {language === 'fr' ? (report.title_fr || report.title_en) : report.title_en}
                     </h3>
-                    <span className="flex-shrink-0 text-xs font-semibold text-sage-500 bg-sage-100 px-2 py-0.5 rounded-full">
-                      {report.year}
-                    </span>
+                    {report.year && (
+                      <span className="flex-shrink-0 text-xs font-semibold text-sage-500 bg-sage-100 px-2 py-0.5 rounded-full">
+                        {report.year}
+                      </span>
+                    )}
                   </div>
-                  <p className="text-sm text-sage-700/70 leading-relaxed mb-4">
-                    {report.description[language as 'en' | 'fr']}
-                  </p>
-                  <a
-                    href={report.file}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    download
-                    className="inline-flex items-center gap-2 text-sm font-bold text-terracotta-600 hover:text-terracotta-700 transition-colors"
-                  >
-                    <Download className="w-4 h-4" />
-                    {t('about.reports.download')}
-                  </a>
+                  {(report.description_en || report.description_fr) && (
+                    <p className="text-sm text-sage-700/70 leading-relaxed mb-4">
+                      {language === 'fr' ? (report.description_fr || report.description_en) : report.description_en}
+                    </p>
+                  )}
+                  {report.file_url && (
+                    <a
+                      href={report.file_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      download
+                      className="inline-flex items-center gap-2 text-sm font-bold text-terracotta-600 hover:text-terracotta-700 transition-colors"
+                    >
+                      <Download className="w-4 h-4" />
+                      {t('about.reports.download')}
+                    </a>
+                  )}
                 </div>
               </motion.div>
             ))}
           </div>
+          )}
         </div>
 
           {/* Team Section */}

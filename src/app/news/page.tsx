@@ -17,6 +17,7 @@ interface NewsItem {
   content_fr: string;
   image_url: string;
   created_at: string;
+  published_at: string | null;
 }
 
 export default function NewsPage() {
@@ -30,7 +31,7 @@ export default function NewsPage() {
       const { data, error } = await supabase
         .from('news')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('published_at', { ascending: false, nullsFirst: false });
       
       if (data) setNews(data);
       setLoading(false);
@@ -84,7 +85,7 @@ export default function NewsPage() {
                   <div className="flex items-center gap-3 text-terracotta-500 mb-6 font-bold">
                     <Calendar className="w-5 h-5" />
                     <span>
-                      {format(new Date(item.created_at), 'PPP', { locale: language === 'fr' ? fr : enUS })}
+                      {format(new Date(item.published_at || item.created_at), 'PPP', { locale: language === 'fr' ? fr : enUS })}
                     </span>
                   </div>
                   <h2 className="text-4xl font-bold text-sage-800 mb-6 group-hover:text-terracotta-500 transition-colors">

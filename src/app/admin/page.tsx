@@ -60,7 +60,8 @@ export default function AdminDashboard() {
       title_fr: "",
       content_en: "",
       content_fr: "",
-      image_url: ""
+      image_url: "",
+      published_at: ""
       });
 
       // Projects state
@@ -161,7 +162,7 @@ export default function AdminDashboard() {
             supabase.from("group_members").select("*").order("display_order", { ascending: true }),
             supabase.from("news").select("*").order("created_at", { ascending: false }),
             supabase.from("projects").select("*").order("created_at", { ascending: false }),
-            supabase.from("reports").select("*").order("year", { ascending: false })
+            fetch("/api/admin/reports").then(r => r.json()).catch(() => ({ data: [] }))
           ]);
 
       if (eventsRes.data) setEvents(eventsRes.data);
@@ -232,6 +233,7 @@ export default function AdminDashboard() {
       if (error) toast.error("Error deleting event");
       else {
         await logAdminAction("Deleted Event", `Deleted event ID: ${id}`);
+        toast.success("Event deleted successfully");
         fetchData();
       }
     }
@@ -300,8 +302,10 @@ export default function AdminDashboard() {
         const { error } = await supabase.from("videos").delete().eq("id", id);
         if (error) { toast.error("Error deleting video"); return; }
         // Also delete from media table
-        await supabase.from("media").delete().eq("id", id);
+        const { error: mediaError } = await supabase.from("media").delete().eq("id", id);
+        if (mediaError) { toast.error("Error deleting video media"); return; }
         await logAdminAction("Deleted Video", `Deleted video ID: ${id}`);
+        toast.success("Video deleted successfully");
         fetchData();
       }
     };
@@ -353,6 +357,7 @@ export default function AdminDashboard() {
         if (error) toast.error("Error deleting partner");
         else {
           await logAdminAction("Deleted Partner", `Deleted partner ID: ${id}`);
+          toast.success("Partner deleted successfully");
           fetchData();
         }
       }
@@ -450,6 +455,7 @@ export default function AdminDashboard() {
           const { error } = await supabase.from("media").delete().eq("id", id);
           if (error) throw error;
           await logAdminAction("Deleted Photo", `Deleted photo ID: ${id}`);
+          toast.success("Photo deleted successfully");
           fetchData();
         } catch {
           toast.error("Error deleting photo");
@@ -557,6 +563,7 @@ export default function AdminDashboard() {
           const { error } = await supabase.from("group_members").delete().eq("id", id);
           if (error) throw error;
           await logAdminAction("Deleted Member", `Deleted member ID: ${id}`);
+          toast.success("Member deleted successfully");
           fetchData();
         } catch {
           toast.error("Error deleting member");
@@ -566,7 +573,7 @@ export default function AdminDashboard() {
 
     // News CRUD
     const resetNewsForm = () => {
-      setNewNews({ title_en: "", title_fr: "", content_en: "", content_fr: "", image_url: "" });
+      setNewNews({ title_en: "", title_fr: "", content_en: "", content_fr: "", image_url: "", published_at: "" });
       setEditingNews(null);
       setShowNewsForm(false);
     };
@@ -578,7 +585,8 @@ export default function AdminDashboard() {
         title_fr: item.title_fr,
         content_en: item.content_en,
         content_fr: item.content_fr,
-        image_url: item.image_url || ""
+        image_url: item.image_url || "",
+        published_at: item.published_at ? item.published_at.slice(0, 10) : (item.created_at ? item.created_at.slice(0, 10) : "")
       });
       setShowNewsForm(true);
     };
@@ -589,13 +597,17 @@ export default function AdminDashboard() {
         return;
       }
       try {
+        const payload = {
+          ...newNews,
+          published_at: newNews.published_at || null
+        };
         if (editingNews) {
-          const { error } = await supabase.from("news").update(newNews).eq("id", editingNews.id);
+          const { error } = await supabase.from("news").update(payload).eq("id", editingNews.id);
           if (error) throw error;
           await logAdminAction("Updated News", `Updated article: ${newNews.title_en}`);
           toast.success(t('admin.news.edit') + " - OK");
         } else {
-          const { error } = await supabase.from("news").insert([newNews]);
+          const { error } = await supabase.from("news").insert([payload]);
           if (error) throw error;
           await logAdminAction("Added News", `Added article: ${newNews.title_en}`);
           toast.success(t('admin.news.add') + " - OK");
@@ -613,6 +625,7 @@ export default function AdminDashboard() {
             const { error } = await supabase.from("news").delete().eq("id", id);
             if (error) throw error;
             await logAdminAction("Deleted News", `Deleted article ID: ${id}`);
+            toast.success("Article deleted successfully");
             fetchData();
           } catch {
             toast.error("Error deleting article");
@@ -671,6 +684,7 @@ export default function AdminDashboard() {
             const { error } = await supabase.from("projects").delete().eq("id", id);
             if (error) throw error;
             await logAdminAction("Deleted Project", `Deleted project ID: ${id}`);
+            toast.success("Project deleted successfully");
             fetchData();
           } catch {
             toast.error("Error deleting project");
@@ -721,19 +735,20 @@ export default function AdminDashboard() {
             file_url = publicUrl;
           }
 
-          const payload = { ...newReport, file_url };
+          const body = editingReport
+            ? { id: editingReport.id, ...newReport, file_url }
+            : { ...newReport, file_url };
 
-          if (editingReport) {
-            const { error } = await supabase.from("reports").update(payload).eq("id", editingReport.id);
-            if (error) throw error;
-            await logAdminAction("Updated Report", `Updated report: ${newReport.title_en}`);
-            toast.success(t('admin.reports.edit') + " - OK");
-          } else {
-            const { error } = await supabase.from("reports").insert([payload]);
-            if (error) throw error;
-            await logAdminAction("Added Report", `Added report: ${newReport.title_en}`);
-            toast.success(t('admin.reports.add') + " - OK");
-          }
+          const res = await fetch("/api/admin/reports", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+          });
+          const json = await res.json();
+          if (!res.ok) throw new Error(json.error || "Failed to save report");
+
+          await logAdminAction(editingReport ? "Updated Report" : "Added Report", `Report: ${newReport.title_en}`);
+          toast.success(editingReport ? t('admin.reports.edit') + " - OK" : t('admin.reports.add') + " - OK");
           resetReportForm();
           fetchData();
         } catch (error: any) {
@@ -752,12 +767,18 @@ export default function AdminDashboard() {
                 await supabase.storage.from('reports').remove([pathMatch[1]]);
               }
             }
-            const { error } = await supabase.from("reports").delete().eq("id", id);
-            if (error) throw error;
+            const res = await fetch("/api/admin/reports", {
+              method: "DELETE",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ id }),
+            });
+            const json = await res.json();
+            if (!res.ok) throw new Error(json.error || "Failed to delete report");
             await logAdminAction("Deleted Report", `Deleted report ID: ${id}`);
+            toast.success("Report deleted successfully");
             fetchData();
-          } catch {
-            toast.error("Error deleting report");
+          } catch (err: any) {
+            toast.error(err.message || "Error deleting report");
           }
         }
       };
@@ -794,43 +815,44 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-            <TabsList className="bg-white p-1 rounded-2xl border border-sage-100 shadow-sm h-16 w-full md:w-auto overflow-x-auto flex-nowrap">
-              <TabsTrigger value="events" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
-                    <CalendarDays className="w-5 h-5 mr-2" /> {t('admin.tabs.events')}
-                </TabsTrigger>
-                  <TabsTrigger value="news" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
-                    <Newspaper className="w-4 h-4 mr-2" /> {t('admin.tabs.news')}
-                  </TabsTrigger>
-                  <TabsTrigger value="projects" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
-                    <FolderOpen className="w-4 h-4 mr-2" /> {t('admin.tabs.projects')}
-                  </TabsTrigger>
-              <TabsTrigger value="videos" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
-                <Video className="w-4 h-4 mr-2" /> {t('admin.tabs.videos')}
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-row items-start gap-6">
+            <TabsList className="flex flex-col h-auto w-52 shrink-0 bg-white rounded-2xl border border-sage-100 shadow-sm p-2 self-start sticky top-4 items-stretch justify-start space-y-0.5">
+              <TabsTrigger value="events" className="w-full justify-start rounded-xl px-4 py-2.5 h-auto font-semibold transition-all data-[state=active]:bg-terracotta-500 data-[state=active]:text-white text-sage-700 hover:bg-sage-50 data-[state=active]:hover:bg-terracotta-500">
+                <CalendarDays className="w-4 h-4 mr-2.5 shrink-0" /> {t('admin.tabs.events')}
               </TabsTrigger>
-              <TabsTrigger value="photos" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
-                <ImageIcon className="w-4 h-4 mr-2" /> {t('admin.tabs.photos')}
+              <TabsTrigger value="news" className="w-full justify-start rounded-xl px-4 py-2.5 h-auto font-semibold transition-all data-[state=active]:bg-terracotta-500 data-[state=active]:text-white text-sage-700 hover:bg-sage-50 data-[state=active]:hover:bg-terracotta-500">
+                <Newspaper className="w-4 h-4 mr-2.5 shrink-0" /> {t('admin.tabs.news')}
               </TabsTrigger>
-              <TabsTrigger value="partners" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
-                <Handshake className="w-4 h-4 mr-2" /> {t('nav.partners')}
+              <TabsTrigger value="projects" className="w-full justify-start rounded-xl px-4 py-2.5 h-auto font-semibold transition-all data-[state=active]:bg-terracotta-500 data-[state=active]:text-white text-sage-700 hover:bg-sage-50 data-[state=active]:hover:bg-terracotta-500">
+                <FolderOpen className="w-4 h-4 mr-2.5 shrink-0" /> {t('admin.tabs.projects')}
               </TabsTrigger>
-              <TabsTrigger value="members" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
-                <Users className="w-4 h-4 mr-2" /> {t('admin.members')}
+              <TabsTrigger value="videos" className="w-full justify-start rounded-xl px-4 py-2.5 h-auto font-semibold transition-all data-[state=active]:bg-terracotta-500 data-[state=active]:text-white text-sage-700 hover:bg-sage-50 data-[state=active]:hover:bg-terracotta-500">
+                <Video className="w-4 h-4 mr-2.5 shrink-0" /> {t('admin.tabs.videos')}
               </TabsTrigger>
-              <TabsTrigger value="reports" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
-                <FileText className="w-4 h-4 mr-2" /> {t('admin.tabs.reports')}
+              <TabsTrigger value="photos" className="w-full justify-start rounded-xl px-4 py-2.5 h-auto font-semibold transition-all data-[state=active]:bg-terracotta-500 data-[state=active]:text-white text-sage-700 hover:bg-sage-50 data-[state=active]:hover:bg-terracotta-500">
+                <ImageIcon className="w-4 h-4 mr-2.5 shrink-0" /> {t('admin.tabs.photos')}
               </TabsTrigger>
-              <TabsTrigger value="history" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
-                <History className="w-4 h-4 mr-2" /> {t('admin.tabs.history')}
+              <TabsTrigger value="partners" className="w-full justify-start rounded-xl px-4 py-2.5 h-auto font-semibold transition-all data-[state=active]:bg-terracotta-500 data-[state=active]:text-white text-sage-700 hover:bg-sage-50 data-[state=active]:hover:bg-terracotta-500">
+                <Handshake className="w-4 h-4 mr-2.5 shrink-0" /> {t('nav.partners')}
               </TabsTrigger>
-              <TabsTrigger value="logs" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
-                <Activity className="w-4 h-4 mr-2" /> {t('admin.tabs.logs')}
+              <TabsTrigger value="members" className="w-full justify-start rounded-xl px-4 py-2.5 h-auto font-semibold transition-all data-[state=active]:bg-terracotta-500 data-[state=active]:text-white text-sage-700 hover:bg-sage-50 data-[state=active]:hover:bg-terracotta-500">
+                <Users className="w-4 h-4 mr-2.5 shrink-0" /> {t('admin.members')}
               </TabsTrigger>
-              <TabsTrigger value="donations" className="rounded-xl px-8 h-full data-[state=active]:bg-terracotta-500 data-[state=active]:text-white font-bold transition-all whitespace-nowrap">
-                <Receipt className="w-4 h-4 mr-2" /> {t('admin.tabs.donations')}
+              <TabsTrigger value="reports" className="w-full justify-start rounded-xl px-4 py-2.5 h-auto font-semibold transition-all data-[state=active]:bg-terracotta-500 data-[state=active]:text-white text-sage-700 hover:bg-sage-50 data-[state=active]:hover:bg-terracotta-500">
+                <FileText className="w-4 h-4 mr-2.5 shrink-0" /> {t('admin.tabs.reports')}
+              </TabsTrigger>
+              <TabsTrigger value="history" className="w-full justify-start rounded-xl px-4 py-2.5 h-auto font-semibold transition-all data-[state=active]:bg-terracotta-500 data-[state=active]:text-white text-sage-700 hover:bg-sage-50 data-[state=active]:hover:bg-terracotta-500">
+                <History className="w-4 h-4 mr-2.5 shrink-0" /> {t('admin.tabs.history')}
+              </TabsTrigger>
+              <TabsTrigger value="logs" className="w-full justify-start rounded-xl px-4 py-2.5 h-auto font-semibold transition-all data-[state=active]:bg-terracotta-500 data-[state=active]:text-white text-sage-700 hover:bg-sage-50 data-[state=active]:hover:bg-terracotta-500">
+                <Activity className="w-4 h-4 mr-2.5 shrink-0" /> {t('admin.tabs.logs')}
+              </TabsTrigger>
+              <TabsTrigger value="donations" className="w-full justify-start rounded-xl px-4 py-2.5 h-auto font-semibold transition-all data-[state=active]:bg-terracotta-500 data-[state=active]:text-white text-sage-700 hover:bg-sage-50 data-[state=active]:hover:bg-terracotta-500">
+                <Receipt className="w-4 h-4 mr-2.5 shrink-0" /> {t('admin.tabs.donations')}
               </TabsTrigger>
             </TabsList>
+            <div className="flex-1 min-w-0">
 
           <TabsContent value="events" className="space-y-6">
             <div className="flex justify-between items-center">
@@ -885,7 +907,7 @@ export default function AdminDashboard() {
                       <p className="text-sage-500 text-xs mt-1 line-clamp-1">{item.content_en}</p>
                     </div>
                     <div className="flex-shrink-0 text-xs text-sage-400 font-bold">
-                      {new Date(item.created_at).toLocaleDateString()}
+                      {new Date(item.published_at || item.created_at).toLocaleDateString()}
                     </div>
                     <div className="flex items-center gap-2 flex-shrink-0">
                       <Button onClick={() => handleOpenEditNews(item)} variant="ghost" size="icon" className="text-terracotta-400 hover:text-terracotta-500">
@@ -1306,6 +1328,7 @@ export default function AdminDashboard() {
                 </table>
               </div>
             </TabsContent>
+            </div>
           </Tabs>
       </div>
 
@@ -1648,6 +1671,10 @@ export default function AdminDashboard() {
                         <label className="text-sm font-bold text-sage-800">{t('admin.news.titleFr')}</label>
                         <Input value={newNews.title_fr} onChange={e => setNewNews({...newNews, title_fr: e.target.value})} placeholder={t('admin.news.placeholderTitleFr')} className="rounded-xl" />
                       </div>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold text-sage-800">Publication Date</label>
+                      <Input type="date" value={newNews.published_at} onChange={e => setNewNews({...newNews, published_at: e.target.value})} className="rounded-xl" />
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-bold text-sage-800">{t('admin.news.contentEn')}</label>

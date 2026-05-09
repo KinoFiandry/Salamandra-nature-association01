@@ -13,14 +13,14 @@ function TeamMemberCard({ member, language, index }: { member: any, language: st
   const [isExpanded, setIsExpanded] = React.useState(false);
   const role = language === 'fr' ? member.role_fr : member.role_en;
   const bio = language === 'fr' ? member.bio_fr : member.bio_en;
-  
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.1 }}
-      className="bg-white rounded-[2rem] overflow-hidden border border-terracotta-100 shadow-sm hover:shadow-xl transition-all group flex flex-col h-full"
+      className="bg-white dark:bg-sage-800 rounded-[2rem] overflow-hidden border border-terracotta-100 dark:border-sage-700 shadow-sm hover:shadow-xl transition-all group flex flex-col h-full"
     >
       <div className="h-64 overflow-hidden relative flex-shrink-0">
         <Image
@@ -33,22 +33,22 @@ function TeamMemberCard({ member, language, index }: { member: any, language: st
         <div className="absolute inset-0 bg-gradient-to-t from-sage-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
       </div>
       <div className="p-6 flex flex-col flex-grow">
-        <h3 className="text-lg font-black text-sage-800 mb-1 line-clamp-2">{member.name}</h3>
-        <p className="text-terracotta-600 font-bold text-sm mb-4 min-h-[40px]">{role}</p>
+        <h3 className="text-lg font-black text-sage-800 dark:text-sage-100 mb-1 line-clamp-2">{member.name}</h3>
+        <p className="text-terracotta-600 dark:text-terracotta-400 font-bold text-sm mb-4 min-h-[40px]">{role}</p>
         <div className="relative">
-          <p className={`text-sage-700/60 text-sm leading-relaxed ${!isExpanded ? 'line-clamp-4' : ''}`}>
+          <p className={`text-sage-700/60 dark:text-sage-300/80 text-sm leading-relaxed ${!isExpanded ? 'line-clamp-4' : ''}`}>
             {bio}
           </p>
           {bio && bio.length > 150 && (
-            <button 
+            <button
               onClick={(e) => {
                 e.stopPropagation();
                 setIsExpanded(!isExpanded);
               }}
-              className="mt-2 text-terracotta-600 font-bold text-xs hover:text-terracotta-700 transition-colors uppercase tracking-wider"
+              className="mt-2 text-terracotta-600 dark:text-terracotta-400 font-bold text-xs hover:text-terracotta-700 transition-colors uppercase tracking-wider"
             >
-              {isExpanded 
-                ? (language === 'fr' ? 'Voir moins' : 'See less') 
+              {isExpanded
+                ? (language === 'fr' ? 'Voir moins' : 'See less')
                 : (language === 'fr' ? 'Voir plus' : 'See more')}
             </button>
           )}
@@ -59,7 +59,7 @@ function TeamMemberCard({ member, language, index }: { member: any, language: st
 }
 
 function TeamCarousel({ teamMembers, language }: { teamMembers: any[], language: string }) {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ 
+  const [emblaRef, emblaApi] = useEmblaCarousel({
     align: 'start',
     containScroll: 'trimSnaps',
     dragFree: false
@@ -104,10 +104,10 @@ function TeamCarousel({ teamMembers, language }: { teamMembers: any[], language:
       {/* Navigation Buttons */}
       <div className="flex justify-center items-center gap-4 mt-8">
         <button
-          className={`w-12 h-12 rounded-full border-2 border-terracotta-200 flex items-center justify-center transition-all ${
-            prevBtnEnabled 
-              ? 'bg-white text-terracotta-600 hover:bg-terracotta-500 hover:text-white hover:border-terracotta-500 shadow-md' 
-              : 'bg-gray-50 text-gray-300 cursor-not-allowed border-gray-100'
+          className={`w-12 h-12 rounded-full border-2 flex items-center justify-center transition-all ${
+            prevBtnEnabled
+              ? 'bg-white dark:bg-sage-800 text-terracotta-600 border-terracotta-200 dark:border-terracotta-700 hover:bg-terracotta-500 hover:text-white hover:border-terracotta-500 shadow-md'
+              : 'bg-gray-50 dark:bg-sage-900 text-gray-300 dark:text-sage-700 cursor-not-allowed border-gray-100 dark:border-sage-800'
           }`}
           onClick={scrollPrev}
           disabled={!prevBtnEnabled}
@@ -122,9 +122,9 @@ function TeamCarousel({ teamMembers, language }: { teamMembers: any[], language:
             <button
               key={index}
               className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
-                index === selectedIndex 
-                  ? 'bg-terracotta-500 w-8' 
-                  : 'bg-terracotta-200 hover:bg-terracotta-300'
+                index === selectedIndex
+                  ? 'bg-terracotta-500 w-8'
+                  : 'bg-terracotta-200 dark:bg-terracotta-800 hover:bg-terracotta-300'
               }`}
               onClick={() => scrollTo(index)}
               aria-label={`Go to slide ${index + 1}`}
@@ -133,10 +133,10 @@ function TeamCarousel({ teamMembers, language }: { teamMembers: any[], language:
         </div>
 
         <button
-          className={`w-12 h-12 rounded-full border-2 border-terracotta-200 flex items-center justify-center transition-all ${
-            nextBtnEnabled 
-              ? 'bg-white text-terracotta-600 hover:bg-terracotta-500 hover:text-white hover:border-terracotta-500 shadow-md' 
-              : 'bg-gray-50 text-gray-300 cursor-not-allowed border-gray-100'
+          className={`w-12 h-12 rounded-full border-2 flex items-center justify-center transition-all ${
+            nextBtnEnabled
+              ? 'bg-white dark:bg-sage-800 text-terracotta-600 border-terracotta-200 dark:border-terracotta-700 hover:bg-terracotta-500 hover:text-white hover:border-terracotta-500 shadow-md'
+              : 'bg-gray-50 dark:bg-sage-900 text-gray-300 dark:text-sage-700 cursor-not-allowed border-gray-100 dark:border-sage-800'
           }`}
           onClick={scrollNext}
           disabled={!nextBtnEnabled}
@@ -189,7 +189,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-sage-950 transition-colors duration-300">
         {/* Hero Section */}
         <section className="relative h-[90vh] flex items-center overflow-hidden">
           <div className="absolute inset-0 z-0">
@@ -202,7 +202,7 @@ export default function Home() {
               className="object-cover brightness-[0.35]"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-terracotta-950/60 via-sage-900/30 to-transparent" />
- 
+
           </div>
 
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-white">
@@ -262,10 +262,10 @@ export default function Home() {
       </section>
 
       {/* Programs Section */}
-      <section className="py-32 bg-white">
+      <section className="py-32 bg-white dark:bg-sage-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-black text-sage-800 mb-6">
+            <h2 className="text-4xl md:text-5xl font-black text-sage-800 dark:text-sage-100 mb-6">
               {t('programs.title')}
             </h2>
             <div className="w-24 h-2 bg-terracotta-500 mx-auto rounded-full" />
@@ -295,13 +295,13 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.2 }}
-                className="bg-sage-50 p-10 rounded-[3rem] border border-sage-100 hover:shadow-2xl hover:shadow-sage-900/5 transition-all group"
+                className="bg-sage-50 dark:bg-sage-800/50 p-10 rounded-[3rem] border border-sage-100 dark:border-sage-700 hover:shadow-2xl hover:shadow-sage-900/5 transition-all group"
               >
-                <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mb-8 shadow-sm group-hover:scale-110 transition-transform">
-                  <prog.icon className="w-8 h-8 text-sage-600" />
+                <div className="w-16 h-16 bg-white dark:bg-sage-700 rounded-2xl flex items-center justify-center mb-8 shadow-sm group-hover:scale-110 transition-transform">
+                  <prog.icon className="w-8 h-8 text-sage-600 dark:text-sage-300" />
                 </div>
-                <h3 className="text-2xl font-bold text-sage-800 mb-4">{t(prog.title)}</h3>
-                <p className="text-sage-700/70 leading-relaxed text-lg">{t(prog.desc)}</p>
+                <h3 className="text-2xl font-bold text-sage-800 dark:text-sage-100 mb-4">{t(prog.title)}</h3>
+                <p className="text-sage-700/70 dark:text-sage-300/80 leading-relaxed text-lg">{t(prog.desc)}</p>
               </motion.div>
             ))}
           </div>
@@ -309,22 +309,22 @@ export default function Home() {
       </section>
 
       {/* Featured News Preview */}
-      <section className="py-24 bg-sage-50/50">
+      <section className="py-24 bg-sage-50/50 dark:bg-sage-900/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-end mb-12">
             <div>
-              <h2 className="text-3xl font-black text-sage-800 mb-2">{t('news.title')}</h2>
+              <h2 className="text-3xl font-black text-sage-800 dark:text-sage-100 mb-2">{t('news.title')}</h2>
               <div className="w-12 h-1.5 bg-terracotta-500 rounded-full" />
             </div>
-            <Link href="/news" className="text-terracotta-600 font-bold hover:underline flex items-center gap-1">
+            <Link href="/news" className="text-terracotta-600 dark:text-terracotta-400 font-bold hover:underline flex items-center gap-1">
               {t('nav.news')} <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
-          
+
           {newsItems.length > 0 ? (
             <div className="grid md:grid-cols-2 gap-8">
               {newsItems.map((item) => (
-                <div key={item.id} className="group bg-white rounded-[2rem] overflow-hidden border border-sage-100 shadow-sm hover:shadow-xl transition-all">
+                <div key={item.id} className="group bg-white dark:bg-sage-800 rounded-[2rem] overflow-hidden border border-sage-100 dark:border-sage-700 shadow-sm hover:shadow-xl transition-all">
                   <div className="h-64 overflow-hidden relative">
                     <Image
                       src={item.image_url || 'https://images.unsplash.com/photo-1534067783941-51c9c23ecefd?q=80&w=1000'}
@@ -335,13 +335,13 @@ export default function Home() {
                     />
                   </div>
                   <div className="p-8">
-                    <h3 className="text-xl font-bold text-sage-800 mb-4">
+                    <h3 className="text-xl font-bold text-sage-800 dark:text-sage-100 mb-4">
                       {language === 'fr' ? item.title_fr : item.title_en}
                     </h3>
-                    <p className="text-sage-700/60 mb-6 line-clamp-2">
+                    <p className="text-sage-700/60 dark:text-sage-300/70 mb-6 line-clamp-2">
                       {language === 'fr' ? item.content_fr : item.content_en}
                     </p>
-                    <Link href="/news" className="inline-flex items-center gap-2 text-terracotta-600 font-bold group/link">
+                    <Link href="/news" className="inline-flex items-center gap-2 text-terracotta-600 dark:text-terracotta-400 font-bold group/link">
                       {t('news.readMore')} <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
                     </Link>
                   </div>
@@ -349,26 +349,26 @@ export default function Home() {
               ))}
             </div>
           ) : (
-            <p className="text-sage-700/60 text-center py-12">{t('news.noNews')}</p>
+            <p className="text-sage-700/60 dark:text-sage-400 text-center py-12">{t('news.noNews')}</p>
           )}
         </div>
       </section>
 
       {/* Team Members Section */}
-      <section className="py-32 bg-terracotta-50/30">
+      <section className="py-32 bg-terracotta-50/30 dark:bg-sage-900/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-20">
-            <div className="inline-flex items-center gap-3 bg-terracotta-100 px-6 py-2 rounded-full mb-6">
-              <Users className="w-5 h-5 text-terracotta-700" />
-              <span className="text-terracotta-800 font-bold text-sm uppercase tracking-widest">
+            <div className="inline-flex items-center gap-3 bg-terracotta-100 dark:bg-terracotta-900/30 px-6 py-2 rounded-full mb-6">
+              <Users className="w-5 h-5 text-terracotta-700 dark:text-terracotta-400" />
+              <span className="text-terracotta-800 dark:text-terracotta-300 font-bold text-sm uppercase tracking-widest">
                 {language === 'fr' ? 'Notre Équipe' : 'Our Team'}
               </span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-black text-sage-800 mb-6">
+            <h2 className="text-4xl md:text-5xl font-black text-sage-800 dark:text-sage-100 mb-6">
               {language === 'fr' ? 'Les Membres de l\'Association' : 'Meet the Team'}
             </h2>
-            <p className="text-xl text-sage-700/60 max-w-2xl mx-auto">
-              {language === 'fr' 
+            <p className="text-xl text-sage-700/60 dark:text-sage-300/70 max-w-2xl mx-auto">
+              {language === 'fr'
                 ? 'Des passionnés dédiés à la protection des tortues terrestres de Madagascar.'
                 : 'Passionate individuals dedicated to protecting Madagascar\'s land tortoises.'}
             </p>

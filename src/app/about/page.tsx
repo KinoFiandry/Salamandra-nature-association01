@@ -11,8 +11,8 @@ import useEmblaCarousel from 'embla-carousel-react';
 const teamMembers = [
   {
     name: "Pr ALBIGNAC Roland",
-    role: { en: "Honorary President", fr: "Président d’honneur" },
-    bio: { 
+    role: { en: "Honorary President", fr: "Président d'honneur" },
+    bio: {
       en: "Honorary Professor at Universities in France and Madagascar, UNDP / UNESCO Expert Consultant.",
       fr: "Professeur honoraire des Universités en France et à Madagascar, Consultant Expert PNUD / UNESCO."
     },
@@ -23,7 +23,7 @@ const teamMembers = [
     role: { en: "President and Co-founder", fr: "Président et co-fondateur" },
     bio: {
       en: "Director of Dayu Biik, manager of the Thönyë Protected Natural Area in Hienghène, New Caledonia, IUCN Expert for Tortoise and Freshwater Turtle Group, member of the IUCN Economic, Social and Environmental Policy Commission.",
-      fr: "Directeur de Dayu Biik, gestionnaire de l’Aire Naturelle Protégée du Thönyë à Hienghène en Nouvelle-Calédonie, Expert UICN Groupe Tortues terrestres et d’eau douce, membre de la Commission de la Politique Économique, Sociale et Environnementale de l’UICN."
+      fr: "Directeur de Dayu Biik, gestionnaire de l'Aire Naturelle Protégée du Thönyë à Hienghène en Nouvelle-Calédonie, Expert UICN Groupe Tortues terrestres et d'eau douce, membre de la Commission de la Politique Économique, Sociale et Environnementale de l'UICN."
     },
     image: "/images/leon.jpg"
   },
@@ -32,7 +32,7 @@ const teamMembers = [
     role: { en: "General Secretary", fr: "Secrétaire Général" },
     bio: {
       en: "Environmental Technician at the French Biodiversity Office in Corsica.",
-      fr: "Technicien en Environnement à l’Office Français de la Biodiversité en Corse."
+      fr: "Technicien en Environnement à l'Office Français de la Biodiversité en Corse."
     },
     image: "/images/franck-gauthier.jpg"
   },
@@ -58,8 +58,8 @@ const teamMembers = [
     name: "Mlle RAHOLISON Anjara Malala",
     role: { en: "Madagascar Representative", fr: "Représentante de Salamandra Nature à Madagascar" },
     bio: {
-      en: "Communications Manager at NGO Génération Mada, Advisor to the NGO Y’DAGO.",
-      fr: "Responsable Communication ONG Génération Mada, Conseillère de l’ONG Y’DAGO."
+      en: "Communications Manager at NGO Génération Mada, Advisor to the NGO Y'DAGO.",
+      fr: "Responsable Communication ONG Génération Mada, Conseillère de l'ONG Y'DAGO."
     },
     image: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?q=80&w=400"
   }
@@ -67,14 +67,14 @@ const teamMembers = [
 
 function TeamMemberCard({ member, language, index }: { member: any, language: string, index: number }) {
   const [isExpanded, setIsExpanded] = React.useState(false);
-  
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.1 }}
-      className="bg-white rounded-3xl overflow-hidden border border-sage-100 shadow-sm hover:shadow-lg transition-all flex flex-col h-full"
+      className="bg-white dark:bg-sage-800 rounded-3xl overflow-hidden border border-sage-100 dark:border-sage-700 shadow-sm hover:shadow-lg transition-all flex flex-col h-full"
     >
       <div className="h-48 overflow-hidden flex-shrink-0 relative">
         <Image
@@ -86,24 +86,24 @@ function TeamMemberCard({ member, language, index }: { member: any, language: st
         />
       </div>
       <div className="p-8 flex flex-col flex-grow">
-        <h3 className="text-xl font-bold text-sage-800 mb-1 line-clamp-2">{member.name}</h3>
-        <p className="text-terracotta-600 font-bold text-sm mb-4 min-h-[40px]">
+        <h3 className="text-xl font-bold text-sage-800 dark:text-sage-100 mb-1 line-clamp-2">{member.name}</h3>
+        <p className="text-terracotta-600 dark:text-terracotta-400 font-bold text-sm mb-4 min-h-[40px]">
           {member.role[language as 'en' | 'fr']}
         </p>
         <div className="relative">
-          <p className={`text-sage-700/70 text-sm leading-relaxed ${!isExpanded ? 'line-clamp-4' : ''}`}>
+          <p className={`text-sage-700/70 dark:text-sage-300/80 text-sm leading-relaxed ${!isExpanded ? 'line-clamp-4' : ''}`}>
             {member.bio[language as 'en' | 'fr']}
           </p>
           {member.bio[language as 'en' | 'fr'].length > 150 && (
-            <button 
+            <button
               onClick={(e) => {
                 e.stopPropagation();
                 setIsExpanded(!isExpanded);
               }}
-              className="mt-2 text-terracotta-600 font-bold text-xs hover:text-terracotta-700 transition-colors uppercase tracking-wider text-left"
+              className="mt-2 text-terracotta-600 dark:text-terracotta-400 font-bold text-xs hover:text-terracotta-700 transition-colors uppercase tracking-wider text-left"
             >
-              {isExpanded 
-                ? (language === 'fr' ? 'Voir moins' : 'See less') 
+              {isExpanded
+                ? (language === 'fr' ? 'Voir moins' : 'See less')
                 : (language === 'fr' ? 'Voir plus' : 'See more')}
             </button>
           )}
@@ -114,7 +114,7 @@ function TeamMemberCard({ member, language, index }: { member: any, language: st
 }
 
 function TeamCarousel({ teamMembers, language }: { teamMembers: any[], language: string }) {
-  const [emblaRef] = useEmblaCarousel({ 
+  const [emblaRef] = useEmblaCarousel({
     align: 'start',
     containScroll: 'trimSnaps',
     dragFree: true
@@ -147,7 +147,7 @@ export default function AboutPage() {
 
   const presentation = {
     en: "Founded in 2004, Association Salamandra Nature is a non-profit association active in France and Madagascar. Its main objective is to promote knowledge, nature conservation, and sustainable development, with a particular focus on the preservation of endangered species, Madagascar's tortoise fauna, and natural ecosystems.",
-    fr: "Créée en 2004, l’Association Salamandra Nature est une association à but non lucratif active en France et à Madagascar. Son objectif principal est de promouvoir la connaissance, la conservation de la nature et le développement durable, avec un accent particulier sur la préservation des espèces menacées, la faune chélonienne de Madagascar et des écosystèmes naturels."
+    fr: "Créée en 2004, l'Association Salamandra Nature est une association à but non lucratif active en France et à Madagascar. Son objectif principal est de promouvoir la connaissance, la conservation de la nature et le développement durable, avec un accent particulier sur la préservation des espèces menacées, la faune chélonienne de Madagascar et des écosystèmes naturels."
   };
 
   const actions = [
@@ -169,7 +169,7 @@ export default function AboutPage() {
       icon: Leaf,
       content: {
         en: "Preservation and enhancement of local biodiversity within the framework of environmental education.",
-        fr: "Préservation et valorisation de la biodiversité locale dans le cadre de l’éducation à l’environnement."
+        fr: "Préservation et valorisation de la biodiversité locale dans le cadre de l'éducation à l'environnement."
       }
     },
     {
@@ -190,13 +190,13 @@ export default function AboutPage() {
       icon: Sprout,
       content: {
         en: "Planting of local species in Southwest Madagascar to restore ecosystems.",
-        fr: "Plantation d’essences locales dans le Sud-ouest de Madagascar pour restaurer les écosystèmes."
+        fr: "Plantation d'essences locales dans le Sud-ouest de Madagascar pour restaurer les écosystèmes."
       }
     }
   ];
 
   return (
-    <div className="min-h-screen bg-white pb-20">
+    <div className="min-h-screen bg-white dark:bg-sage-950 pb-20 transition-colors duration-300">
       <div className="relative py-24 bg-sage-900 text-white overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 relative z-10">
           <motion.h1
@@ -213,16 +213,16 @@ export default function AboutPage() {
       <div className="max-w-7xl mx-auto px-4 mt-20">
         <div className="mb-24">
           <div className="flex items-center gap-4 mb-8">
-            <div className="w-12 h-12 bg-sage-100 rounded-xl flex items-center justify-center text-sage-600">
+            <div className="w-12 h-12 bg-sage-100 dark:bg-sage-800 rounded-xl flex items-center justify-center text-sage-600 dark:text-sage-300">
               <Info className="w-6 h-6" />
             </div>
-            <h2 className="text-4xl font-bold text-sage-800">{t('about.presentation')}</h2>
+            <h2 className="text-4xl font-bold text-sage-800 dark:text-sage-100">{t('about.presentation')}</h2>
           </div>
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-2xl text-sage-700/80 leading-relaxed max-w-5xl"
+            className="text-2xl text-sage-700/80 dark:text-sage-300/90 leading-relaxed max-w-5xl"
           >
             {presentation[language as 'en' | 'fr']}
           </motion.p>
@@ -230,12 +230,12 @@ export default function AboutPage() {
 
         <div className="mb-32">
           <div className="flex items-center gap-4 mb-12">
-            <div className="w-12 h-12 bg-sage-100 rounded-xl flex items-center justify-center text-sage-600">
+            <div className="w-12 h-12 bg-sage-100 dark:bg-sage-800 rounded-xl flex items-center justify-center text-sage-600 dark:text-sage-300">
               <Sprout className="w-6 h-6" />
             </div>
-            <h2 className="text-4xl font-bold text-sage-800">{t('about.actions')}</h2>
+            <h2 className="text-4xl font-bold text-sage-800 dark:text-sage-100">{t('about.actions')}</h2>
           </div>
-          
+
           <div className="grid md:grid-cols-2 gap-8">
             {actions.map((action, i) => (
               <motion.div
@@ -244,14 +244,14 @@ export default function AboutPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="flex gap-6 p-8 bg-sage-50/50 rounded-3xl border border-sage-100 hover:shadow-xl hover:shadow-sage-200/50 transition-all group"
+                className="flex gap-6 p-8 bg-sage-50/50 dark:bg-sage-800/40 rounded-3xl border border-sage-100 dark:border-sage-700 hover:shadow-xl hover:shadow-sage-200/50 dark:hover:shadow-sage-900/50 transition-all group"
               >
                 <div className="flex-shrink-0">
-                  <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-sage-600 shadow-sm border border-sage-100 group-hover:bg-terracotta-500 group-hover:text-white transition-colors">
+                  <div className="w-14 h-14 bg-white dark:bg-sage-700 rounded-2xl flex items-center justify-center text-sage-600 dark:text-sage-300 shadow-sm border border-sage-100 dark:border-sage-600 group-hover:bg-terracotta-500 group-hover:text-white transition-colors">
                     <action.icon className="w-7 h-7" />
                   </div>
                 </div>
-                <p className="text-lg text-sage-700/80 leading-relaxed pt-2">
+                <p className="text-lg text-sage-700/80 dark:text-sage-300/90 leading-relaxed pt-2">
                   {action.content[language as 'en' | 'fr']}
                 </p>
               </motion.div>
@@ -262,14 +262,14 @@ export default function AboutPage() {
         {/* Reports Section */}
         <div className="mb-32">
           <div className="flex items-center gap-4 mb-12">
-            <div className="w-12 h-12 bg-sage-100 rounded-xl flex items-center justify-center text-sage-600">
+            <div className="w-12 h-12 bg-sage-100 dark:bg-sage-800 rounded-xl flex items-center justify-center text-sage-600 dark:text-sage-300">
               <FileText className="w-6 h-6" />
             </div>
-            <h2 className="text-4xl font-bold text-sage-800">{t('about.reports')}</h2>
+            <h2 className="text-4xl font-bold text-sage-800 dark:text-sage-100">{t('about.reports')}</h2>
           </div>
 
           {reports.length === 0 ? (
-            <p className="text-sage-500 italic">{language === 'fr' ? 'Aucun rapport disponible pour le moment.' : 'No reports available yet.'}</p>
+            <p className="text-sage-500 dark:text-sage-400 italic">{language === 'fr' ? 'Aucun rapport disponible pour le moment.' : 'No reports available yet.'}</p>
           ) : (
           <div className="grid md:grid-cols-2 gap-6">
             {reports.map((report, i) => (
@@ -279,24 +279,24 @@ export default function AboutPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="flex items-start gap-5 p-6 bg-sage-50/50 rounded-2xl border border-sage-100 hover:shadow-lg hover:shadow-sage-200/50 transition-all group"
+                className="flex items-start gap-5 p-6 bg-sage-50/50 dark:bg-sage-800/40 rounded-2xl border border-sage-100 dark:border-sage-700 hover:shadow-lg transition-all group"
               >
-                <div className="flex-shrink-0 w-14 h-14 bg-white rounded-xl flex items-center justify-center text-terracotta-500 shadow-sm border border-sage-100 group-hover:bg-terracotta-500 group-hover:text-white transition-colors">
+                <div className="flex-shrink-0 w-14 h-14 bg-white dark:bg-sage-700 rounded-xl flex items-center justify-center text-terracotta-500 shadow-sm border border-sage-100 dark:border-sage-600 group-hover:bg-terracotta-500 group-hover:text-white transition-colors">
                   <FileText className="w-7 h-7" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-4 mb-1">
-                    <h3 className="text-lg font-bold text-sage-800 leading-tight">
+                    <h3 className="text-lg font-bold text-sage-800 dark:text-sage-100 leading-tight">
                       {language === 'fr' ? (report.title_fr || report.title_en) : report.title_en}
                     </h3>
                     {report.year && (
-                      <span className="flex-shrink-0 text-xs font-semibold text-sage-500 bg-sage-100 px-2 py-0.5 rounded-full">
+                      <span className="flex-shrink-0 text-xs font-semibold text-sage-500 dark:text-sage-400 bg-sage-100 dark:bg-sage-700 px-2 py-0.5 rounded-full">
                         {report.year}
                       </span>
                     )}
                   </div>
                   {(report.description_en || report.description_fr) && (
-                    <p className="text-sm text-sage-700/70 leading-relaxed mb-4">
+                    <p className="text-sm text-sage-700/70 dark:text-sage-300/80 leading-relaxed mb-4">
                       {language === 'fr' ? (report.description_fr || report.description_en) : report.description_en}
                     </p>
                   )}
@@ -306,7 +306,7 @@ export default function AboutPage() {
                       target="_blank"
                       rel="noopener noreferrer"
                       download
-                      className="inline-flex items-center gap-2 text-sm font-bold text-terracotta-600 hover:text-terracotta-700 transition-colors"
+                      className="inline-flex items-center gap-2 text-sm font-bold text-terracotta-600 dark:text-terracotta-400 hover:text-terracotta-700 transition-colors"
                     >
                       <Download className="w-4 h-4" />
                       {t('about.reports.download')}
@@ -322,14 +322,14 @@ export default function AboutPage() {
           {/* Team Section */}
           <div className="mb-32">
             <div className="flex items-center gap-4 mb-12">
-              <div className="w-12 h-12 bg-sage-100 rounded-xl flex items-center justify-center text-sage-600">
+              <div className="w-12 h-12 bg-sage-100 dark:bg-sage-800 rounded-xl flex items-center justify-center text-sage-600 dark:text-sage-300">
                 <Users className="w-6 h-6" />
               </div>
-              <h2 className="text-4xl font-bold text-sage-800">
+              <h2 className="text-4xl font-bold text-sage-800 dark:text-sage-100">
                 {language === 'fr' ? 'Notre Équipe' : 'Our Team'}
               </h2>
             </div>
-            
+
             <TeamCarousel teamMembers={teamMembers} language={language} />
           </div>
 
@@ -344,7 +344,7 @@ export default function AboutPage() {
               {language === 'fr' ? 'Envie de nous rejoindre ?' : 'Want to Join Us?'}
             </h2>
             <p className="text-xl text-sage-100/80 mb-12 leading-relaxed">
-              {language === 'fr' 
+              {language === 'fr'
                 ? 'Nous sommes toujours à la recherche de bénévoles et de partenaires passionnés pour nous aider à accroître notre impact à Madagascar.'
                 : 'We are always looking for passionate volunteers and partners to help us scale our impact across Madagascar.'}
             </p>

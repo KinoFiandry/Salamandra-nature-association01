@@ -4,8 +4,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { useI18n } from "@/lib/i18n";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { DarkModeToggle } from "./DarkModeToggle";
 import { useState } from "react";
-import { Menu, X, Globe } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 export function Navbar() {
@@ -29,7 +30,7 @@ export function Navbar() {
     ];
 
   return (
-    <nav className="bg-white/80 backdrop-blur-md border-b border-sage-100 sticky top-0 z-50">
+    <nav className="bg-white/80 dark:bg-sage-950/90 backdrop-blur-md border-b border-sage-100 dark:border-sage-800 sticky top-0 z-50 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-24">
             <div className="flex items-center">
@@ -53,14 +54,15 @@ export function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-sm font-semibold text-sage-700/70 hover:text-sage-800 transition-colors"
+                  className="text-sm font-semibold text-sage-700/70 dark:text-sage-300/80 hover:text-sage-800 dark:hover:text-sage-100 transition-colors"
                 >
                   {t(link.label)}
                 </Link>
               ))}
             </div>
-            
-            <div className="flex items-center gap-4 pl-4 border-l border-sage-100">
+
+            <div className="flex items-center gap-3 pl-4 border-l border-sage-100 dark:border-sage-800">
+              <DarkModeToggle />
               <LanguageSwitcher />
               <Link
                 href="/donate"
@@ -72,11 +74,12 @@ export function Navbar() {
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden flex items-center gap-4">
+          <div className="md:hidden flex items-center gap-3">
+            <DarkModeToggle />
             <LanguageSwitcher />
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-sage-800 p-2"
+              className="text-sage-800 dark:text-sage-200 p-2"
             >
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -86,14 +89,14 @@ export function Navbar() {
 
       {/* Mobile menu */}
       {isOpen && (
-        <div className="md:hidden bg-white border-b border-sage-100 animate-in slide-in-from-top duration-300">
+        <div className="md:hidden bg-white dark:bg-sage-950 border-b border-sage-100 dark:border-sage-800 animate-in slide-in-from-top duration-300">
           <div className="px-4 pt-2 pb-6 space-y-1">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setIsOpen(false)}
-                className="block px-3 py-4 text-base font-bold text-sage-700 border-b border-sage-50 last:border-0"
+                className="block px-3 py-4 text-base font-bold text-sage-700 dark:text-sage-200 border-b border-sage-50 dark:border-sage-800 last:border-0"
               >
                 {t(link.label)}
               </Link>

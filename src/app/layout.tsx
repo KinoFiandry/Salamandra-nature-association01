@@ -4,6 +4,7 @@ import VisualEditsMessenger from "../visual-edits/VisualEditsMessenger";
 import ErrorReporter from "@/components/ErrorReporter";
 import Script from "next/script";
 import { I18nProvider } from "@/lib/i18n";
+import { ThemeProvider } from "@/lib/theme";
 import { Navbar } from "@/components/Navbar";
 import VisitTracker from "@/components/VisitTracker";
 
@@ -27,6 +28,12 @@ export default function RootLayout({
         <link rel="preconnect" href="https://iqxjqpxnurxlmolncews.supabase.co" />
         <link rel="preconnect" href="https://images.unsplash.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://iqxjqpxnurxlmolncews.supabase.co" />
+        {/* Anti-flash: apply theme class before paint */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var t=localStorage.getItem('theme');var d=window.matchMedia('(prefers-color-scheme: dark)').matches;if(t==='dark'||(!t&&d)){document.documentElement.classList.add('dark');}})();`,
+          }}
+        />
       </head>
         <body className="antialiased font-sans" suppressHydrationWarning>
         <Script
@@ -46,11 +53,13 @@ export default function RootLayout({
           data-debug="true"
           data-custom-data='{"appName": "YourApp", "version": "1.0.0", "greeting": "hi"}'
         />
-        <I18nProvider>
-          <VisitTracker />
-          <Navbar />
-          {children}
-        </I18nProvider>
+        <ThemeProvider>
+          <I18nProvider>
+            <VisitTracker />
+            <Navbar />
+            {children}
+          </I18nProvider>
+        </ThemeProvider>
         <VisualEditsMessenger />
       </body>
     </html>

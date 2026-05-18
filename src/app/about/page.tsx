@@ -8,65 +8,11 @@ import { motion } from "framer-motion";
 import { Info, Shield, TreePine, GraduationCap, Leaf, Sun, Sprout, Users, FileText, Download } from "lucide-react";
 import useEmblaCarousel from 'embla-carousel-react';
 
-const teamMembers = [
-  {
-    name: "Pr ALBIGNAC Roland",
-    role: { en: "Honorary President", fr: "Président d'honneur" },
-    bio: {
-      en: "Honorary Professor at Universities in France and Madagascar, UNDP / UNESCO Expert Consultant.",
-      fr: "Professeur honoraire des Universités en France et à Madagascar, Consultant Expert PNUD / UNESCO."
-    },
-    image: "/images/pr-roland.jpg"
-  },
-  {
-    name: "M. RAZAFINDRAKOTO Andriamampiandry Léon",
-    role: { en: "President and Co-founder", fr: "Président et co-fondateur" },
-    bio: {
-      en: "Director of Dayu Biik, manager of the Thönyë Protected Natural Area in Hienghène, New Caledonia, IUCN Expert for Tortoise and Freshwater Turtle Group, member of the IUCN Economic, Social and Environmental Policy Commission.",
-      fr: "Directeur de Dayu Biik, gestionnaire de l'Aire Naturelle Protégée du Thönyë à Hienghène en Nouvelle-Calédonie, Expert UICN Groupe Tortues terrestres et d'eau douce, membre de la Commission de la Politique Économique, Sociale et Environnementale de l'UICN."
-    },
-    image: "/images/leon.jpg"
-  },
-  {
-    name: "M. GAUTHIER Frank",
-    role: { en: "General Secretary", fr: "Secrétaire Général" },
-    bio: {
-      en: "Environmental Technician at the French Biodiversity Office in Corsica.",
-      fr: "Technicien en Environnement à l'Office Français de la Biodiversité en Corse."
-    },
-    image: "/images/franck-gauthier.jpg"
-  },
-  {
-    name: "Mme GAUTHIER Maude",
-    role: { en: "Treasurer", fr: "Trésorière" },
-    bio: {
-      en: "School teacher in Corsica.",
-      fr: "Professeur des écoles en Corse."
-    },
-    image: "/images/maud-gauthier.jpg"
-  },
-  {
-    name: "MAUGUIN Camille",
-    role: { en: "Communications Officer", fr: "Chargée de la Communication" },
-    bio: {
-      en: "Freelance graphic designer in Nièvre.",
-      fr: "Graphiste indépendante dans la Nièvre."
-    },
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400"
-  },
-  {
-    name: "Mlle RAHOLISON Anjara Malala",
-    role: { en: "Madagascar Representative", fr: "Représentante de Salamandra Nature à Madagascar" },
-    bio: {
-      en: "Communications Manager at NGO Génération Mada, Advisor to the NGO Y'DAGO.",
-      fr: "Responsable Communication ONG Génération Mada, Conseillère de l'ONG Y'DAGO."
-    },
-    image: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?q=80&w=400"
-  }
-];
 
 function TeamMemberCard({ member, language, index }: { member: any, language: string, index: number }) {
   const [isExpanded, setIsExpanded] = React.useState(false);
+  const role = language === 'fr' ? member.role_fr : member.role_en;
+  const bio = language === 'fr' ? member.bio_fr : member.bio_en;
 
   return (
     <motion.div
@@ -78,7 +24,7 @@ function TeamMemberCard({ member, language, index }: { member: any, language: st
     >
       <div className="h-48 overflow-hidden flex-shrink-0 relative">
         <Image
-          src={member.image}
+          src={member.photo_url || '/images/placeholder.jpg'}
           alt={member.name}
           fill
           sizes="(max-width: 768px) 85vw, (max-width: 1024px) 45vw, 30vw"
@@ -88,13 +34,13 @@ function TeamMemberCard({ member, language, index }: { member: any, language: st
       <div className="p-8 flex flex-col flex-grow">
         <h3 className="text-xl font-bold text-sage-800 dark:text-sage-100 mb-1 line-clamp-2">{member.name}</h3>
         <p className="text-terracotta-600 dark:text-terracotta-400 font-bold text-sm mb-4 min-h-[40px]">
-          {member.role[language as 'en' | 'fr']}
+          {role}
         </p>
         <div className="relative">
           <p className={`text-sage-700/70 dark:text-sage-300/80 text-sm leading-relaxed ${!isExpanded ? 'line-clamp-4' : ''}`}>
-            {member.bio[language as 'en' | 'fr']}
+            {bio}
           </p>
-          {member.bio[language as 'en' | 'fr'].length > 150 && (
+          {bio && bio.length > 150 && (
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -136,6 +82,7 @@ function TeamCarousel({ teamMembers, language }: { teamMembers: any[], language:
 export default function AboutPage() {
   const { t, language } = useI18n();
   const [reports, setReports] = useState<any[]>([]);
+  const [teamMembers, setTeamMembers] = useState<any[]>([]);
 
   useEffect(() => {
     supabase
@@ -143,6 +90,12 @@ export default function AboutPage() {
       .select("*")
       .order("year", { ascending: false })
       .then(({ data }) => { if (data) setReports(data); });
+
+    supabase
+      .from("group_members")
+      .select("*")
+      .order("display_order", { ascending: true })
+      .then(({ data }) => { if (data) setTeamMembers(data); });
   }, []);
 
   const presentation = {

@@ -48,7 +48,7 @@ export default function AdminLogin() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-sage-950 via-sage-800 to-sage-700 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1509316785289-025f5b846b35?q=80&w=2000')] bg-cover bg-center opacity-10" />
+      <div className="absolute inset-0 bg-[url('https://inaturalist-open-data.s3.amazonaws.com/photos/3751327/large.jpg')] bg-cover bg-center opacity-20" />
       
       <motion.div
         initial={{ opacity: 0, y: 20 }}

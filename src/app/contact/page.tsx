@@ -30,6 +30,13 @@ export default function ContactPage() {
     if (submitError) {
       setError(t('contact.error'));
     } else {
+      // Send email notification (fire-and-forget; don't block on failure)
+      fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      }).catch(() => {});
+
       setSuccess(true);
       setFormData({ name: "", email: "", subject: "", message: "" });
     }

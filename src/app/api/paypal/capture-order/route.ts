@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateAccessToken } from "@/lib/paypal";
+import { sendDonationNotification } from "@/lib/resend";
 
 const PAYPAL_API_URL = process.env.PAYPAL_ENV === "production"
   ? "https://api-m.paypal.com"
@@ -63,17 +64,29 @@ export async function POST(request: NextRequest) {
     const captureData = await response.json();
 
     const capture = captureData.purchase_units?.[0]?.payments?.captures?.[0];
-    
+    const payerEmail = captureData.payer?.email_address ?? "";
+    const payerName = captureData.payer?.name?.given_name
+      ? `${captureData.payer.name.given_name} ${captureData.payer.name.surname || ""}`.trim()
+      : "Anonymous";
+
+    // Send donation notification emails (fire-and-forget)
+    sendDonationNotification({
+      donorName: payerName,
+      donorEmail: payerEmail,
+      amount: capture?.amount?.value ?? "?",
+      currency: capture?.amount?.currency_code ?? "EUR",
+      orderId: captureData.id,
+      captureId: capture?.id ?? "",
+    }).catch((err) => console.error("Donation email error:", err));
+
     return NextResponse.json({
       id: captureData.id,
       status: captureData.status,
       captureId: capture?.id,
       amount: capture?.amount?.value,
       currency: capture?.amount?.currency_code,
-      payerEmail: captureData.payer?.email_address,
-      payerName: captureData.payer?.name?.given_name 
-        ? `${captureData.payer.name.given_name} ${captureData.payer.name.surname || ""}`
-        : null,
+      payerEmail,
+      payerName,
     });
   } catch (error) {
     console.error("PayPal capture order error:", error);

@@ -26,7 +26,11 @@ import {
         Newspaper,
         FolderOpen,
         Download,
-        Target
+        Target,
+        Images,
+        AlertCircle,
+        Copy,
+        Check
       } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -134,7 +138,8 @@ export default function AdminDashboard() {
   const [newPhoto, setNewPhoto] = useState({
     caption_en: "",
     caption_fr: "",
-    url: ""
+    url: "",
+    album_id: ""
   });
   const [uploading, setUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -153,9 +158,20 @@ export default function AdminDashboard() {
   const [memberPhotoFile, setMemberPhotoFile] = useState<File | null>(null);
   const [uploadingMember, setUploadingMember] = useState(false);
 
+  // Albums state
+  const [albums, setAlbums] = useState<any[]>([]);
+  const [showAlbumForm, setShowAlbumForm] = useState(false);
+  const [editingAlbum, setEditingAlbum] = useState<any>(null);
+  const [newAlbum, setNewAlbum] = useState({ name_en: "", name_fr: "" });
+  const [albumBulkFiles, setAlbumBulkFiles] = useState<File[]>([]);
+  const [uploadingAlbum, setUploadingAlbum] = useState(false);
+  const [photoAlbumFilter, setPhotoAlbumFilter] = useState<string | null>(null);
+  const [migrationSql, setMigrationSql] = useState<string | null>(null);
+  const [sqlCopied, setSqlCopied] = useState(false);
+
   const fetchData = async () => {
     setLoading(true);
-    const [eventsRes, videosRes, partnersRes, photosRes, visitsRes, historyRes, logsRes, donationsRes, membersRes, newsRes, projectsRes, reportsRes, missionsRes] = await Promise.all([
+    const [eventsRes, videosRes, partnersRes, photosRes, visitsRes, historyRes, logsRes, donationsRes, membersRes, newsRes, projectsRes, reportsRes, missionsRes, albumsRes] = await Promise.all([
             supabase.from("events").select("*").order("date", { ascending: true }),
             supabase.from("videos").select("*").order("created_at", { ascending: false }),
             supabase.from("partners").select("*").order("name", { ascending: true }),
@@ -169,6 +185,7 @@ export default function AdminDashboard() {
             supabase.from("projects").select("*").order("created_at", { ascending: false }),
             fetch("/api/admin/reports").then(r => r.json()).catch(() => ({ data: [] })),
             supabase.from("missions").select("*").order("display_order", { ascending: true }),
+            supabase.from("photo_albums").select("*").order("created_at", { ascending: false }),
           ]);
 
       if (eventsRes.data) setEvents(eventsRes.data);
@@ -184,6 +201,14 @@ export default function AdminDashboard() {
           if (projectsRes.data) setProjects(projectsRes.data);
           if (reportsRes.data) setReports(reportsRes.data);
           if (missionsRes.data) setMissions(missionsRes.data);
+          if (!albumsRes.error && albumsRes.data) setAlbums(albumsRes.data);
+          if (albumsRes.error) {
+            // Table doesn't exist yet - fetch migration SQL
+            fetch("/api/admin/migrate-albums", { method: "POST" })
+              .then(r => r.json())
+              .then(d => { if (d.sql) setMigrationSql(d.sql); })
+              .catch(() => {});
+          }
 
       setLoading(false);
   };
@@ -416,7 +441,7 @@ export default function AdminDashboard() {
   };
 
     const resetPhotoForm = () => {
-      setNewPhoto({ caption_en: "", caption_fr: "", url: "" });
+      setNewPhoto({ caption_en: "", caption_fr: "", url: "", album_id: "" });
       setSelectedFile(null);
       setEditingPhoto(null);
       setShowPhotoForm(false);
@@ -427,7 +452,8 @@ export default function AdminDashboard() {
       setNewPhoto({
         caption_en: photo.caption_en || "",
         caption_fr: photo.caption_fr || "",
-        url: photo.url || ""
+        url: photo.url || "",
+        album_id: photo.album_id || ""
       });
       setSelectedFile(null);
       setShowPhotoForm(true);
@@ -465,7 +491,8 @@ export default function AdminDashboard() {
           const { error: dbError } = await supabase.from("media").update({
             url: photoUrl,
             caption_en: newPhoto.caption_en,
-            caption_fr: newPhoto.caption_fr
+            caption_fr: newPhoto.caption_fr,
+            album_id: newPhoto.album_id || null
           }).eq("id", editingPhoto.id);
           if (dbError) throw dbError;
           await logAdminAction("Updated Photo", `Updated photo: ${newPhoto.caption_en || editingPhoto.id}`);
@@ -475,7 +502,8 @@ export default function AdminDashboard() {
             type: "photo",
             url: photoUrl,
             caption_en: newPhoto.caption_en,
-            caption_fr: newPhoto.caption_fr
+            caption_fr: newPhoto.caption_fr,
+            album_id: newPhoto.album_id || null
           }]);
           if (dbError) throw dbError;
           await logAdminAction("Added Photo", `Uploaded new photo: ${newPhoto.caption_en || 'No caption'}`);
@@ -508,6 +536,75 @@ export default function AdminDashboard() {
         }
       }
     };
+
+  // Album CRUD
+  const resetAlbumForm = () => {
+    setNewAlbum({ name_en: "", name_fr: "" });
+    setAlbumBulkFiles([]);
+    setEditingAlbum(null);
+    setShowAlbumForm(false);
+  };
+
+  const handleSaveAlbum = async () => {
+    if (!newAlbum.name_en.trim()) { toast.error("Album name (EN) is required"); return; }
+    setUploadingAlbum(true);
+    try {
+      if (editingAlbum) {
+        const { error } = await supabase.from("photo_albums").update({ name_en: newAlbum.name_en, name_fr: newAlbum.name_fr }).eq("id", editingAlbum.id);
+        if (error) throw error;
+        await logAdminAction("Updated Album", `Updated: ${newAlbum.name_en}`);
+        toast.success("Album updated");
+      } else {
+        // Upload all photos first
+        const uploadedUrls: string[] = [];
+        for (const file of albumBulkFiles) {
+          const fileExt = file.name.split('.').pop();
+          const fileName = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${fileExt}`;
+          const filePath = `gallery/${fileName}`;
+          const { error: uploadError } = await supabase.storage.from('photos').upload(filePath, file);
+          if (uploadError) throw uploadError;
+          const { data: { publicUrl } } = supabase.storage.from('photos').getPublicUrl(filePath);
+          uploadedUrls.push(publicUrl);
+        }
+        const cover_url = uploadedUrls[0] || "";
+        const { data: albumData, error } = await supabase
+          .from("photo_albums")
+          .insert([{ name_en: newAlbum.name_en, name_fr: newAlbum.name_fr, cover_url }])
+          .select()
+          .single();
+        if (error) throw error;
+        if (uploadedUrls.length > 0) {
+          const photoInserts = uploadedUrls.map(url => ({ type: "photo", url, caption_en: "", caption_fr: "", album_id: albumData.id }));
+          const { error: photosError } = await supabase.from("media").insert(photoInserts);
+          if (photosError) throw photosError;
+        }
+        await logAdminAction("Created Album", `Created album: ${newAlbum.name_en} with ${uploadedUrls.length} photos`);
+        toast.success(`Album created with ${uploadedUrls.length} photos`);
+      }
+      resetAlbumForm();
+      fetchData();
+    } catch (error: any) {
+      toast.error(error.message || "Error saving album");
+    } finally {
+      setUploadingAlbum(false);
+    }
+  };
+
+  const handleDeleteAlbum = async (id: string) => {
+    if (confirm("Delete this album? Photos will remain but be unassigned from the album.")) {
+      try {
+        await supabase.from("media").update({ album_id: null }).eq("album_id", id);
+        const { error } = await supabase.from("photo_albums").delete().eq("id", id);
+        if (error) throw error;
+        await logAdminAction("Deleted Album", `Deleted album ID: ${id}`);
+        toast.success("Album deleted");
+        if (photoAlbumFilter === id) setPhotoAlbumFilter(null);
+        fetchData();
+      } catch (err: any) {
+        toast.error(err.message || "Error deleting album");
+      }
+    }
+  };
 
   const resetMemberForm = () => {
     setNewMember({ name: "", role_en: "", role_fr: "", bio_en: "", bio_fr: "", photo_url: "", display_order: 0 });
@@ -1109,37 +1206,180 @@ export default function AdminDashboard() {
 
           <TabsContent value="photos" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-sage-800">Manage Photos</h2>
-              <Button onClick={() => { resetPhotoForm(); setShowPhotoForm(true); }} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold">
-                <Plus className="w-4 h-4 mr-2" /> Add Photo
-              </Button>
+              <h2 className="text-2xl font-bold text-sage-800">Manage Photos & Albums</h2>
+              <div className="flex gap-2">
+                <Button onClick={() => { resetAlbumForm(); setShowAlbumForm(true); }} variant="outline" className="rounded-xl font-bold border-sage-200">
+                  <Images className="w-4 h-4 mr-2" /> Create Album
+                </Button>
+                <Button onClick={() => { resetPhotoForm(); setShowPhotoForm(true); }} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold">
+                  <Plus className="w-4 h-4 mr-2" /> Add Photo
+                </Button>
+              </div>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {photos.map(photo => (
-                <div key={photo.id} className="bg-white rounded-[2rem] border border-sage-100 shadow-sm overflow-hidden group">
-                  <div className="aspect-square bg-slate-200 relative">
-                    <img src={photo.url} alt={photo.caption_en || "Photo"} className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                      <Button variant="outline" size="icon" onClick={() => handleOpenEditPhoto(photo)} className="bg-white/90 hover:bg-white">
-                        <Edit3 className="w-5 h-5 text-terracotta-500" />
-                      </Button>
-                      <Button variant="destructive" size="icon" onClick={() => handleDeletePhoto(photo.id, photo.url)}>
-                        <Trash2 className="w-5 h-5" />
-                      </Button>
-                    </div>
+            {/* Migration notice */}
+            {migrationSql && (
+              <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-bold text-amber-800 mb-1">Database Migration Required</h3>
+                    <p className="text-sm text-amber-700 mb-3">To enable albums, run the following SQL in your <a href="https://supabase.com/dashboard/project/iqxjqpxnurxlmolncews/sql" target="_blank" className="underline font-semibold">Supabase SQL Editor</a>:</p>
+                    <pre className="bg-amber-900/10 text-amber-900 text-xs rounded-xl p-4 overflow-x-auto whitespace-pre-wrap font-mono">{migrationSql}</pre>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="mt-3 border-amber-300 text-amber-700 hover:bg-amber-100"
+                      onClick={() => {
+                        navigator.clipboard.writeText(migrationSql);
+                        setSqlCopied(true);
+                        setTimeout(() => setSqlCopied(false), 2000);
+                      }}
+                    >
+                      {sqlCopied ? <><Check className="w-3 h-3 mr-1" /> Copied!</> : <><Copy className="w-3 h-3 mr-1" /> Copy SQL</>}
+                    </Button>
                   </div>
-                  {(photo.caption_en || photo.caption_fr) && (
-                    <div className="p-4">
-                      <p className="text-sm text-sage-800 line-clamp-2">{photo.caption_en || photo.caption_fr}</p>
+                </div>
+              </div>
+            )}
+
+            {/* Albums section */}
+            {!migrationSql && (
+              <div>
+                <h3 className="text-lg font-bold text-sage-700 mb-4 flex items-center gap-2">
+                  <Images className="w-5 h-5 text-terracotta-500" /> Albums
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
+                  {albums.map(album => {
+                    const albumPhotoCount = photos.filter(p => p.album_id === album.id).length;
+                    return (
+                      <div
+                        key={album.id}
+                        onClick={() => setPhotoAlbumFilter(photoAlbumFilter === album.id ? null : album.id)}
+                        className={`group relative cursor-pointer rounded-2xl overflow-hidden border-2 transition-all ${
+                          photoAlbumFilter === album.id
+                            ? 'border-terracotta-500 shadow-lg shadow-terracotta-100'
+                            : 'border-sage-100 hover:border-terracotta-300 hover:shadow-md'
+                        }`}
+                      >
+                        <div className="aspect-square bg-sage-100">
+                          {album.cover_url ? (
+                            <img src={album.cover_url} alt={album.name_en} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <Images className="w-10 h-10 text-sage-300" />
+                            </div>
+                          )}
+                        </div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                        <div className="absolute bottom-0 left-0 right-0 p-3">
+                          <p className="text-white font-bold text-sm line-clamp-1">{album.name_en}</p>
+                          <p className="text-white/70 text-xs">{albumPhotoCount} photo{albumPhotoCount !== 1 ? 's' : ''}</p>
+                        </div>
+                        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
+                          <button
+                            onClick={e => { e.stopPropagation(); setEditingAlbum(album); setNewAlbum({ name_en: album.name_en, name_fr: album.name_fr || "" }); setShowAlbumForm(true); }}
+                            className="bg-white/90 hover:bg-white rounded-lg p-1.5 text-terracotta-600"
+                          ><Edit3 className="w-3.5 h-3.5" /></button>
+                          <button
+                            onClick={e => { e.stopPropagation(); handleDeleteAlbum(album.id); }}
+                            className="bg-white/90 hover:bg-white rounded-lg p-1.5 text-red-500"
+                          ><Trash2 className="w-3.5 h-3.5" /></button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  <button
+                    onClick={() => { resetAlbumForm(); setShowAlbumForm(true); }}
+                    className="aspect-square rounded-2xl border-2 border-dashed border-sage-200 hover:border-terracotta-400 hover:bg-sage-50 transition-colors flex flex-col items-center justify-center gap-2 text-sage-400 hover:text-terracotta-500"
+                  >
+                    <Plus className="w-8 h-8" />
+                    <span className="text-sm font-medium">New Album</span>
+                  </button>
+                  {albums.length === 0 && (
+                    <div className="col-span-full text-center py-8 text-sage-400">
+                      <Images className="w-10 h-10 mx-auto mb-2 opacity-40" />
+                      <p className="text-sm">No albums yet. Create one to organize your photos!</p>
                     </div>
                   )}
                 </div>
-              ))}
-              {photos.length === 0 && (
+              </div>
+            )}
+
+            {/* Photos filter bar */}
+            {!migrationSql && (
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-sm font-bold text-sage-600">Filter:</span>
+                <button
+                  onClick={() => setPhotoAlbumFilter(null)}
+                  className={`px-3 py-1.5 rounded-full text-sm font-semibold transition-colors ${
+                    photoAlbumFilter === null ? 'bg-terracotta-500 text-white' : 'bg-sage-100 text-sage-700 hover:bg-sage-200'
+                  }`}
+                >All ({photos.length})</button>
+                {albums.map(album => (
+                  <button
+                    key={album.id}
+                    onClick={() => setPhotoAlbumFilter(photoAlbumFilter === album.id ? null : album.id)}
+                    className={`px-3 py-1.5 rounded-full text-sm font-semibold transition-colors ${
+                      photoAlbumFilter === album.id ? 'bg-terracotta-500 text-white' : 'bg-sage-100 text-sage-700 hover:bg-sage-200'
+                    }`}
+                  >{album.name_en} ({photos.filter(p => p.album_id === album.id).length})</button>
+                ))}
+                {albums.length > 0 && (
+                  <button
+                    onClick={() => setPhotoAlbumFilter('none')}
+                    className={`px-3 py-1.5 rounded-full text-sm font-semibold transition-colors ${
+                      photoAlbumFilter === 'none' ? 'bg-terracotta-500 text-white' : 'bg-sage-100 text-sage-700 hover:bg-sage-200'
+                    }`}
+                  >Uncategorized ({photos.filter(p => !p.album_id).length})</button>
+                )}
+              </div>
+            )}
+
+            {/* Photos grid */}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {photos
+                .filter(p => {
+                  if (photoAlbumFilter === null) return true;
+                  if (photoAlbumFilter === 'none') return !p.album_id;
+                  return p.album_id === photoAlbumFilter;
+                })
+                .map(photo => {
+                  const album = albums.find(a => a.id === photo.album_id);
+                  return (
+                    <div key={photo.id} className="bg-white rounded-[2rem] border border-sage-100 shadow-sm overflow-hidden group">
+                      <div className="aspect-square bg-slate-200 relative">
+                        <img src={photo.url} alt={photo.caption_en || "Photo"} className="w-full h-full object-cover" />
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                          <Button variant="outline" size="icon" onClick={() => handleOpenEditPhoto(photo)} className="bg-white/90 hover:bg-white">
+                            <Edit3 className="w-5 h-5 text-terracotta-500" />
+                          </Button>
+                          <Button variant="destructive" size="icon" onClick={() => handleDeletePhoto(photo.id, photo.url)}>
+                            <Trash2 className="w-5 h-5" />
+                          </Button>
+                        </div>
+                        {album && (
+                          <div className="absolute top-2 left-2">
+                            <span className="bg-black/60 text-white text-xs font-semibold px-2 py-0.5 rounded-full">{album.name_en}</span>
+                          </div>
+                        )}
+                      </div>
+                      {(photo.caption_en || photo.caption_fr) && (
+                        <div className="p-4">
+                          <p className="text-sm text-sage-800 line-clamp-2">{photo.caption_en || photo.caption_fr}</p>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              {photos.filter(p => {
+                if (photoAlbumFilter === null) return true;
+                if (photoAlbumFilter === 'none') return !p.album_id;
+                return p.album_id === photoAlbumFilter;
+              }).length === 0 && (
                 <div className="col-span-full text-center py-12 text-terracotta-400">
                   <ImageIcon className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p>No photos yet. Add your first photo!</p>
+                  <p>{photoAlbumFilter ? "No photos in this album yet. Add photos and assign them to this album." : "No photos yet. Add your first photo!"}</p>
                 </div>
               )}
             </div>
@@ -1621,6 +1861,21 @@ export default function AdminDashboard() {
                     <label className="text-sm font-bold text-sage-800">Caption (FR)</label>
                     <Input value={newPhoto.caption_fr} onChange={e => setNewPhoto({...newPhoto, caption_fr: e.target.value})} placeholder="Description en Français" className="rounded-xl" />
                   </div>
+                  {albums.length > 0 && (
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold text-sage-800">Album (optional)</label>
+                      <select
+                        value={newPhoto.album_id}
+                        onChange={e => setNewPhoto({...newPhoto, album_id: e.target.value})}
+                        className="w-full h-11 rounded-xl border border-sage-100 bg-white px-3 text-sm focus:ring-2 focus:ring-terracotta-400 outline-none"
+                      >
+                        <option value="">— No album —</option>
+                        {albums.map(album => (
+                          <option key={album.id} value={album.id}>{album.name_en}{album.name_fr ? ` / ${album.name_fr}` : ''}</option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
                 </div>
                 <div className="p-8 bg-slate-50 flex justify-end gap-4 border-t border-sage-100">
                   <Button variant="ghost" onClick={resetPhotoForm} className="rounded-xl font-bold">Cancel</Button>
@@ -1921,6 +2176,102 @@ export default function AdminDashboard() {
                   </motion.div>
                 </div>
               )}
+        {showAlbumForm && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-sage-950/60 backdrop-blur-sm" onClick={resetAlbumForm} />
+            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden">
+              <div className="bg-sage-800 p-8 text-white flex justify-between items-center">
+                <div>
+                  <h2 className="text-2xl font-black">{editingAlbum ? "Edit Album" : "Create New Album"}</h2>
+                  {!editingAlbum && <p className="text-sage-300 text-sm mt-1">Upload multiple photos to add to this album</p>}
+                </div>
+                <Button variant="ghost" size="icon" onClick={resetAlbumForm} className="text-white/60 hover:text-white">
+                  <X className="w-6 h-6" />
+                </Button>
+              </div>
+              <div className="p-8 space-y-6 max-h-[65vh] overflow-y-auto">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-sage-800">Album Name (EN) *</label>
+                    <Input value={newAlbum.name_en} onChange={e => setNewAlbum({...newAlbum, name_en: e.target.value})} placeholder="Album name in English" className="rounded-xl" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-sage-800">Album Name (FR)</label>
+                    <Input value={newAlbum.name_fr} onChange={e => setNewAlbum({...newAlbum, name_fr: e.target.value})} placeholder="Nom de l'album en Français" className="rounded-xl" />
+                  </div>
+                </div>
+                {!editingAlbum && (
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-sage-800">Photos <span className="text-sage-400 font-normal">(select multiple)</span></label>
+                    <div
+                      onDrop={e => {
+                        e.preventDefault();
+                        const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+                        setAlbumBulkFiles(prev => [...prev, ...files]);
+                      }}
+                      onDragOver={e => e.preventDefault()}
+                      onClick={() => document.getElementById('album-photos-upload')?.click()}
+                      className="flex flex-col items-center justify-center w-full min-h-[140px] border-2 border-dashed border-sage-200 rounded-xl cursor-pointer hover:border-terracotta-400 hover:bg-sage-50 transition-colors p-4"
+                    >
+                      <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={e => {
+                          const files = Array.from(e.target.files || []);
+                          setAlbumBulkFiles(prev => [...prev, ...files]);
+                        }}
+                        className="hidden"
+                        id="album-photos-upload"
+                      />
+                      {albumBulkFiles.length > 0 ? (
+                        <div className="w-full">
+                          <div className="grid grid-cols-4 gap-2 mb-3">
+                            {albumBulkFiles.map((f, i) => (
+                              <div key={i} className="relative aspect-square rounded-lg overflow-hidden bg-sage-100">
+                                <img src={URL.createObjectURL(f)} alt={f.name} className="w-full h-full object-cover" />
+                                <button
+                                  onClick={ev => { ev.stopPropagation(); setAlbumBulkFiles(prev => prev.filter((_, j) => j !== i)); }}
+                                  className="absolute top-0.5 right-0.5 bg-red-500 text-white rounded-full p-0.5"
+                                ><X className="w-3 h-3" /></button>
+                              </div>
+                            ))}
+                          </div>
+                          <p className="text-sm text-terracotta-500 font-medium text-center">{albumBulkFiles.length} photo{albumBulkFiles.length !== 1 ? 's' : ''} selected — click to add more</p>
+                        </div>
+                      ) : (
+                        <div className="text-center">
+                          <Upload className="w-10 h-10 mx-auto text-terracotta-400 mb-2" />
+                          <p className="text-sm text-terracotta-500 font-medium">Drag & drop or click to select photos</p>
+                          <p className="text-xs text-sage-400 mt-1">Select multiple photos at once</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className="p-8 bg-slate-50 flex justify-end gap-4 border-t border-sage-100">
+                <Button variant="ghost" onClick={resetAlbumForm} className="rounded-xl font-bold">Cancel</Button>
+                <Button
+                  onClick={handleSaveAlbum}
+                  disabled={uploadingAlbum || (!editingAlbum && albumBulkFiles.length === 0 && !newAlbum.name_en.trim())}
+                  className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold px-8 disabled:opacity-50"
+                >
+                  {uploadingAlbum ? (
+                    <span className="flex items-center gap-2">
+                      <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                      </svg>
+                      {editingAlbum ? "Saving..." : `Uploading ${albumBulkFiles.length} photo${albumBulkFiles.length !== 1 ? 's' : ''}...`}
+                    </span>
+                  ) : editingAlbum ? "Update Album" : "Create Album"}
+                </Button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
         {showMissionForm && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-sage-950/60 backdrop-blur-sm" onClick={resetMissionForm} />

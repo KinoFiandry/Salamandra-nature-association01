@@ -5,17 +5,15 @@ import Image from "next/image";
 import { useI18n } from "@/lib/i18n";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { DarkModeToggle } from "./DarkModeToggle";
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 export function Navbar() {
   const { t } = useI18n();
   const [isOpen, setIsOpen] = useState(false);
-  const [aboutOpen, setAboutOpen] = useState(false);
   const [mobileAboutOpen, setMobileAboutOpen] = useState(false);
   const pathname = usePathname();
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
   if (pathname === "/donate" || (pathname?.startsWith("/admin") && pathname !== "/admin/login")) {
     return null;
@@ -65,35 +63,27 @@ export function Navbar() {
                 {t("nav.home")}
               </Link>
 
-              {/* About Us dropdown */}
-              <div
-                className="relative"
-                ref={dropdownRef}
-                onMouseEnter={() => setAboutOpen(true)}
-                onMouseLeave={() => setAboutOpen(false)}
-              >
-                <button
-                  className="flex items-center gap-1 text-sm font-semibold text-sage-700/70 dark:text-sage-300/80 hover:text-sage-800 dark:hover:text-sage-100 transition-colors"
-                  onClick={() => setAboutOpen((v) => !v)}
-                >
+              {/* About Us dropdown — pure CSS hover, no React state */}
+              <div className="relative group">
+                <button className="flex items-center gap-1 text-sm font-semibold text-sage-700/70 dark:text-sage-300/80 hover:text-sage-800 dark:hover:text-sage-100 transition-colors">
                   {t("nav.about")}
-                  <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${aboutOpen ? "rotate-180" : ""}`} />
+                  <ChevronDown className="w-4 h-4 transition-transform duration-150 group-hover:rotate-180" />
                 </button>
 
-                {aboutOpen && (
-                  <div className="absolute top-full left-0 mt-2 w-52 bg-white dark:bg-sage-900 rounded-2xl shadow-xl border border-sage-100 dark:border-sage-700 py-2 z-50">
+                {/* pt-2 bridges the gap so the menu doesn't flicker on mouse-move */}
+                <div className="absolute top-full left-0 pt-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-100 z-50">
+                  <div className="w-52 bg-white dark:bg-sage-900 rounded-2xl shadow-xl border border-sage-100 dark:border-sage-700 py-2">
                     {aboutSubLinks.map((sub) => (
                       <Link
                         key={sub.href}
                         href={sub.href}
-                        onClick={() => setAboutOpen(false)}
                         className="block px-5 py-3 text-sm font-semibold text-sage-700 dark:text-sage-200 hover:bg-sage-50 dark:hover:bg-sage-800 hover:text-terracotta-600 dark:hover:text-terracotta-400 transition-colors"
                       >
                         {t(sub.label)}
                       </Link>
                     ))}
                   </div>
-                )}
+                </div>
               </div>
 
               {/* Remaining top-level links */}

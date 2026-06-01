@@ -5,52 +5,99 @@ import Image from "next/image";
 import { useI18n } from "@/lib/i18n";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { DarkModeToggle } from "./DarkModeToggle";
-import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 export function Navbar() {
   const { t } = useI18n();
   const [isOpen, setIsOpen] = useState(false);
+  const [aboutOpen, setAboutOpen] = useState(false);
+  const [mobileAboutOpen, setMobileAboutOpen] = useState(false);
   const pathname = usePathname();
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   if (pathname === "/donate" || (pathname?.startsWith("/admin") && pathname !== "/admin/login")) {
     return null;
   }
 
-    const navLinks = [
-      { href: "/", label: 'nav.home' },
-      { href: "/about", label: 'nav.about' },
-      { href: "/projects", label: 'nav.projects' },
-      { href: "/news", label: 'nav.news' },
-      { href: "/events", label: 'nav.events' },
-      { href: "/media", label: 'nav.media' },
-      { href: "/partners", label: 'nav.partners' },
-      { href: "/contact", label: 'nav.contact' },
-    ];
+  const aboutSubLinks = [
+    { href: "/about#presentation", label: "nav.about.presentation" },
+    { href: "/about#actions",      label: "nav.about.actions" },
+    { href: "/about#documents",    label: "nav.about.docs" },
+  ];
+
+  const topLinks = [
+    { href: "/",         label: "nav.home" },
+    { href: "/partners", label: "nav.partners" },
+    { href: "/projects", label: "nav.projects" },
+    { href: "/news",     label: "nav.news_events" },
+    { href: "/media",    label: "nav.media" },
+    { href: "/contact",  label: "nav.contact" },
+  ];
 
   return (
     <nav className="bg-white/80 dark:bg-sage-950/90 backdrop-blur-md border-b border-sage-100 dark:border-sage-800 sticky top-0 z-50 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-24">
-            <div className="flex items-center">
-              <Link href="/" className="flex items-center gap-3 group">
-                  <Image
-                    src="/images/logo.png"
-                    alt="Salamandra Nature"
-                    width={200}
-                    height={64}
-                    priority
-                    style={{ height: '4rem', width: 'auto' }}
-                    className="group-hover:scale-105 transition-transform"
-                  />
-                </Link>
-            </div>
+          <div className="flex items-center">
+            <Link href="/" className="flex items-center gap-3 group">
+              <Image
+                src="/images/logo.png"
+                alt="Salamandra Nature"
+                width={200}
+                height={64}
+                priority
+                style={{ height: "4rem", width: "auto" }}
+                className="group-hover:scale-105 transition-transform"
+              />
+            </Link>
+          </div>
 
           {/* Desktop Links */}
           <div className="hidden md:flex items-center gap-8">
             <div className="flex items-center gap-6">
-              {navLinks.map((link) => (
+              {/* Home */}
+              <Link
+                href="/"
+                className="text-sm font-semibold text-sage-700/70 dark:text-sage-300/80 hover:text-sage-800 dark:hover:text-sage-100 transition-colors"
+              >
+                {t("nav.home")}
+              </Link>
+
+              {/* About Us dropdown */}
+              <div
+                className="relative"
+                ref={dropdownRef}
+                onMouseEnter={() => setAboutOpen(true)}
+                onMouseLeave={() => setAboutOpen(false)}
+              >
+                <button
+                  className="flex items-center gap-1 text-sm font-semibold text-sage-700/70 dark:text-sage-300/80 hover:text-sage-800 dark:hover:text-sage-100 transition-colors"
+                  onClick={() => setAboutOpen((v) => !v)}
+                >
+                  {t("nav.about")}
+                  <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${aboutOpen ? "rotate-180" : ""}`} />
+                </button>
+
+                {aboutOpen && (
+                  <div className="absolute top-full left-0 mt-2 w-52 bg-white dark:bg-sage-900 rounded-2xl shadow-xl border border-sage-100 dark:border-sage-700 py-2 z-50">
+                    {aboutSubLinks.map((sub) => (
+                      <Link
+                        key={sub.href}
+                        href={sub.href}
+                        onClick={() => setAboutOpen(false)}
+                        className="block px-5 py-3 text-sm font-semibold text-sage-700 dark:text-sage-200 hover:bg-sage-50 dark:hover:bg-sage-800 hover:text-terracotta-600 dark:hover:text-terracotta-400 transition-colors"
+                      >
+                        {t(sub.label)}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Remaining top-level links */}
+              {topLinks.slice(1).map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
@@ -68,7 +115,7 @@ export function Navbar() {
                 href="/donate"
                 className="bg-terracotta-500 text-white px-6 py-2.5 rounded-full font-bold text-sm hover:bg-terracotta-600 transition-all shadow-md hover:shadow-lg active:scale-95"
               >
-                {t('nav.donate')}
+                {t("nav.donate")}
               </Link>
             </div>
           </div>
@@ -91,7 +138,42 @@ export function Navbar() {
       {isOpen && (
         <div className="md:hidden bg-white dark:bg-sage-950 border-b border-sage-100 dark:border-sage-800 animate-in slide-in-from-top duration-300">
           <div className="px-4 pt-2 pb-6 space-y-1">
-            {navLinks.map((link) => (
+            {/* Home */}
+            <Link
+              href="/"
+              onClick={() => setIsOpen(false)}
+              className="block px-3 py-4 text-base font-bold text-sage-700 dark:text-sage-200 border-b border-sage-50 dark:border-sage-800"
+            >
+              {t("nav.home")}
+            </Link>
+
+            {/* About Us accordion */}
+            <div className="border-b border-sage-50 dark:border-sage-800">
+              <button
+                onClick={() => setMobileAboutOpen((v) => !v)}
+                className="w-full flex items-center justify-between px-3 py-4 text-base font-bold text-sage-700 dark:text-sage-200"
+              >
+                {t("nav.about")}
+                <ChevronDown className={`w-5 h-5 transition-transform duration-200 ${mobileAboutOpen ? "rotate-180" : ""}`} />
+              </button>
+              {mobileAboutOpen && (
+                <div className="pl-6 pb-2 space-y-1">
+                  {aboutSubLinks.map((sub) => (
+                    <Link
+                      key={sub.href}
+                      href={sub.href}
+                      onClick={() => { setIsOpen(false); setMobileAboutOpen(false); }}
+                      className="block px-3 py-3 text-sm font-semibold text-sage-600 dark:text-sage-300 hover:text-terracotta-600"
+                    >
+                      {t(sub.label)}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Remaining links */}
+            {topLinks.slice(1).map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -101,13 +183,14 @@ export function Navbar() {
                 {t(link.label)}
               </Link>
             ))}
+
             <div className="pt-4">
               <Link
                 href="/donate"
                 onClick={() => setIsOpen(false)}
                 className="block w-full text-center bg-terracotta-500 text-white px-6 py-4 rounded-xl font-bold text-lg shadow-md"
               >
-                {t('nav.donate')}
+                {t("nav.donate")}
               </Link>
             </div>
           </div>

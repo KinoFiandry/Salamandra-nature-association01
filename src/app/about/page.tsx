@@ -164,7 +164,7 @@ export default function AboutPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 mt-20">
-        <div className="mb-24">
+        <div id="presentation" className="mb-24 scroll-mt-28">
           <div className="flex items-center gap-4 mb-8">
             <div className="w-12 h-12 bg-sage-100 dark:bg-sage-800 rounded-xl flex items-center justify-center text-sage-600 dark:text-sage-300">
               <Info className="w-6 h-6" />
@@ -181,7 +181,7 @@ export default function AboutPage() {
           </motion.p>
         </div>
 
-        <div className="mb-32">
+        <div id="actions" className="mb-32 scroll-mt-28">
           <div className="flex items-center gap-4 mb-12">
             <div className="w-12 h-12 bg-sage-100 dark:bg-sage-800 rounded-xl flex items-center justify-center text-sage-600 dark:text-sage-300">
               <Sprout className="w-6 h-6" />
@@ -213,7 +213,7 @@ export default function AboutPage() {
         </div>
 
         {/* Reports Section */}
-        <div className="mb-32">
+        <div id="documents" className="mb-32 scroll-mt-28">
           <div className="flex items-center gap-4 mb-12">
             <div className="w-12 h-12 bg-sage-100 dark:bg-sage-800 rounded-xl flex items-center justify-center text-sage-600 dark:text-sage-300">
               <FileText className="w-6 h-6" />

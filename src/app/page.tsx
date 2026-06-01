@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useI18n } from "@/lib/i18n";
 import { supabase } from "@/lib/supabase";
 import { motion } from "framer-motion";
-import { Shield, BookOpen, Search, ArrowRight, Heart, Users, ChevronLeft, ChevronRight } from "lucide-react";
+import { Shield, BookOpen, Search, ArrowRight, Heart, Users, ChevronLeft, ChevronRight, Target, Leaf, GraduationCap, TreePine, Globe, Sprout } from "lucide-react";
 import useEmblaCarousel from 'embla-carousel-react';
 
 function TeamMemberCard({ member, language, index }: { member: any, language: string, index: number }) {
@@ -153,24 +153,15 @@ export default function Home() {
   const { t, language } = useI18n();
   const [teamMembers, setTeamMembers] = useState<any[]>([]);
   const [newsItems, setNewsItems] = useState<any[]>([]);
+  const [missions, setMissions] = useState<any[]>([]);
 
   useEffect(() => {
-    supabase
-      .from("group_members")
-      .select("*")
-      .order("display_order", { ascending: true })
-      .then(({ data }) => {
-        if (data) setTeamMembers(data);
-      });
-
-    supabase
-      .from("news")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .limit(2)
-      .then(({ data }) => {
-        if (data) setNewsItems(data);
-      });
+    supabase.from("group_members").select("*").order("display_order", { ascending: true })
+      .then(({ data }) => { if (data) setTeamMembers(data); });
+    supabase.from("news").select("*").order("created_at", { ascending: false }).limit(2)
+      .then(({ data }) => { if (data) setNewsItems(data); });
+    supabase.from("missions").select("*").order("display_order", { ascending: true })
+      .then(({ data }) => { if (data && data.length > 0) setMissions(data); });
   }, []);
 
   const container = {
@@ -261,50 +252,55 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Programs Section */}
+      {/* Missions Section */}
       <section className="py-32 bg-white dark:bg-sage-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-20">
             <h2 className="text-4xl md:text-5xl font-black text-sage-800 dark:text-sage-100 mb-6">
-              {t('programs.title')}
+              {t('missions.title')}
             </h2>
             <div className="w-24 h-2 bg-terracotta-500 mx-auto rounded-full" />
           </div>
 
-          <div className="grid md:grid-cols-3 gap-10">
-            {[
-              {
-                icon: Shield,
-                title: 'programs.habitat.title',
-                desc: 'programs.habitat.desc'
-              },
-              {
-                icon: BookOpen,
-                title: 'programs.edu.title',
-                desc: 'programs.edu.desc'
-              },
-              {
-                icon: Search,
-                title: 'programs.research.title',
-                desc: 'programs.research.desc'
-              }
-            ].map((prog, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.2 }}
-                className="bg-sage-50 dark:bg-sage-800/50 p-10 rounded-[3rem] border border-sage-100 dark:border-sage-700 hover:shadow-2xl hover:shadow-sage-900/5 transition-all group"
-              >
-                <div className="w-16 h-16 bg-white dark:bg-sage-700 rounded-2xl flex items-center justify-center mb-8 shadow-sm group-hover:scale-110 transition-transform">
-                  <prog.icon className="w-8 h-8 text-sage-600 dark:text-sage-300" />
-                </div>
-                <h3 className="text-2xl font-bold text-sage-800 dark:text-sage-100 mb-4">{t(prog.title)}</h3>
-                <p className="text-sage-700/70 dark:text-sage-300/80 leading-relaxed text-lg">{t(prog.desc)}</p>
-              </motion.div>
-            ))}
-          </div>
+          {(() => {
+            const iconMap: Record<string, React.ElementType> = {
+              shield: Shield, book: BookOpen, search: Search, target: Target,
+              leaf: Leaf, education: GraduationCap, tree: TreePine, globe: Globe, sprout: Sprout,
+            };
+            const fallback = [
+              { id: 'f1', icon: 'shield', title_en: 'Habitat Protection', title_fr: 'Protection de l\'Habitat', description_en: 'Preserving critical dry forests and scrublands essential for land turtle survival in southern Madagascar.', description_fr: 'Préservation des forêts sèches critiques pour la survie des tortues terrestres.' },
+              { id: 'f2', icon: 'book', title_en: 'Community Education', title_fr: 'Éducation Communautaire', description_en: 'Engaging local communities through awareness programs and sustainable livelihood alternatives.', description_fr: 'Impliquer les communautés locales par des programmes de sensibilisation.' },
+              { id: 'f3', icon: 'search', title_en: 'Research & Monitoring', title_fr: 'Recherche & Suivi', description_en: 'Conducting scientific research to better understand and protect endangered land turtle populations.', description_fr: 'Mener des recherches scientifiques pour mieux comprendre et protéger les tortues menacées.' },
+            ];
+            const items = missions.length > 0 ? missions : fallback;
+            return (
+              <div className={`grid gap-10 ${items.length === 1 ? 'md:grid-cols-1 max-w-md mx-auto' : items.length === 2 ? 'md:grid-cols-2' : 'md:grid-cols-3'}`}>
+                {items.map((m, i) => {
+                  const IconComp = iconMap[m.icon] || Shield;
+                  return (
+                    <motion.div
+                      key={m.id}
+                      initial={{ opacity: 0, y: 30 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.2 }}
+                      className="bg-sage-50 dark:bg-sage-800/50 p-10 rounded-[3rem] border border-sage-100 dark:border-sage-700 hover:shadow-2xl hover:shadow-sage-900/5 transition-all group"
+                    >
+                      <div className="w-16 h-16 bg-white dark:bg-sage-700 rounded-2xl flex items-center justify-center mb-8 shadow-sm group-hover:scale-110 transition-transform">
+                        <IconComp className="w-8 h-8 text-sage-600 dark:text-sage-300" />
+                      </div>
+                      <h3 className="text-2xl font-bold text-sage-800 dark:text-sage-100 mb-4">
+                        {language === 'fr' ? m.title_fr : m.title_en}
+                      </h3>
+                      <p className="text-sage-700/70 dark:text-sage-300/80 leading-relaxed text-lg">
+                        {language === 'fr' ? m.description_fr : m.description_en}
+                      </p>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            );
+          })()}
         </div>
       </section>
 

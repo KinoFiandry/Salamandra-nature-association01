@@ -25,7 +25,8 @@ import {
       Receipt,
         Newspaper,
         FolderOpen,
-        Download
+        Download,
+        Target
       } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -48,6 +49,10 @@ export default function AdminDashboard() {
   const [history, setHistory] = useState<any[]>([]);
   const [logs, setLogs] = useState<any[]>([]);
   const [donations, setDonations] = useState<any[]>([]);
+  const [missions, setMissions] = useState<any[]>([]);
+  const [showMissionForm, setShowMissionForm] = useState(false);
+  const [editingMission, setEditingMission] = useState<any>(null);
+  const [newMission, setNewMission] = useState({ title_en: "", title_fr: "", description_en: "", description_fr: "", icon: "shield", display_order: 0 });
   const [loading, setLoading] = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -150,7 +155,7 @@ export default function AdminDashboard() {
 
   const fetchData = async () => {
     setLoading(true);
-    const [eventsRes, videosRes, partnersRes, photosRes, visitsRes, historyRes, logsRes, donationsRes, membersRes, newsRes, projectsRes, reportsRes] = await Promise.all([
+    const [eventsRes, videosRes, partnersRes, photosRes, visitsRes, historyRes, logsRes, donationsRes, membersRes, newsRes, projectsRes, reportsRes, missionsRes] = await Promise.all([
             supabase.from("events").select("*").order("date", { ascending: true }),
             supabase.from("videos").select("*").order("created_at", { ascending: false }),
             supabase.from("partners").select("*").order("name", { ascending: true }),
@@ -162,7 +167,8 @@ export default function AdminDashboard() {
             supabase.from("group_members").select("*").order("display_order", { ascending: true }),
             supabase.from("news").select("*").order("created_at", { ascending: false }),
             supabase.from("projects").select("*").order("created_at", { ascending: false }),
-            fetch("/api/admin/reports").then(r => r.json()).catch(() => ({ data: [] }))
+            fetch("/api/admin/reports").then(r => r.json()).catch(() => ({ data: [] })),
+            supabase.from("missions").select("*").order("display_order", { ascending: true }),
           ]);
 
       if (eventsRes.data) setEvents(eventsRes.data);
@@ -177,6 +183,7 @@ export default function AdminDashboard() {
           if (newsRes.data) setNews(newsRes.data);
           if (projectsRes.data) setProjects(projectsRes.data);
           if (reportsRes.data) setReports(reportsRes.data);
+          if (missionsRes.data) setMissions(missionsRes.data);
 
       setLoading(false);
   };
@@ -236,6 +243,45 @@ export default function AdminDashboard() {
         toast.success("Event deleted successfully");
         fetchData();
       }
+    }
+  };
+
+  const resetMissionForm = () => {
+    setNewMission({ title_en: "", title_fr: "", description_en: "", description_fr: "", icon: "shield", display_order: 0 });
+    setEditingMission(null);
+    setShowMissionForm(false);
+  };
+
+  const handleOpenEditMission = (mission: any) => {
+    setEditingMission(mission);
+    setNewMission({ title_en: mission.title_en, title_fr: mission.title_fr || "", description_en: mission.description_en || "", description_fr: mission.description_fr || "", icon: mission.icon || "shield", display_order: mission.display_order || 0 });
+    setShowMissionForm(true);
+  };
+
+  const handleSaveMission = async () => {
+    if (!newMission.title_en.trim()) { toast.error("Title (EN) is required"); return; }
+    try {
+      if (editingMission) {
+        const { error } = await supabase.from("missions").update(newMission).eq("id", editingMission.id);
+        if (error) throw error;
+        await logAdminAction("Updated Mission", `Updated: ${newMission.title_en}`);
+        toast.success("Mission updated");
+      } else {
+        const { error } = await supabase.from("missions").insert([newMission]);
+        if (error) throw error;
+        await logAdminAction("Added Mission", `Created: ${newMission.title_en}`);
+        toast.success("Mission added");
+      }
+      resetMissionForm();
+      fetchData();
+    } catch (err: any) { toast.error(err.message || "Error saving mission"); }
+  };
+
+  const handleDeleteMission = async (id: string) => {
+    if (confirm("Are you sure?")) {
+      const { error } = await supabase.from("missions").delete().eq("id", id);
+      if (error) toast.error("Error deleting mission");
+      else { await logAdminAction("Deleted Mission", `ID: ${id}`); toast.success("Mission deleted"); fetchData(); }
     }
   };
 
@@ -851,6 +897,9 @@ export default function AdminDashboard() {
               <TabsTrigger value="donations" className="w-full justify-start rounded-xl px-4 py-2.5 h-auto font-semibold transition-all data-[state=active]:bg-terracotta-500 data-[state=active]:text-white text-sage-700 hover:bg-sage-50 data-[state=active]:hover:bg-terracotta-500">
                 <Receipt className="w-4 h-4 mr-2.5 shrink-0" /> {t('admin.tabs.donations')}
               </TabsTrigger>
+              <TabsTrigger value="missions" className="w-full justify-start rounded-xl px-4 py-2.5 h-auto font-semibold transition-all data-[state=active]:bg-terracotta-500 data-[state=active]:text-white text-sage-700 hover:bg-sage-50 data-[state=active]:hover:bg-terracotta-500">
+                <Target className="w-4 h-4 mr-2.5 shrink-0" /> {language === 'fr' ? 'Missions' : 'Missions'}
+              </TabsTrigger>
             </TabsList>
             <div className="flex-1 min-w-0">
 
@@ -1328,6 +1377,44 @@ export default function AdminDashboard() {
                 </table>
               </div>
             </TabsContent>
+
+            <TabsContent value="missions" className="space-y-6">
+              <div className="flex justify-between items-center">
+                <h2 className="text-2xl font-bold text-sage-800">{language === 'fr' ? 'Gérer les Missions' : 'Manage Missions'}</h2>
+                <Button onClick={() => { resetMissionForm(); setShowMissionForm(true); }} className="bg-terracotta-500 hover:bg-sage-600 rounded-xl font-bold">
+                  <Plus className="w-4 h-4 mr-2" /> {language === 'fr' ? 'Ajouter une Mission' : 'Add Mission'}
+                </Button>
+              </div>
+              <div className="grid gap-4">
+                {missions.map(m => (
+                  <div key={m.id} className="bg-white p-6 rounded-2xl border border-sage-100 shadow-sm flex items-center gap-6 hover:shadow-md transition-shadow">
+                    <div className="w-12 h-12 bg-sage-50 rounded-xl flex items-center justify-center border border-sage-100 flex-shrink-0">
+                      <Target className="w-6 h-6 text-terracotta-500" />
+                    </div>
+                    <div className="flex-grow min-w-0">
+                      <h3 className="font-bold text-lg text-sage-800 truncate">{m.title_en}</h3>
+                      <p className="text-terracotta-500 text-sm font-medium">{m.title_fr}</p>
+                      <p className="text-sage-500 text-xs mt-1 line-clamp-1">{m.description_en}</p>
+                    </div>
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <Button onClick={() => handleOpenEditMission(m)} variant="ghost" size="icon" className="text-terracotta-400 hover:text-terracotta-500">
+                        <Edit3 className="w-5 h-5" />
+                      </Button>
+                      <Button onClick={() => handleDeleteMission(m.id)} variant="ghost" size="icon" className="text-red-400 hover:text-red-600">
+                        <Trash2 className="w-5 h-5" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+                {missions.length === 0 && (
+                  <div className="text-center py-12 text-sage-400">
+                    <Target className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                    <p>{language === 'fr' ? 'Aucune mission. Les missions par défaut seront affichées.' : 'No missions yet. Default missions will be shown.'}</p>
+                  </div>
+                )}
+              </div>
+            </TabsContent>
+
             </div>
           </Tabs>
       </div>
@@ -1834,6 +1921,55 @@ export default function AdminDashboard() {
                   </motion.div>
                 </div>
               )}
+        {showMissionForm && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-sage-950/60 backdrop-blur-sm" onClick={resetMissionForm} />
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="relative bg-white rounded-3xl shadow-2xl w-full max-w-xl p-8 z-10 max-h-[90vh] overflow-y-auto">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-bold text-sage-800">{editingMission ? (language === 'fr' ? 'Modifier la Mission' : 'Edit Mission') : (language === 'fr' ? 'Nouvelle Mission' : 'New Mission')}</h3>
+                <button onClick={resetMissionForm} className="text-sage-400 hover:text-sage-600"><X className="w-6 h-6" /></button>
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-bold text-sage-700 mb-1">Title (EN) *</label>
+                  <Input value={newMission.title_en} onChange={e => setNewMission({ ...newMission, title_en: e.target.value })} placeholder="Mission title in English" className="rounded-xl" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-sage-700 mb-1">Titre (FR)</label>
+                  <Input value={newMission.title_fr} onChange={e => setNewMission({ ...newMission, title_fr: e.target.value })} placeholder="Titre de la mission en français" className="rounded-xl" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-sage-700 mb-1">Description (EN)</label>
+                  <Textarea value={newMission.description_en} onChange={e => setNewMission({ ...newMission, description_en: e.target.value })} rows={3} placeholder="Description in English" className="rounded-xl" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-sage-700 mb-1">Description (FR)</label>
+                  <Textarea value={newMission.description_fr} onChange={e => setNewMission({ ...newMission, description_fr: e.target.value })} rows={3} placeholder="Description en français" className="rounded-xl" />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-bold text-sage-700 mb-1">Icon</label>
+                    <select value={newMission.icon} onChange={e => setNewMission({ ...newMission, icon: e.target.value })} className="w-full h-10 rounded-xl border border-input bg-white px-3 text-sm">
+                      {['shield','book','search','target','leaf','education','tree','globe','sprout'].map(ic => (
+                        <option key={ic} value={ic}>{ic}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-sage-700 mb-1">Display Order</label>
+                    <Input type="number" value={newMission.display_order} onChange={e => setNewMission({ ...newMission, display_order: parseInt(e.target.value) || 0 })} className="rounded-xl" />
+                  </div>
+                </div>
+              </div>
+              <div className="flex gap-3 mt-6">
+                <Button onClick={handleSaveMission} className="flex-1 bg-terracotta-500 hover:bg-terracotta-600 rounded-xl font-bold">
+                  <Save className="w-4 h-4 mr-2" /> {editingMission ? 'Update' : 'Save'}
+                </Button>
+                <Button onClick={resetMissionForm} variant="outline" className="rounded-xl">Cancel</Button>
+              </div>
+            </motion.div>
+          </div>
+        )}
             </AnimatePresence>
     </div>
   );

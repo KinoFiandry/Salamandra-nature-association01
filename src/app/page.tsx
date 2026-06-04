@@ -8,6 +8,7 @@ import { supabase } from "@/lib/supabase";
 import { motion } from "framer-motion";
 import { Shield, BookOpen, Search, ArrowRight, Heart, Users, ChevronLeft, ChevronRight, Target, Leaf, GraduationCap, TreePine, Globe, Sprout } from "lucide-react";
 import useEmblaCarousel from 'embla-carousel-react';
+import Autoplay from 'embla-carousel-autoplay';
 
 function TeamMemberCard({ member, language, index }: { member: any, language: string, index: number }) {
   const [isExpanded, setIsExpanded] = React.useState(false);
@@ -59,39 +60,53 @@ function TeamMemberCard({ member, language, index }: { member: any, language: st
 }
 
 function TeamCarousel({ teamMembers, language }: { teamMembers: any[], language: string }) {
-  const [emblaRef, emblaApi] = useEmblaCarousel({
-    align: 'start',
-    containScroll: 'trimSnaps',
-    dragFree: false
-  });
-
-  const [prevBtnEnabled, setPrevBtnEnabled] = useState(false);
-  const [nextBtnEnabled, setNextBtnEnabled] = useState(false);
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    { align: 'start', containScroll: 'trimSnaps', loop: true },
+    [Autoplay({ delay: 3500, stopOnInteraction: false })]
+  );
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
-
-  const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
-  const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
-  const scrollTo = useCallback((index: number) => emblaApi && emblaApi.scrollTo(index), [emblaApi]);
-
-  const onSelect = useCallback(() => {
-    if (!emblaApi) return;
-    setSelectedIndex(emblaApi.selectedScrollSnap());
-    setPrevBtnEnabled(emblaApi.canScrollPrev());
-    setNextBtnEnabled(emblaApi.canScrollNext());
-  }, [emblaApi]);
+  const [isHovering, setIsHovering] = useState(false);
 
   useEffect(() => {
     if (!emblaApi) return;
-    onSelect();
     setScrollSnaps(emblaApi.scrollSnapList());
+    const onSelect = () => setSelectedIndex(emblaApi.selectedScrollSnap());
     emblaApi.on('select', onSelect);
-    emblaApi.on('reInit', onSelect);
-  }, [emblaApi, onSelect]);
+    onSelect();
+  }, [emblaApi]);
+
+  // Pause/resume autoplay on hover
+  useEffect(() => {
+    if (!emblaApi) return;
+    const autoplay = emblaApi.plugins()?.autoplay;
+    if (!autoplay) return;
+    if (isHovering) {
+      autoplay.stop();
+    } else {
+      autoplay.play();
+    }
+  }, [isHovering, emblaApi]);
+
+  const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
+  const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
+
+  if (teamMembers.length === 0) {
+    return (
+      <div className="text-center py-16 text-sage-400">
+        <Users className="w-16 h-16 mx-auto mb-4 opacity-30" />
+        <p className="text-lg font-medium">{language === 'fr' ? 'Aucun membre pour le moment.' : 'No team members yet.'}</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="relative group">
-      <div className="overflow-hidden cursor-grab active:cursor-grabbing pb-8" ref={emblaRef}>
+    <div
+      className="relative group"
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}
+    >
+      <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex gap-8">
           {teamMembers.map((member, i) => (
             <div key={member.name} className="flex-[0_0_85%] md:flex-[0_0_45%] lg:flex-[0_0_30%] xl:flex-[0_0_22%] min-w-0 h-full">
@@ -101,50 +116,39 @@ function TeamCarousel({ teamMembers, language }: { teamMembers: any[], language:
         </div>
       </div>
 
-      {/* Navigation Buttons */}
-      <div className="flex justify-center items-center gap-4 mt-8">
-        <button
-          className={`w-12 h-12 rounded-full border-2 flex items-center justify-center transition-all ${
-            prevBtnEnabled
-              ? 'bg-white dark:bg-sage-800 text-terracotta-600 border-terracotta-200 dark:border-terracotta-700 hover:bg-terracotta-500 hover:text-white hover:border-terracotta-500 shadow-md'
-              : 'bg-gray-50 dark:bg-sage-900 text-gray-300 dark:text-sage-700 cursor-not-allowed border-gray-100 dark:border-sage-800'
-          }`}
-          onClick={scrollPrev}
-          disabled={!prevBtnEnabled}
-          aria-label="Previous slide"
-        >
-          <ChevronLeft className="w-6 h-6" />
-        </button>
+      {/* Navigation arrows (hover-visible) */}
+      <button
+        onClick={scrollPrev}
+        className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 md:-translate-x-5 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white dark:bg-sage-800 shadow-lg border border-sage-100 dark:border-sage-700 flex items-center justify-center text-sage-700 dark:text-sage-200 opacity-0 group-hover:opacity-100 hover:bg-terracotta-500 hover:text-white hover:border-terracotta-500 transition-all duration-300 z-10"
+        aria-label="Previous"
+      >
+        <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
+      </button>
+      <button
+        onClick={scrollNext}
+        className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 md:translate-x-5 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white dark:bg-sage-800 shadow-lg border border-sage-100 dark:border-sage-700 flex items-center justify-center text-sage-700 dark:text-sage-200 opacity-0 group-hover:opacity-100 hover:bg-terracotta-500 hover:text-white hover:border-terracotta-500 transition-all duration-300 z-10"
+        aria-label="Next"
+      >
+        <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
+      </button>
 
-        {/* Pagination Dots */}
-        <div className="flex gap-2 mx-4">
-          {scrollSnaps.map((_, index) => (
+      {/* Dots */}
+      {scrollSnaps.length > 1 && (
+        <div className="flex justify-center gap-2 mt-8">
+          {scrollSnaps.map((_, i) => (
             <button
-              key={index}
+              key={i}
+              onClick={() => emblaApi?.scrollTo(i)}
               className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
-                index === selectedIndex
-                  ? 'bg-terracotta-500 w-8'
-                  : 'bg-terracotta-200 dark:bg-terracotta-800 hover:bg-terracotta-300'
+                i === selectedIndex
+                  ? 'bg-terracotta-500 w-7'
+                  : 'bg-sage-300 dark:bg-sage-600 hover:bg-sage-400'
               }`}
-              onClick={() => scrollTo(index)}
-              aria-label={`Go to slide ${index + 1}`}
+              aria-label={`Go to slide ${i + 1}`}
             />
           ))}
         </div>
-
-        <button
-          className={`w-12 h-12 rounded-full border-2 flex items-center justify-center transition-all ${
-            nextBtnEnabled
-              ? 'bg-white dark:bg-sage-800 text-terracotta-600 border-terracotta-200 dark:border-terracotta-700 hover:bg-terracotta-500 hover:text-white hover:border-terracotta-500 shadow-md'
-              : 'bg-gray-50 dark:bg-sage-900 text-gray-300 dark:text-sage-700 cursor-not-allowed border-gray-100 dark:border-sage-800'
-          }`}
-          onClick={scrollNext}
-          disabled={!nextBtnEnabled}
-          aria-label="Next slide"
-        >
-          <ChevronRight className="w-6 h-6" />
-        </button>
-      </div>
+      )}
     </div>
   );
 }

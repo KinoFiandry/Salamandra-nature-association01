@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import { useI18n } from "@/lib/i18n";
 import { supabase } from "@/lib/supabase";
 import { motion } from "framer-motion";
-import { Info, Shield, TreePine, GraduationCap, Leaf, Sun, Sprout, Users, FileText, Download } from "lucide-react";
+import { Info, Shield, TreePine, GraduationCap, Leaf, Sun, Sprout, Users, FileText, Download, ChevronLeft, ChevronRight } from "lucide-react";
 import useEmblaCarousel from 'embla-carousel-react';
+import Autoplay from 'embla-carousel-autoplay';
 
 
 function TeamMemberCard({ member, language, index }: { member: any, language: string, index: number }) {
@@ -60,21 +61,96 @@ function TeamMemberCard({ member, language, index }: { member: any, language: st
 }
 
 function TeamCarousel({ teamMembers, language }: { teamMembers: any[], language: string }) {
-  const [emblaRef] = useEmblaCarousel({
-    align: 'start',
-    containScroll: 'trimSnaps',
-    dragFree: true
-  });
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    { align: 'start', containScroll: 'trimSnaps', loop: true },
+    [Autoplay({ delay: 3500, stopOnInteraction: false })]
+  );
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
+  const [isHovering, setIsHovering] = useState(false);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    setScrollSnaps(emblaApi.scrollSnapList());
+    const onSelect = () => setSelectedIndex(emblaApi.selectedScrollSnap());
+    emblaApi.on('select', onSelect);
+    onSelect();
+  }, [emblaApi]);
+
+  // Pause/resume autoplay on hover
+  useEffect(() => {
+    if (!emblaApi) return;
+    const autoplay = emblaApi.plugins()?.autoplay;
+    if (!autoplay) return;
+    if (isHovering) {
+      autoplay.stop();
+    } else {
+      autoplay.play();
+    }
+  }, [isHovering, emblaApi]);
+
+  const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
+  const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
+
+  if (teamMembers.length === 0) {
+    return (
+      <div className="text-center py-16 text-sage-400">
+        <Users className="w-16 h-16 mx-auto mb-4 opacity-30" />
+        <p className="text-lg font-medium">{language === 'fr' ? 'Aucun membre pour le moment.' : 'No team members yet.'}</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="overflow-hidden cursor-grab active:cursor-grabbing pb-8" ref={emblaRef}>
-      <div className="flex gap-8">
-        {teamMembers.map((member, i) => (
-          <div key={member.name} className="flex-[0_0_85%] md:flex-[0_0_45%] lg:flex-[0_0_30%] min-w-0 h-full">
-            <TeamMemberCard member={member} language={language} index={i} />
-          </div>
-        ))}
+    <div
+      className="relative group"
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}
+    >
+      {/* Carousel viewport */}
+      <div className="overflow-hidden rounded-3xl" ref={emblaRef}>
+        <div className="flex gap-8">
+          {teamMembers.map((member, i) => (
+            <div key={member.name} className="flex-[0_0_85%] md:flex-[0_0_45%] lg:flex-[0_0_30%] min-w-0">
+              <TeamMemberCard member={member} language={language} index={i} />
+            </div>
+          ))}
+        </div>
       </div>
+
+      {/* Navigation arrows */}
+      <button
+        onClick={scrollPrev}
+        className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 md:-translate-x-5 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white dark:bg-sage-800 shadow-lg border border-sage-100 dark:border-sage-700 flex items-center justify-center text-sage-700 dark:text-sage-200 opacity-0 group-hover:opacity-100 hover:bg-terracotta-500 hover:text-white hover:border-terracotta-500 transition-all duration-300 z-10"
+        aria-label="Previous"
+      >
+        <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
+      </button>
+      <button
+        onClick={scrollNext}
+        className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 md:translate-x-5 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white dark:bg-sage-800 shadow-lg border border-sage-100 dark:border-sage-700 flex items-center justify-center text-sage-700 dark:text-sage-200 opacity-0 group-hover:opacity-100 hover:bg-terracotta-500 hover:text-white hover:border-terracotta-500 transition-all duration-300 z-10"
+        aria-label="Next"
+      >
+        <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
+      </button>
+
+      {/* Dots */}
+      {scrollSnaps.length > 1 && (
+        <div className="flex justify-center gap-2 mt-6">
+          {scrollSnaps.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => emblaApi?.scrollTo(i)}
+              className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                i === selectedIndex
+                  ? 'bg-terracotta-500 w-7'
+                  : 'bg-sage-300 dark:bg-sage-600 hover:bg-sage-400'
+              }`}
+              aria-label={`Go to slide ${i + 1}`}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

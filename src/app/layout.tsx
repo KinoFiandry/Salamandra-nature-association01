@@ -7,6 +7,7 @@ import { I18nProvider } from "@/lib/i18n";
 import { ThemeProvider } from "@/lib/theme";
 import { Navbar } from "@/components/Navbar";
 import VisitTracker from "@/components/VisitTracker";
+import BackToTop from "@/components/BackToTop";
 
 export const metadata: Metadata = {
   title: "Madagascar Turtle Conservation NGO",
@@ -58,6 +59,7 @@ export default function RootLayout({
             <VisitTracker />
             <Navbar />
             {children}
+            <BackToTop />
           </I18nProvider>
         </ThemeProvider>
         <VisualEditsMessenger />

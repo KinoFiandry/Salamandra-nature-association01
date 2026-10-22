@@ -27,7 +27,7 @@ const translations: Record<Language, Record<string, string>> = {
         'nav.admin': 'Admin',
         'nav.donate': 'Donate Now',
       'hero.title': 'Protecting Madagascar\'s',
-      'hero.titleAccent': 'Land Turtles',
+      'hero.titleAccent': 'Tortoises',
       'hero.subtitle': 'Join us in our mission to conserve endangered land turtle species and preserve their dry forest habitats in southern Madagascar.',
       'hero.cta': 'Support Our Cause',
       'hero.learnMore': 'Learn More',

@@ -299,7 +299,7 @@ export default function Home() {
             };
             const fallback = [
               { id: 'f1', icon: 'shield', title_en: 'Habitat Protection', title_fr: 'Protection de l\'Habitat', description_en: 'Preserving critical dry forests and scrublands essential for land turtle survival in southern Madagascar.', description_fr: 'Préservation des forêts sèches critiques pour la survie des tortues terrestres.' },
-              { id: 'f2', icon: 'book', title_en: 'Community Education', title_fr: 'Éducation Communautaire', description_en: 'Engaging local communities through awareness programs and sustainable livelihood alternatives.', description_fr: 'Impliquer les communautés locales par des programmes de sensibilisation.' },
+              { id: 'f2', icon: 'book', title_en: 'Community mobilization', title_fr: 'Mobilisation communautaire ', description_en: 'Involve local communities in biodiversity protection through education and awareness-raising programs, while fostering the development of sustainable livelihood alternatives.', description_fr: 'Impliquer les communautés locales dans la protection de la biodiversité grâce à des programmes d’éducation et de sensibilisation, tout en favorisant le développement d’alternatives de subsistance durables.' },
               { id: 'f3', icon: 'search', title_en: 'Research & Monitoring', title_fr: 'Recherche & Suivi', description_en: 'Conducting scientific research to better understand and protect endangered land turtle populations.', description_fr: 'Mener des recherches scientifiques pour mieux comprendre et protéger les tortues menacées.' },
             ];
             const items = missions.length > 0 ? missions : fallback;

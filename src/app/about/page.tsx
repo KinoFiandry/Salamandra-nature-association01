@@ -251,7 +251,7 @@ export default function AboutPage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-2xl text-sage-700/80 dark:text-sage-300/90 leading-relaxed max-w-5xl"
+            className="whitespace-pre-line text-2xl text-sage-700/80 dark:text-sage-300/90 leading-relaxed max-w-5xl"
           >
             {presentation[language as 'en' | 'fr']}
           </motion.p>
@@ -280,7 +280,7 @@ export default function AboutPage() {
                     <action.icon className="w-7 h-7" />
                   </div>
                 </div>
-                <p className="text-lg text-sage-700/80 dark:text-sage-300/90 leading-relaxed pt-2">
+                <p className="whitespace-pre-line text-lg text-sage-700/80 dark:text-sage-300/90 leading-relaxed pt-2">
                   {action.content[language as 'en' | 'fr']}
                 </p>
               </motion.div>

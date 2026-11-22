@@ -274,7 +274,7 @@ const translations: Record<Language, Record<string, string>> = {
       'hero.cta': 'Soutenir notre Cause',
       'hero.learnMore': 'Découvrir nos actions de conservation',
       'impact.title': 'Notre Impact',
-      'impact.years': 'Années de Conservation',
+      'impact.years': 'Ans de Conservation',
       'impact.turtles': 'Tortues Protégées',
       'impact.communities': 'ans de collaboration avec la communauté locale',
       'impact.hectares': 'Hectares Protégés',

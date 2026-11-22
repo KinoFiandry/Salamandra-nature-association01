@@ -13,7 +13,7 @@ interface I18nContextType {
 const translations: Record<Language, Record<string, string>> = {
     en: {
       'nav.home': 'Home',
-      'nav.about': 'About Us',
+      'nav.about': 'The association',
       'nav.about.presentation': 'General Presentation',
       'nav.about.actions': 'Our Actions',
       'nav.about.docs': 'Our Doc',
@@ -86,7 +86,7 @@ const translations: Record<Language, Record<string, string>> = {
       'admin.reports.save': 'Save Report',
       'admin.reports.deleteConfirm': 'Are you sure you want to delete this report?',
       'admin.reports.empty': 'No reports yet. Add your first report!',
-      'news.title': 'Latest News',
+      'news.title': 'Conservation Headlines',
       'news.readMore': 'Read More',
       'news.noNews': 'No news articles yet. Check back soon!',
       'projects.title': 'Our Conservation Projects',
@@ -255,7 +255,7 @@ const translations: Record<Language, Record<string, string>> = {
     },
     fr: {
       'nav.home': 'Accueil',
-      'nav.about': 'À Propos',
+      'nav.about': 'L\’association',
       'nav.about.presentation': 'Présentation générale',
       'nav.about.actions': 'Nos Actions',
       'nav.about.docs': 'Nos Documents',
@@ -328,7 +328,7 @@ const translations: Record<Language, Record<string, string>> = {
       'admin.reports.save': 'Enregistrer le Rapport',
       'admin.reports.deleteConfirm': 'Êtes-vous sûr de vouloir supprimer ce rapport ?',
       'admin.reports.empty': 'Aucun rapport pour l\'instant. Ajoutez votre premier rapport !',
-      'news.title': 'Dernières Actualités',
+      'news.title': 'A la une de la conservation',
       'news.readMore': 'Lire la suite',
       'news.noNews': 'Pas encore d\'actualités. Revenez bientôt !',
       'projects.title': 'Nos Projets de Conservation',

@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n";
 import { supabase } from "@/lib/supabase";
-import { motion } from "framer-motion";
+import { motion, useInView, useMotionValue, useSpring } from "framer-motion";
 import { Shield, BookOpen, Search, ArrowRight, Heart, Users, ChevronLeft, ChevronRight, Target, Leaf, GraduationCap, TreePine, Globe, Sprout } from "lucide-react";
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
@@ -152,7 +152,26 @@ function TeamCarousel({ teamMembers, language }: { teamMembers: any[], language:
     </div>
   );
 }
+function Counter({ value, prefix = "" }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true });
+  const motionValue = useMotionValue(0);
+  const springValue = useSpring(motionValue, { damping: 40, stiffness: 100 });
 
+  useEffect(() => {
+    if (inView) motionValue.set(value);
+  }, [inView, value, motionValue]);
+
+  useEffect(() => {
+    return springValue.on("change", (latest) => {
+      if (ref.current) {
+        ref.current.textContent = prefix + Math.round(latest).toLocaleString("en-US");
+      }
+    });
+  }, [springValue, prefix]);
+
+  return <span ref={ref}>{prefix}0</span>;
+}
 export default function Home() {
   const { t, language } = useI18n();
   const [teamMembers, setTeamMembers] = useState<any[]>([]);
@@ -237,17 +256,23 @@ export default function Home() {
             initial="hidden"
             whileInView="show"
             viewport={{ once: true }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-12"
+            className="grid grid-cols-2 md:grid-cols-5 gap-8 md:gap-6"
           >
             {[
-              { val: "+20", label: 'impact.years' },
-              { val: "+3,000", label: 'impact.turtles' },
-              { val: "+50", label: 'impact.communities' },
-              { val: "+10", label: 'impact.hectares' },
-              { val: "+30", label: 'impact.partners' }
+              { target: 20, prefix: "+", label: "impact.years" },
+              { target: 3000, prefix: "+", label: "impact.turtles" },
+              { target: 50, prefix: "", label: "impact.communities" },
+              { target: 10, prefix: "+", label: "impact.hectares" },
+              { target: 30, prefix: "+", label: "impact.partners" },
             ].map((stat, i) => (
-              <motion.div key={i} variants={item} className="text-center">
-                <div className="text-4xl md:text-5xl font-black text-terracotta-400 mb-2">{stat.val}</div>
+              <motion.div
+                key={i}
+                variants={item}
+                className="text-center last:col-span-2 md:last:col-span-1"
+              >
+                <div className="text-4xl lg:text-5xl font-black text-terracotta-400 mb-2">
+                  <Counter value={stat.target} prefix={stat.prefix} />
+                </div>
                 <div className="text-sm md:text-base text-sage-200 font-medium uppercase tracking-widest">
                   {t(stat.label)}
                 </div>

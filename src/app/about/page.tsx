@@ -175,8 +175,9 @@ export default function AboutPage() {
   }, []);
 
   const presentation = {
-    en: "Founded in 2004, Association Salamandra Nature is a non-profit association active in France and Madagascar. Its main objective is to promote knowledge, nature conservation, and sustainable development, with a particular focus on the preservation of endangered species, Madagascar's tortoise fauna, and natural ecosystems.",
-    fr: "Créée en 2004, l'Association Salamandra Nature est une association à but non lucratif active en France et à Madagascar. Son objectif principal est de promouvoir la connaissance, la conservation de la nature et le développement durable, avec un accent particulier sur la préservation des espèces menacées, la faune chélonienne de Madagascar et des écosystèmes naturels."
+    en: "Established in 2004, Salamandra Nature is a non-profit organization active in France and Madagascar, dedicated to the study and preservation of nature, as well as to sustainable development.Its work focuses primarily on the conservation of threatened species—specifically the land tortoises of Madagascar—as well as the protection of their natural habitats and the ecosystems upon which they depend.Through its conservation initiatives, educational programs, and efforts to engage local communities, Salamandra Nature strives to strengthen individual participation in the preservation of natural heritage and to promote sustainable practices that support biodiversity.",
+    fr: "Créée en 2004, Salamandra Nature est une association à but non lucratif engagée en France et à Madagascar pour la connaissance, la préservation de la nature et le développement durable.Son action se concentre notamment sur la conservation des espèces menacées, en particulier les tortues terrestres de Madagascar, ainsi que sur la protection de leurs habitats naturels et des écosystèmes dont elles dépendent.À travers ses actions de conservation, d'éducation à la conservation de mobilisation des communautés locales, Salamandra Nature œuvre à renforcer la participation de chacun à la préservation du patrimoine naturel et à encourager des pratiques durables au service de la biodiversité.
+"
   };
 
   const actions = [

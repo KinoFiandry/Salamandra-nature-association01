@@ -290,7 +290,7 @@ const translations: Record<Language, Record<string, string>> = {
       'cta.title': 'Chaque Don Fait la Différence',
       'cta.desc': 'Votre soutien nous aide à protéger les tortues terrestres menacées, préserver leurs habitats et éduquer les communautés.',
       'cta.button': 'Faire un Don Aujourd\'hui',
-        'footer.desc': 'Salamandra Nature - Dévouée à la protection des tortues terrestres menacées de Madagascar depuis 2004.',
+        'footer.desc': 'Salamandra Nature -- Dévouée à la protection des tortues terrestres menacées de Madagascar depuis 2004.',
       'footer.links': 'Liens Rapides',
       'footer.contact': 'Contact',
         'footer.follow': 'Suivez-nous',

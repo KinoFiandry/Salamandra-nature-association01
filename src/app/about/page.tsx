@@ -108,7 +108,7 @@ export default function AboutPage() {
         </div>
       </div>
 
-      <<div className="max-w-7xl mx-auto px-4 mt-20">
+      <div className="max-w-7xl mx-auto px-4 mt-20">
         <div id="presentation" className="mb-24 scroll-mt-28">
           <div className="flex items-center gap-4 mb-8">
             <div className="w-12 h-12 bg-sage-100 dark:bg-sage-800 rounded-xl flex items-center justify-center text-sage-600 dark:text-sage-300">

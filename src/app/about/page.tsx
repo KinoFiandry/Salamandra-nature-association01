@@ -1,164 +1,15 @@
 "use client";
 
 import React, { useCallback, useEffect, useState } from "react";
-import Image from "next/image";
 import { useI18n } from "@/lib/i18n";
 import { supabase } from "@/lib/supabase";
 import { motion } from "framer-motion";
-import { Info, Shield, TreePine, GraduationCap, Leaf, Sun, Sprout, Users, FileText, Download, ChevronLeft, ChevronRight } from "lucide-react";
-import useEmblaCarousel from 'embla-carousel-react';
-import Autoplay from 'embla-carousel-autoplay';
+import { Info, Shield, TreePine, GraduationCap, Leaf, Sun, Sprout, Users, FileText, Download} from "lucide-react";
 
-
-function TeamMemberCard({ member, language, index }: { member: any, language: string, index: number }) {
-  const [isExpanded, setIsExpanded] = React.useState(false);
-  const role = language === 'fr' ? member.role_fr : member.role_en;
-  const bio = language === 'fr' ? member.bio_fr : member.bio_en;
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay: index * 0.1 }}
-      className="bg-white dark:bg-sage-800 rounded-3xl overflow-hidden border border-sage-100 dark:border-sage-700 shadow-sm hover:shadow-lg transition-all flex flex-col h-full"
-    >
-      <div className="h-48 overflow-hidden flex-shrink-0 relative">
-        <Image
-          src={member.photo_url || '/images/placeholder.jpg'}
-          alt={member.name}
-          fill
-          sizes="(max-width: 768px) 85vw, (max-width: 1024px) 45vw, 30vw"
-          className="object-cover grayscale hover:grayscale-0 transition-all duration-500"
-        />
-      </div>
-      <div className="p-8 flex flex-col flex-grow">
-        <h3 className="text-xl font-bold text-sage-800 dark:text-sage-100 mb-1 line-clamp-2">{member.name}</h3>
-        <p className="text-terracotta-600 dark:text-terracotta-400 font-bold text-sm mb-4 min-h-[40px]">
-          {role}
-        </p>
-        <div className="relative">
-          <p className={`text-sage-700/70 dark:text-sage-300/80 text-sm leading-relaxed ${!isExpanded ? 'line-clamp-4' : ''}`}>
-            {bio}
-          </p>
-          {bio && bio.length > 150 && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsExpanded(!isExpanded);
-              }}
-              className="mt-2 text-terracotta-600 dark:text-terracotta-400 font-bold text-xs hover:text-terracotta-700 transition-colors uppercase tracking-wider text-left"
-            >
-              {isExpanded
-                ? (language === 'fr' ? 'Voir moins' : 'See less')
-                : (language === 'fr' ? 'Voir plus' : 'See more')}
-            </button>
-          )}
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-function TeamCarousel({ teamMembers, language }: { teamMembers: any[], language: string }) {
-  const [emblaRef, emblaApi] = useEmblaCarousel(
-    { align: 'start', containScroll: 'trimSnaps', loop: true },
-    [Autoplay({ delay: 3500, stopOnInteraction: false })]
-  );
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
-  const [isHovering, setIsHovering] = useState(false);
-
-  useEffect(() => {
-    if (!emblaApi) return;
-    setScrollSnaps(emblaApi.scrollSnapList());
-    const onSelect = () => setSelectedIndex(emblaApi.selectedScrollSnap());
-    emblaApi.on('select', onSelect);
-    onSelect();
-  }, [emblaApi]);
-
-  // Pause/resume autoplay on hover
-  useEffect(() => {
-    if (!emblaApi) return;
-    const autoplay = emblaApi.plugins()?.autoplay;
-    if (!autoplay) return;
-    if (isHovering) {
-      autoplay.stop();
-    } else {
-      autoplay.play();
-    }
-  }, [isHovering, emblaApi]);
-
-  const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
-  const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
-
-  if (teamMembers.length === 0) {
-    return (
-      <div className="text-center py-16 text-sage-400">
-        <Users className="w-16 h-16 mx-auto mb-4 opacity-30" />
-        <p className="text-lg font-medium">{language === 'fr' ? 'Aucun membre pour le moment.' : 'No team members yet.'}</p>
-      </div>
-    );
-  }
-
-  return (
-    <div
-      className="relative group"
-      onMouseEnter={() => setIsHovering(true)}
-      onMouseLeave={() => setIsHovering(false)}
-    >
-      {/* Carousel viewport */}
-      <div className="overflow-hidden rounded-3xl" ref={emblaRef}>
-        <div className="flex gap-8">
-          {teamMembers.map((member, i) => (
-            <div key={member.name} className="flex-[0_0_85%] md:flex-[0_0_45%] lg:flex-[0_0_30%] min-w-0">
-              <TeamMemberCard member={member} language={language} index={i} />
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Navigation arrows */}
-      <button
-        onClick={scrollPrev}
-        className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 md:-translate-x-5 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white dark:bg-sage-800 shadow-lg border border-sage-100 dark:border-sage-700 flex items-center justify-center text-sage-700 dark:text-sage-200 opacity-0 group-hover:opacity-100 hover:bg-terracotta-500 hover:text-white hover:border-terracotta-500 transition-all duration-300 z-10"
-        aria-label="Previous"
-      >
-        <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
-      </button>
-      <button
-        onClick={scrollNext}
-        className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 md:translate-x-5 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white dark:bg-sage-800 shadow-lg border border-sage-100 dark:border-sage-700 flex items-center justify-center text-sage-700 dark:text-sage-200 opacity-0 group-hover:opacity-100 hover:bg-terracotta-500 hover:text-white hover:border-terracotta-500 transition-all duration-300 z-10"
-        aria-label="Next"
-      >
-        <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
-      </button>
-
-      {/* Dots */}
-      {scrollSnaps.length > 1 && (
-        <div className="flex justify-center gap-2 mt-6">
-          {scrollSnaps.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => emblaApi?.scrollTo(i)}
-              className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
-                i === selectedIndex
-                  ? 'bg-terracotta-500 w-7'
-                  : 'bg-sage-300 dark:bg-sage-600 hover:bg-sage-400'
-              }`}
-              aria-label={`Go to slide ${i + 1}`}
-            />
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
 
 export default function AboutPage() {
   const { t, language } = useI18n();
   const [reports, setReports] = useState<any[]>([]);
-  const [teamMembers, setTeamMembers] = useState<any[]>([]);
 
   useEffect(() => {
     supabase
@@ -167,11 +18,6 @@ export default function AboutPage() {
       .order("year", { ascending: false })
       .then(({ data }) => { if (data) setReports(data); });
 
-    supabase
-      .from("group_members")
-      .select("*")
-      .order("display_order", { ascending: true })
-      .then(({ data }) => { if (data) setTeamMembers(data); });
   }, []);
 
   const presentation = {
@@ -365,22 +211,6 @@ export default function AboutPage() {
           </div>
           )}
         </div>
-
-          {/* Team Section */}
-          <div className="mb-32">
-            <div className="flex items-center gap-4 mb-12">
-              <div className="w-12 h-12 bg-sage-100 dark:bg-sage-800 rounded-xl flex items-center justify-center text-sage-600 dark:text-sage-300">
-                <Users className="w-6 h-6" />
-              </div>
-              <h2 className="text-4xl font-bold text-sage-800 dark:text-sage-100">
-                {language === 'fr' ? 'Notre Équipe' : 'Our Team'}
-              </h2>
-            </div>
-
-            <TeamCarousel teamMembers={teamMembers} language={language} />
-          </div>
-
-      </div>
 
       {/* Call to Action */}
       <div className="max-w-4xl mx-auto px-4 text-center">

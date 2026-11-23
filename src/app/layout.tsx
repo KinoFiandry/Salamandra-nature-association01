@@ -10,7 +10,7 @@ import VisitTracker from "@/components/VisitTracker";
 import BackToTop from "@/components/BackToTop";
 
 export const metadata: Metadata = {
-  title: "Madagascar Turtle Conservation NGO",
+  title: "Salamandra Nature Association",
   description: "Official platform for turtle protection and conservation in Madagascar",
   icons: {
     icon: "/images/logo.png",

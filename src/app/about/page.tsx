@@ -194,56 +194,45 @@ export default function AboutPage() {
     {
       icon: TreePine,
       title: {
-        en: "Protection of Madagascar’s endemic land tortoises",
-        fr: "Protection des tortues terrestres endémiques de Madagascar"
+        en: "Preservation and enhancement of local biodiversity",
+        fr: "Préservation et valorisation de la biodiversité locale"
       },
       content: {
-        en: "Combating deforestation and the degradation of natural habitats.",
-        fr: "Lutte contre la déforestation et dégradation des habitats naturels."
+        en: "Salamandra Nature conducts environmental education initiatives designed to raise public awareness about the richness of local biodiversity, its importance, and the challenges involved in its preservation.By exploring various species and ecosystems, the association fosters a deeper understanding of our natural heritage and encourages individuals to get involved in its protection.",
+        fr: "Salamandra Nature mène des actions d’éducation à l’environnement pour sensibiliser les publics à la richesse de la biodiversité locale, à son importance et aux enjeux de sa préservation.À travers la découverte des espèces et des écosystèmes, l’association encourage une meilleure connaissance du patrimoine naturel et favorise l’engagement de chacun en faveur de sa protection"
       }
     },
     {
       icon: Leaf,
       title: {
-        en: "Protection of Madagascar’s endemic land tortoises",
-        fr: "Protection des tortues terrestres endémiques de Madagascar"
+        en: "Preservation of natural habitats and promotion of sustainable technologies",
+        fr: "Préservation des habitats naturels et promotion de technologies durables"
       },
       content: {
-        en: "Preservation and enhancement of local biodiversity within the framework of environmental education.",
-        fr: "Préservation et valorisation de la biodiversité locale dans le cadre de l'éducation à l'environnement."
+        en: "Salamandra Nature works to limit deforestation and the degradation of natural habitats, while encouraging the adoption of sustainable solutions that are accessible to local communities. By promoting technologies such as solar cookers, the organization fosters eco-friendly practices that help reduce pressure on forest resources and preserve ecosystems essential to biodiversity.",
+        fr: "Salamandra Nature agit pour limiter la déforestation et la dégradation des habitats naturels, tout en encourageant l’adoption de solutions durables et accessibles aux communautés locales. À travers la vulgarisation de technologies telles que les cuiseurs solaires, l’association promeut des pratiques écoresponsables qui contribuent à réduire la pression sur les ressources forestières et à préserver les écosystèmes essentiels à la biodiversité."
       }
     },
     {
       icon: GraduationCap,
       title: {
-        en: "Protection of Madagascar’s endemic land tortoises",
-        fr: "Protection des tortues terrestres endémiques de Madagascar"
+        en: "Environmental mediation in France and Madagascar",
+        fr: "Médiation environnementale en France et à Madagascar"
       },
       content: {
-        en: "Public awareness of conservation and sustainable development in Madagascar and France.",
-        fr: "Sensibilisation du public à la conservation et au développement durable à Madagascar et en France."
+        en: "Salamandra Nature carries out initiatives to raise awareness about and protect Madagascar’s endemic and threatened land tortoises, most notably the radiated tortoise (*Sokake*) and the spider tortoise (*Sokapila*). Through exhibitions, screenings, events, and meetings, the organization addresses the challenges surrounding their conservation, the fight against their illegal trafficking, and the preservation of their natural habitats. In both France and Madagascar, these efforts foster dialogue and encourage public engagement in their protection.",
+        fr: "Salamandra Nature mène des actions pour faire connaître et protéger les tortues terrestres endémiques et menacées de Madagascar, notamment la tortue étoilée (Sokake) et la tortue araignée (Sokapila). À travers des expositions, des projections, des événements et des rencontres, l’association partage les enjeux liés à leur conservation, à la lutte contre leur trafic illégal et à la préservation de leurs habitats naturels. En France comme à Madagascar, ces actions favorisent les échanges et encouragent l’engagement du public pour leur protection."
       }
     },
     {
       icon: Sun,
       title: {
-        en: "Protection of Madagascar’s endemic land tortoises",
-        fr: "Protection des tortues terrestres endémiques de Madagascar"
+        en: "Ecosystem restoration",
+        fr: "Restauration des écosystèmes "
       },
       content: {
-        en: "Promotion of sustainable technologies, such as the popularization of solar cookers among local communities.",
-        fr: "Promotion de technologies durables, comme la vulgarisation de cuiseurs solaires auprès de communautés locales."
-      }
-    },
-    {
-      icon: Sprout,
-      title: {
-        en: "Protection of Madagascar’s endemic land tortoises",
-        fr: "Protection des tortues terrestres endémiques de Madagascar"
-      },
-      content: {
-        en: "Planting of local species in Southwest Madagascar to restore ecosystems.",
-        fr: "Plantation d'essences locales dans le Sud-ouest de Madagascar pour restaurer les écosystèmes."
+        en: "Salamandra Nature contributes to the restoration of ecosystems in southwestern Madagascar by planting native tree species adapted to the local natural environment. These initiatives aim to foster vegetation regeneration, restore natural habitats, and preserve the species that depend on them.",
+        fr: "Salamandra Nature contribue à la restauration des écosystèmes du sud-ouest de Madagascar par la plantation d’essences locales adaptées aux milieux naturels. Ces actions visent à favoriser la régénération de la végétation, à restaurer les habitats naturels et à préserver les espèces qui en dépendent."
       }
     }
   ];

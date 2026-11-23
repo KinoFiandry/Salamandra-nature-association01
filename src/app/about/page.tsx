@@ -294,7 +294,7 @@ export default function AboutPage() {
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-sage-900 dark:text-white mb-2">
+                  <h3 className="text-xl font-bold text-terracotta-500 dark:text-terracotta-400 mb-2">
                     {action.title[language as 'en' | 'fr']}
                   </h3>
                   <p className="whitespace-pre-line text-lg text-sage-700/80 dark:text-sage-300/90 leading-relaxed">

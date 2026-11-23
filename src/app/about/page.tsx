@@ -183,8 +183,8 @@ export default function AboutPage() {
     {
       icon: Shield,
       content: {
-        en: "Protection of endemic and endangered land tortoises in Southwest Madagascar—Radiated tortoise (Astrochelys radiata, Sokake) and Spider tortoise (Pyxis arachnoides, Sokapila)—fighting against illegal trafficking and conserving populations.",
-        fr: "Protection des tortues terrestres endémiques et menacées du Sud-ouest de Madagascar, tortue étoilée, Astrochelys radiata, Sokake et tortue araignée, Pyxis arachnoides, Sokapila— lutte contre leur trafic illégal et conservation des populations."
+        en: "Salamandra Nature is committed to the protection of endemic and threatened land tortoises in southwestern Madagascar, specifically the radiated tortoise (*Astrochelys radiata*), known locally as \"Sokake,\" and the spider tortoise (*Pyxis arachnoides*), known as \"Sokapila\".\n\nOur efforts are aimed at combating the illegal trafficking of these species, preserving their populations in their natural habitat, and contributing to their long-term conservation.",
+        fr: "Salamandra Nature s’engage pour la protection des tortues terrestres endémiques et menacées du sud-ouest de Madagascar, notamment la tortue étoilée (Astrochelys radiata), appelée Sokake, et la tortue araignée (Pyxis arachnoides), appelée Sokapila.\n\nNos actions visent à lutter contre le trafic illégal de ces espèces, à préserver leurs populations dans leur milieu naturel et à contribuer durablement à leur conservation."
       }
     },
     {

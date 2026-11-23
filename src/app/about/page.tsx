@@ -182,6 +182,10 @@ export default function AboutPage() {
   const actions = [
     {
       icon: Shield,
+      title: {
+        en: "Protection of Madagascar’s endemic land tortoises",
+        fr: "Protection des tortues terrestres endémiques de Madagascar"
+      },
       content: {
         en: "Salamandra Nature is committed to the protection of endemic and threatened land tortoises in southwestern Madagascar, specifically the radiated tortoise (*Astrochelys radiata*), known locally as \"Sokake,\" and the spider tortoise (*Pyxis arachnoides*), known as \"Sokapila\".\n\nOur efforts are aimed at combating the illegal trafficking of these species, preserving their populations in their natural habitat, and contributing to their long-term conservation.",
         fr: "Salamandra Nature s’engage pour la protection des tortues terrestres endémiques et menacées du sud-ouest de Madagascar, notamment la tortue étoilée (Astrochelys radiata), appelée Sokake, et la tortue araignée (Pyxis arachnoides), appelée Sokapila.\n\nNos actions visent à lutter contre le trafic illégal de ces espèces, à préserver leurs populations dans leur milieu naturel et à contribuer durablement à leur conservation."
@@ -280,9 +284,14 @@ export default function AboutPage() {
                     <action.icon className="w-7 h-7" />
                   </div>
                 </div>
-                <p className="whitespace-pre-line text-lg text-sage-700/80 dark:text-sage-300/90 leading-relaxed pt-2">
-                  {action.content[language as 'en' | 'fr']}
-                </p>
+                <div>
+                  <h3 className="text-xl font-bold text-sage-900 dark:text-white mb-2">
+                    {action.title[language as 'en' | 'fr']}
+                  </h3>
+                  <p className="whitespace-pre-line text-lg text-sage-700/80 dark:text-sage-300/90 leading-relaxed">
+                    {action.content[language as 'en' | 'fr']}
+                  </p>
+                </div>
               </motion.div>
             ))}
           </div>

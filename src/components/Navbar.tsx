@@ -22,7 +22,7 @@ export function Navbar() {
   const aboutSubLinks = [
     { href: "/about#presentation", label: "nav.about.presentation" },
     { href: "/about#actions",      label: "nav.about.actions" },
-    { href: "/about#documents",    label: "nav.about.docs" },
+    { href: "/team",    label: "nav.about.docs" },
   ];
 
   const topLinks = [

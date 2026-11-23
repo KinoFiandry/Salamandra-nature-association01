@@ -193,6 +193,10 @@ export default function AboutPage() {
     },
     {
       icon: TreePine,
+      title: {
+        en: "Protection of Madagascar’s endemic land tortoises",
+        fr: "Protection des tortues terrestres endémiques de Madagascar"
+      },
       content: {
         en: "Combating deforestation and the degradation of natural habitats.",
         fr: "Lutte contre la déforestation et dégradation des habitats naturels."
@@ -200,6 +204,10 @@ export default function AboutPage() {
     },
     {
       icon: Leaf,
+      title: {
+        en: "Protection of Madagascar’s endemic land tortoises",
+        fr: "Protection des tortues terrestres endémiques de Madagascar"
+      },
       content: {
         en: "Preservation and enhancement of local biodiversity within the framework of environmental education.",
         fr: "Préservation et valorisation de la biodiversité locale dans le cadre de l'éducation à l'environnement."
@@ -207,6 +215,10 @@ export default function AboutPage() {
     },
     {
       icon: GraduationCap,
+      title: {
+        en: "Protection of Madagascar’s endemic land tortoises",
+        fr: "Protection des tortues terrestres endémiques de Madagascar"
+      },
       content: {
         en: "Public awareness of conservation and sustainable development in Madagascar and France.",
         fr: "Sensibilisation du public à la conservation et au développement durable à Madagascar et en France."
@@ -214,6 +226,10 @@ export default function AboutPage() {
     },
     {
       icon: Sun,
+      title: {
+        en: "Protection of Madagascar’s endemic land tortoises",
+        fr: "Protection des tortues terrestres endémiques de Madagascar"
+      },
       content: {
         en: "Promotion of sustainable technologies, such as the popularization of solar cookers among local communities.",
         fr: "Promotion de technologies durables, comme la vulgarisation de cuiseurs solaires auprès de communautés locales."
@@ -221,6 +237,10 @@ export default function AboutPage() {
     },
     {
       icon: Sprout,
+      title: {
+        en: "Protection of Madagascar’s endemic land tortoises",
+        fr: "Protection des tortues terrestres endémiques de Madagascar"
+      },
       content: {
         en: "Planting of local species in Southwest Madagascar to restore ecosystems.",
         fr: "Plantation d'essences locales dans le Sud-ouest de Madagascar pour restaurer les écosystèmes."

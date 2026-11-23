@@ -198,8 +198,8 @@ export default function AboutPage() {
         fr: "Préservation et valorisation de la biodiversité locale"
       },
       content: {
-        en: "Salamandra Nature conducts environmental education initiatives designed to raise public awareness about the richness of local biodiversity, its importance, and the challenges involved in its preservation.By exploring various species and ecosystems, the association fosters a deeper understanding of our natural heritage and encourages individuals to get involved in its protection.",
-        fr: "Salamandra Nature mène des actions d’éducation à l’environnement pour sensibiliser les publics à la richesse de la biodiversité locale, à son importance et aux enjeux de sa préservation.À travers la découverte des espèces et des écosystèmes, l’association encourage une meilleure connaissance du patrimoine naturel et favorise l’engagement de chacun en faveur de sa protection"
+        en: "Salamandra Nature conducts environmental education initiatives designed to raise public awareness about the richness of local biodiversity, its importance, and the challenges involved in its preservation.\n\nBy exploring various species and ecosystems, the association fosters a deeper understanding of our natural heritage and encourages individuals to get involved in its protection.",
+        fr: "Salamandra Nature mène des actions d’éducation à l’environnement pour sensibiliser les publics à la richesse de la biodiversité locale, à son importance et aux enjeux de sa préservation.\n\nÀ travers la découverte des espèces et des écosystèmes, l’association encourage une meilleure connaissance du patrimoine naturel et favorise l’engagement de chacun en faveur de sa protection"
       }
     },
     {

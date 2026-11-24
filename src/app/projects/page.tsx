@@ -17,7 +17,23 @@ interface Project {
   category_en: string;
   category_fr: string;
 }
-
+function formatDescription(text: string) {
+  if (!text) return null;
+  const parts = text.split(/(\*\*.*?\*\*)/g);
+  return parts.map((part, index) => {
+    if (part.startsWith("**") && part.endsWith("**")) {
+      return (
+        <strong
+          key={index}
+          className="font-bold text-[#4B5320] text-xl"
+        >
+          {part.slice(2, -2)}
+        </strong>
+      );
+    }
+    return part;
+  });
+}
 export default function ProjectsPage() {
   const { t, language } = useI18n();
   const [projects, setProjects] = useState<Project[]>([]);
@@ -89,7 +105,9 @@ export default function ProjectsPage() {
                     {language === 'en' ? project.title_en : project.title_fr}
                   </h2>
                   <p className="whitespace-pre-line text-sage-700/70 text-lg leading-relaxed mb-8">
-                    {language === 'en' ? project.description_en : project.description_fr}
+                    {formatDescription(
+                      language === "en" ? project.description_en : project.description_fr
+                    )}
                   </p>
                 </div>
               </motion.div>

@@ -88,7 +88,7 @@ export default function ProjectsPage() {
                   <h2 className="text-3xl font-bold text-sage-800 mb-6 group-hover:text-terracotta-500 transition-colors">
                     {language === 'en' ? project.title_en : project.title_fr}
                   </h2>
-                  <p className="text-sage-700/70 text-lg leading-relaxed mb-8">
+                  <p className="whitespace-pre-line text-sage-700/70 text-lg leading-relaxed mb-8">
                     {language === 'en' ? project.description_en : project.description_fr}
                   </p>
                 </div>

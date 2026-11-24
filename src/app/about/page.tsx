@@ -244,13 +244,13 @@ export default function AboutPage() {
           <div className="relative z-10">
             <h2 className="text-4xl font-black mb-8">
               {language === "fr"
-                ? "Envie de nous rejoindre ?"
-                : "Want to Join Us?"}
+                ? "Envie de nous soutenir ?"
+                : "Want to support us?"}
             </h2>
             <p className="text-xl text-sage-100/80 mb-12 leading-relaxed">
               {language === "fr"
-                ? "Nous sommes toujours à la recherche de bénévoles et de partenaires passionnés pour nous aider à accroître notre impact à Madagascar."
-                : "We are always looking for passionate volunteers and partners to help us scale our impact across Madagascar."}
+                ? "Vous souhaitez contribuer à la protection des tortues et de leurs habitats naturels ? Que vous soyez un particulier, une entreprise ou une organisation, votre soutien est précieux pour permettre à Salamandra Nature de poursuivre et de développer ses actions de conservation."
+                : "Would you like to contribute to the protection of turtles and their natural habitats? Whether you are an individual, a company, or an organization, your support is invaluable in enabling Salamandra Nature to continue and expand its conservation efforts."}
             </p>
             <div className="flex flex-wrap justify-center gap-6">
               <a

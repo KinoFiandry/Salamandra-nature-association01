@@ -85,13 +85,13 @@ export default function ProjectsPage() {
                 transition={{ delay: i * 0.1 }}
                 className="group bg-white rounded-[3rem] overflow-hidden border border-sage-100 shadow-sm hover:shadow-2xl hover:shadow-sage-800/5 transition-all flex flex-col"
               >
-                <div className="h-80 overflow-hidden relative">
+                <div className="h-64 bg-sage-50/50 overflow-hidden relative p-6">
                   <Image
-                    src={project.image_url || 'https://images.unsplash.com/photo-1437622368342-7a3d73a34c8f?q=80&w=1000'}
+                    src={project.image_url || 'https://unsplash.com'}
                     alt={language === 'en' ? project.title_en : project.title_fr}
                     fill
                     sizes="(max-width: 768px) 100vw, 50vw"
-                    className="object-cover group-hover:scale-105 transition-transform duration-700"
+                    className="object-contain p-6 group-hover:scale-105 transition-transform duration-700"
                   />
                   <div className="absolute top-6 right-6 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full flex items-center gap-2 shadow-sm">
                     <Tag className="w-4 h-4 text-terracotta-500" />

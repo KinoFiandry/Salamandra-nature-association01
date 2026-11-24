@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useI18n } from "@/lib/i18n";
 import { supabase } from "@/lib/supabase";
 import { motion, AnimatePresence } from "framer-motion";
-import { Loader2, Play, Image as ImageIcon, X, ZoomIn, ZoomOut, Download, Images, ChevronLeft } from "lucide-react";
+import { Loader2, Play, Image as ImageIcon, X, ZoomIn, ZoomOut, Download, Images, ChevronLeft,Newspaper, ExternalLink } from "lucide-react";
 
 function getEmbedUrl(url: string): string {
   if (!url) return url;
@@ -36,7 +36,50 @@ interface Album {
   cover_url: string;
   created_at: string;
 }
-
+const pressArticles = [
+  {
+    source: "Ministère de l'Environnement (MEDD)",
+    date: "5 août 2025",
+    title_fr: "SOS SOKAKE CUP 2025 : Le sport et la culture au service de l'environnement",
+    title_en: "SOS SOKAKE CUP 2025: Sport and culture serving the environment",
+    url: "https://www.environnement.mg/actualites/%F0%9F%8C%B3%F0%9F%90%A2%F0%9D%97%A6%F0%9D%97%A2%F0%9D%97%A6-%F0%9D%97%A6%F0%9D%97%A2%F0%9D%97%9E%F0%9D%97%94%F0%9D%97%9E%F0%9D%97%98-%F0%9D%97%96%F0%9D%97%A8%F0%9D%97%A3-%F0%9D%9F%AE%F0%9D%9F%AC/",
+  },
+  {
+    source: "Midi Madagasikara",
+    date: "30 juillet 2025",
+    title_fr: "Football – SOS Sokake Cup : La Nouvelle-Calédonie, invitée d'honneur",
+    title_en: "Football – SOS Sokake Cup: New Caledonia, guest of honor",
+    url: "https://midi-madagasikara.mg/la-nouvelle-caledonie-invitee-dhonneur/",
+  },
+  {
+    source: "AllAfrica",
+    date: "5 août 2025",
+    title_fr: "SOS Sokake Cup 2025 : Sensibilisation à la protection des tortues radiées",
+    title_en: "SOS Sokake Cup 2025: Raising awareness for radiated tortoise protection",
+    url: "https://fr.allafrica.com/stories/202508050463.html",
+  },
+  {
+    source: "L'Express de Madagascar",
+    date: "Février 2025",
+    title_fr: "SOS SOKAKE CUP - La Nouvelle-Calédonie dans la course",
+    title_en: "SOS SOKAKE CUP - New Caledonia in the race",
+    url: "https://www.lexpress.mg/2025/02/sos-sokake-cup-la-nouvelle-caledonie.html",
+  },
+  {
+    source: "Orange Actu Madagascar",
+    date: "5 août 2025",
+    title_fr: "La SOS SOKAKE CUP 2025 se poursuit au stade annexe Barea Mahamasina",
+    title_en: "SOS SOKAKE CUP 2025 continues at Barea Mahamasina annex stadium",
+    url: "https://www.facebook.com/orangeactu/posts/la-sos-sokake-cup-2025-se-poursuit-ce-5-ao%C3%BBt-au-stade-annexe-barea-mahamasina-da/770308192007585/",
+  },
+  {
+    source: "Agence Malagasy de Presse",
+    date: "Août 2025",
+    title_fr: "Lalao ara-panatanjahan-tena SOS Sokake Cup 2025 hotanterahana eny Mahamasina",
+    title_en: "SOS Sokake Cup 2025 sports event held in Mahamasina",
+    url: "https://www.agencemalagasydepresse.dev/vaovao-samihafa/lalao-ara-panatanjahan-tena-sos-sokake-cup-2025-hotanterahana-eny-mahamasina-ny-andiany-fahatelo/ ",
+  },
+];
 export default function MediaPage() {
   const { t, language } = useI18n();
   const [media, setMedia] = useState<MediaItem[]>([]);
@@ -131,6 +174,52 @@ export default function MediaPage() {
           </div>
         ) : (
           <>
+            {/* Section À la une de la conservation (Revue de presse) */}
+        <div className="mb-20">
+          <h2 className="text-2xl font-black text-sage-800 mb-6 flex items-center gap-3">
+            <Newspaper className="w-6 h-6 text-terracotta-500" />
+            {language === "fr"
+              ? "À la une de la conservation"
+              : "Conservation Headlines"}
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {pressArticles.map((article, i) => (
+              <motion.a
+                key={i}
+                href={article.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.05 }}
+                className="group p-6 bg-sage-50/60 hover:bg-white rounded-3xl border border-sage-100 hover:border-terracotta-300 shadow-sm hover:shadow-xl transition-all flex flex-col justify-between"
+              >
+                <div>
+                  <div className="flex items-center justify-between gap-2 mb-3">
+                    <span className="text-xs font-black uppercase tracking-wider text-terracotta-600 bg-terracotta-50 px-3 py-1 rounded-full">
+                      {article.source}
+                    </span>
+                    <span className="text-xs font-medium text-sage-500">
+                      {article.date}
+                    </span>
+                  </div>
+                  <h3 className="text-lg font-bold text-sage-800 group-hover:text-terracotta-600 transition-colors leading-snug mb-4">
+                    {language === "fr" ? article.title_fr : article.title_en}
+                  </h3>
+                </div>
+
+                <div className="flex items-center gap-2 text-sm font-bold text-sage-600 group-hover:text-terracotta-500 transition-colors pt-2 border-t border-sage-100">
+                  <span>
+                    {language === "fr" ? "Lire l'article" : "Read article"}
+                  </span>
+                  <ExternalLink className="w-4 h-4" />
+                </div>
+              </motion.a>
+            ))}
+          </div>
+        </div>
             {/* Videos section */}
             {videos.length > 0 && (
               <div className="mb-16">
